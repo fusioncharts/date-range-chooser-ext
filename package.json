@@ -1,0 +1,38 @@
+{
+  "name": "date-range-chooser-ext",
+  "version": "0.0.1",
+  "description": "A date range chooser for FusionCharts Time Series Charts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fusioncharts/date-range-chooser-ext.git"
+  },
+  "keywords": [
+    "fusioncharts",
+    "fc",
+    "fc-extension",
+    "time-series",
+    "time",
+    "series"
+  ],
+  "author": "Nakshatra Mukhopadhyay",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fusioncharts/date-range-chooser-ext/issues"
+  },
+  "homepage": "https://github.com/fusioncharts/date-range-chooser-ext#readme",
+  "devDependencies": {
+    "babel-preset-latest": "^6.16.0",
+    "eslint": "^3.8.1",
+    "eslint-config-standard": "^6.2.0",
+    "eslint-plugin-promise": "^3.3.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-sourcemaps": "^2.1.1",
+    "gulp-uglify": "^2.0.0"
+  }
+}
