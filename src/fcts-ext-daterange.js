@@ -1,15 +1,22 @@
 class DateRange {
   constructor () {
     this.dateRange = {
-      startDate: 1260,
+      startDate: 126071,
       endDate: 127683
     };
   }
 
   getRange () {
+    return this.dateRange;
+  }
+
+  getStartDate () {
     return this.dateRange.startDate;
+  }
+
+  getEndDate () {
+    return this.dateRange.endDate;
   }
 }
 
-var dateRange = new DateRange();
-console.log(dateRange.getRange());
+module.exports = DateRange;
