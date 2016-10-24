@@ -8,6 +8,7 @@ import sourcemaps from 'gulp-sourcemaps';
 import prettydiff from 'gulp-prettydiff';
 import webpackEs5Config from './webpack-es5.config.babel.js';
 import webpackEs6Config from './webpack-es6.config.babel.js';
+import { exec } from 'child_process';
 
 const PATH = {
   allSrcJs: 'src/**/*.js',
@@ -62,8 +63,19 @@ gulp.task('build-es6', () =>
     .pipe(gulp.dest('dist'))
 );
 
+gulp.task('docs', () => {
+  exec('node ./node_modules/.bin/jsdoc -c jsdoc.json', (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    console.log(`${stdout}`);
+    console.log(`${stderr}`);
+  });
+});
+
 gulp.task('watch', () =>
-  gulp.watch(PATH.allSrcJs, ['test', 'build-es5', 'build-es6'])
+  gulp.watch(PATH.allSrcJs, ['test', 'docs', 'build-es5', 'build-es6'])
 );
 
-gulp.task('default', ['watch', 'test', 'build-es5', 'build-es6']);
+gulp.task('default', ['watch', 'test', 'docs', 'build-es5', 'build-es6']);

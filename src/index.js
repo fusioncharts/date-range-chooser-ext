@@ -1,4 +1,3 @@
-// import DateRange from './fcts-ext-daterange';
 const DateRange = require('./fcts-ext-daterange');
 const FusionCharts = require('../lib/fusioncharts.js');
 
