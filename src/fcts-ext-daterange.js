@@ -4,38 +4,33 @@
 class DateRange {
   /**
    * Create a DateRange.
-   * @typedef {Object} DateRange.dateRange
-   * @property {number} dateRange.startDate - The start date of the date range.
-   * @property {number} dateRange.endDate - The end date of the date range.
+   * @typedef {Object} DateRange.range
+   * @property {number} startDate - The start date of the date range.
+   * @property {number} endDate - The end date of the date range.
    */
   constructor () {
+    /**
+     * @private
+     */
     this.dateRange = {
-      startDate: 126071,
-      endDate: 127683
+      startDate: 0,
+      endDate: 0
     };
   }
 
   /**
-   * Get the range object.
-   * @return {dateRange} - An object containing the start date and the end date.
+   * An object representing the start and end dates.
+   * @type {DateRange.range}
    */
-  getRange () {
+  get range () {
     return this.dateRange;
   }
-  /**
-   * Get the start date of the date range.
-   * @returns {number} dateRange.startDate - The start date of the date range.
-   */
-  getStartDate () {
-    return this.dateRange.startDate;
-  }
 
-  /**
-   * Get the end date of the date range.
-   * @returns {number} dateRange.endDate - The end date of the date range.
-   */
-  getEndDate () {
-    return this.dateRange.endDate;
+  set range (range) {
+    if (range.startDate < range.endDate) {
+      this.dateRange.startDate = range.startDate;
+      this.dateRange.endDate = range.endDate;
+    }
   }
 }
 

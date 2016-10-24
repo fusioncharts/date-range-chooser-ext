@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>fcts-ext-dateinput.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,29 +27,45 @@
 
 <div id="main">
     
+    <h1 class="page-title">fcts-ext-dateinput.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Class representing a abstract DateInput.
+ * @abstract
+ */
+class DateInput {
+  constructor () {
+    /**
+     * @private
+     */
+    this.time = 0;
+  }
 
+  /**
+   * Represents the numeric value of the date
+   * @type number
+   */
+  get timestamp () {
+    return this.time;
+  }
 
+  set timestamp (ms) {
+    this.time = ms;
+  }
+}
 
-
-
-
-
-
-
-    
-
-
-    <section class="readme">
-        <article><h1>Date Range chooser</h1><h2>A FusionCharts Time Series Extension</h2><p>Date range chooser extension for FusionCharts time-series chart</p></article>
+module.exports = DateInput;
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

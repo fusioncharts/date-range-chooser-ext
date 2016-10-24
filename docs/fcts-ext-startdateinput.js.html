@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>fcts-ext-startdateinput.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,29 +27,48 @@
 
 <div id="main">
     
+    <h1 class="page-title">fcts-ext-startdateinput.js</h1>
+    
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const DateInput = require('./fcts-ext-dateinput');
 
+/**
+ * A concrete representation of DateInput for the start date.
+ * @extends DateInput
+ */
+class StartDateInput extends DateInput {
+  constructor () {
+    super();
+    /**
+     * @private
+     */
+    this.date = '12/12/2012';
+  }
 
+  /**
+   * The starting date of the TimeSeries chart.
+   * @type string
+   */
+  get startDate () {
+    return this.date;
+  }
 
+  set startDate (dateStr) {
+    this.date = dateStr;
+  }
+}
 
-
-
-
-
-
-    
-
-
-    <section class="readme">
-        <article><h1>Date Range chooser</h1><h2>A FusionCharts Time Series Extension</h2><p>Date range chooser extension for FusionCharts time-series chart</p></article>
+module.exports = StartDateInput;
+</code></pre>
+        </article>
     </section>
-
-
 
 
 

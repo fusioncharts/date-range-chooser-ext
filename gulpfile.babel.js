@@ -42,7 +42,7 @@ gulp.task('test', ['lint'], () =>
     .pipe(mocha())
 );
 
-gulp.task('build-es5', () =>
+gulp.task('build-es5', ['docs'], () =>
   gulp.src(PATH.clientEntryPoint)
     .pipe(sourcemaps.init())
       .pipe(webpack(webpackEs5Config))
@@ -51,7 +51,7 @@ gulp.task('build-es5', () =>
     .pipe(gulp.dest('dist'))
 );
 
-gulp.task('build-es6', () =>
+gulp.task('build', ['build-es5'], () =>
   gulp.src(PATH.clientEntryPoint)
     .pipe(sourcemaps.init())
       .pipe(webpack(webpackEs6Config))
@@ -63,7 +63,7 @@ gulp.task('build-es6', () =>
     .pipe(gulp.dest('dist'))
 );
 
-gulp.task('docs', () => {
+gulp.task('docs', ['test'], () => {
   exec('node ./node_modules/.bin/jsdoc -c jsdoc.json', (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
@@ -75,7 +75,7 @@ gulp.task('docs', () => {
 });
 
 gulp.task('watch', () =>
-  gulp.watch(PATH.allSrcJs, ['test', 'docs', 'build-es5', 'build-es6'])
+  gulp.watch(PATH.allSrcJs, ['build'])
 );
 
-gulp.task('default', ['watch', 'test', 'docs', 'build-es5', 'build-es6']);
+gulp.task('default', ['watch', 'build']);
