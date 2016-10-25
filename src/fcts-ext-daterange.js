@@ -27,10 +27,19 @@ class DateRange {
   }
 
   set range (range) {
-    if (range.startDate < range.endDate) {
+    if (range.startDate <= range.endDate) {
       this.dateRange.startDate = range.startDate;
       this.dateRange.endDate = range.endDate;
     }
+  }
+
+  /**
+   * Swaps the start date and the end date of the date range
+   */
+  swapDates () {
+    let temp = this.dateRange.startDate;
+    this.dateRange.startDate = this.dateRange.endDate;
+    this.dateRange.endDate = temp;
   }
 }
 

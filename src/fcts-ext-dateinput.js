@@ -1,6 +1,7 @@
 /**
  * Class representing a abstract DateInput.
  * @abstract
+ * @private
  */
 class DateInput {
   constructor () {

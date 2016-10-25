@@ -3,12 +3,13 @@ import gulp from 'gulp';
 import mocha from 'gulp-mocha';
 import eslint from 'gulp-eslint';
 import uglify from 'gulp-uglify';
+import { exec } from 'child_process';
+import istanbul from 'gulp-istanbul';
 import webpack from 'webpack-stream';
-import sourcemaps from 'gulp-sourcemaps';
 import prettydiff from 'gulp-prettydiff';
+import sourcemaps from 'gulp-sourcemaps';
 import webpackEs5Config from './webpack-es5.config.babel.js';
 import webpackEs6Config from './webpack-es6.config.babel.js';
-import { exec } from 'child_process';
 
 const PATH = {
   allSrcJs: 'src/**/*.js',
@@ -23,6 +24,7 @@ gulp.task('lint', () =>
   gulp.src([
     PATH.allSrcJs,
     PATH.gulpFile,
+    PATH.allTests,
     PATH.webpackEs5File,
     PATH.webpackEs6File
   ])
@@ -32,8 +34,15 @@ gulp.task('lint', () =>
 );
 
 gulp.task('test', ['lint'], () =>
-  gulp.src(PATH.allTests)
-    .pipe(mocha())
+  gulp.src(PATH.allSrcJs)
+    .pipe(istanbul())
+    .pipe(istanbul.hookRequire())
+    .on('finish', function () {
+      gulp.src(PATH.allTests)
+        .pipe(mocha())
+        .pipe(istanbul.writeReports())
+        .pipe(istanbul.enforceThresholds({ thresholds: { global: 90 } }));
+    })
 );
 
 gulp.task('docs', ['test'], () => {
@@ -72,4 +81,8 @@ gulp.task('watch', () =>
   gulp.watch(PATH.allSrcJs, ['build'])
 );
 
-gulp.task('default', ['watch', 'build']);
+gulp.task('watch-tests', () =>
+  gulp.watch(PATH.allTests, ['test'])
+);
+
+gulp.task('default', ['watch-tests', 'watch', 'build']);
