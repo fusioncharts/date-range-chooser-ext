@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>fcts-ext-daterange.js - Documentation</title>
+    <title>fcts-ext-dateinput.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">fcts-ext-daterange.js</h1>
+    <h1 class="page-title">fcts-ext-dateinput.js</h1>
     
 
     
@@ -38,42 +38,35 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Class representing the DateRange.
+ * Class representing a abstract DateInput.
+ * @abstract
  */
-class DateRange {
-  /**
-   * Create a DateRange.
-   * @typedef {object} DateRange.range
-   * @property {number} startDate - The start date of the date range.
-   * @property {number} endDate - The end date of the date range.
-   */
+class DateInput {
   constructor () {
+    /**
+     * @typedef {object} DateInput.input
+     * @property {number} timestamp - The current time shown on the date input.
+     */
     /**
      * @private
      */
-    this.dateRange = {
-      startDate: 0,
-      endDate: 0
-    };
+    this.time = 0;
   }
 
   /**
-   * An object representing the start and end dates.
-   * @type {DateRange.range}
+   * Represents the numeric value of the date
+   * @type number
    */
-  get range () {
-    return this.dateRange;
+  get timestamp () {
+    return this.time;
   }
 
-  set range (range) {
-    if (range.startDate &lt; range.endDate) {
-      this.dateRange.startDate = range.startDate;
-      this.dateRange.endDate = range.endDate;
-    }
+  set timestamp (ms) {
+    this.time = ms;
   }
 }
 
-module.exports = DateRange;
+module.exports = DateInput;
 </code></pre>
         </article>
     </section>

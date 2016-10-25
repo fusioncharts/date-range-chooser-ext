@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>fcts-ext-daterange.js - Documentation</title>
+    <title>fcts-ext-startdateinput.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">fcts-ext-daterange.js</h1>
+    <h1 class="page-title">fcts-ext-startdateinput.js</h1>
     
 
     
@@ -37,43 +37,35 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
- * Class representing the DateRange.
+            <pre class="prettyprint source linenums"><code>const DateInput = require('./fcts-ext-dateinput');
+
+/**
+ * A concrete representation of DateInput for the start date.
+ * @extends DateInput
  */
-class DateRange {
-  /**
-   * Create a DateRange.
-   * @typedef {object} DateRange.range
-   * @property {number} startDate - The start date of the date range.
-   * @property {number} endDate - The end date of the date range.
-   */
+class StartDateInput extends DateInput {
   constructor () {
+    super();
     /**
      * @private
      */
-    this.dateRange = {
-      startDate: 0,
-      endDate: 0
-    };
+    this.date = '12/12/2012';
   }
 
   /**
-   * An object representing the start and end dates.
-   * @type {DateRange.range}
+   * The starting date of the TimeSeries chart.
+   * @type string
    */
-  get range () {
-    return this.dateRange;
+  get startDate () {
+    return this.date;
   }
 
-  set range (range) {
-    if (range.startDate &lt; range.endDate) {
-      this.dateRange.startDate = range.startDate;
-      this.dateRange.endDate = range.endDate;
-    }
+  set startDate (dateStr) {
+    this.date = dateStr;
   }
 }
 
-module.exports = DateRange;
+module.exports = StartDateInput;
 </code></pre>
         </article>
     </section>

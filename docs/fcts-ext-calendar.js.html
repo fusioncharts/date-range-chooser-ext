@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>fcts-ext-daterange.js - Documentation</title>
+    <title>fcts-ext-calendar.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">fcts-ext-daterange.js</h1>
+    <h1 class="page-title">fcts-ext-calendar.js</h1>
     
 
     
@@ -38,42 +38,39 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Class representing the DateRange.
+ * Class representing a calendar.
  */
-class DateRange {
-  /**
-   * Create a DateRange.
-   * @typedef {object} DateRange.range
-   * @property {number} startDate - The start date of the date range.
-   * @property {number} endDate - The end date of the date range.
-   */
+class Calendar {
   constructor () {
     /**
      * @private
+     * @type {string}
      */
-    this.dateRange = {
-      startDate: 0,
-      endDate: 0
-    };
+    this.currentDate = '';
+    /**
+     * @private
+     * @type {object}
+     */
+    this.fullRange = {};
   }
 
   /**
-   * An object representing the start and end dates.
-   * @type {DateRange.range}
+   * Shows the calendar at a particular date input.
+   * @param {DateInput.input} dateInput - The DateInput at which to show the calendar.
    */
-  get range () {
-    return this.dateRange;
+  showCalendar (dateInput) {
+    console.log(dateInput);
   }
 
-  set range (range) {
-    if (range.startDate &lt; range.endDate) {
-      this.dateRange.startDate = range.startDate;
-      this.dateRange.endDate = range.endDate;
-    }
+  /**
+   * Hides the calendar.
+   */
+  hideCalendar () {
+    console.log('Calendar hidden');
   }
 }
 
-module.exports = DateRange;
+module.exports = Calendar;
 </code></pre>
         </article>
     </section>
