@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>fcts-ext-startdateinput.js - Documentation</title>
+    <title>fcts-ext-calendar.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">fcts-ext-startdateinput.js</h1>
+    <h1 class="page-title">fcts-ext-calendar.js</h1>
     
 
     
@@ -37,35 +37,40 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const DateInput = require('./fcts-ext-dateinput');
-
-/**
- * A concrete representation of DateInput for the start date.
- * @extends DateInput
+            <pre class="prettyprint source linenums"><code>/**
+ * Class representing a calendar.
  */
-class StartDateInput extends DateInput {
+class Calendar {
   constructor () {
-    super();
     /**
      * @private
+     * @type {string}
      */
-    this.date = '12/12/2012';
+    this.currentDate = '';
+    /**
+     * @private
+     * @type {object}
+     */
+    this.fullRange = {};
   }
 
   /**
-   * The starting date of the TimeSeries chart.
-   * @type string
+   * Shows the calendar at a particular date input.
+   * @param {DateInput.input} dateInput - The DateInput at which to show the calendar.
    */
-  get startDate () {
-    return this.date;
+  showCalendar (dateInput) {
+    console.log(dateInput);
   }
 
-  set startDate (dateStr) {
-    this.date = dateStr;
+  /**
+   * Hides the calendar.
+   */
+  hideCalendar () {
+    console.log('Calendar hidden');
   }
 }
 
-module.exports = StartDateInput;
+module.exports = Calendar;
 </code></pre>
         </article>
     </section>

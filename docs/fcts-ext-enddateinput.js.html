@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>fcts-ext-startdateinput.js - Documentation</title>
+    <title>fcts-ext-enddateinput.js - Documentation</title>
 
     <script src="scripts/prettify/prettify.js"></script>
     <script src="scripts/prettify/lang-css.js"></script>
@@ -27,7 +27,7 @@
 
 <div id="main">
     
-    <h1 class="page-title">fcts-ext-startdateinput.js</h1>
+    <h1 class="page-title">fcts-ext-enddateinput.js</h1>
     
 
     
@@ -40,32 +40,32 @@
             <pre class="prettyprint source linenums"><code>const DateInput = require('./fcts-ext-dateinput');
 
 /**
- * A concrete representation of DateInput for the start date.
+ * A concrete representation of DateInput for the end date.
  * @extends DateInput
  */
-class StartDateInput extends DateInput {
+class EndDateInput extends DateInput {
   constructor () {
     super();
     /**
      * @private
      */
-    this.date = '12/12/2012';
+    this.date = '13/12/2013';
   }
 
   /**
-   * The starting date of the TimeSeries chart.
+   * The ending date of the TimeSeries chart.
    * @type string
    */
-  get startDate () {
+  get endDate () {
     return this.date;
   }
 
-  set startDate (dateStr) {
+  set endDate (dateStr) {
     this.date = dateStr;
   }
 }
 
-module.exports = StartDateInput;
+module.exports = EndDateInput;
 </code></pre>
         </article>
     </section>

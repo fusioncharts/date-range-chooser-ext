@@ -4,7 +4,7 @@
 class DateRange {
   /**
    * Create a DateRange.
-   * @typedef {Object} DateRange.range
+   * @typedef {object} DateRange.range
    * @property {number} startDate - The start date of the date range.
    * @property {number} endDate - The end date of the date range.
    */
