@@ -4,15 +4,15 @@ const StartDateInput = require('./fcts-ext-startdateinput');
 const EndDateInput = require('./fcts-ext-enddateinput');
 const FusionCharts = require('../lib/fusioncharts');
 
-var fc = new FusionCharts();
+// var fc = new FusionCharts();
 
-fc.register('extension', ['date-range-chooser', function (id) {
+FusionCharts.register('extension', ['date-range-chooser', function (id) {
   var global = this;
   var extAPI = global.extAPI;
   console.log(id);
 
-  // var otherAPI = fc.getExtComponent(id, 'api', 'legacyextapi');
-  // var toolBoxApi = fc.getComponent('api', 'toolbox');
+  // var otherAPI = FusionCharts.getExtComponent(id, 'api', 'legacyextapi');
+  // var toolBoxApi = FusionCharts.getComponent('api', 'toolbox');
 
   extAPI({
     init: function (require) {
