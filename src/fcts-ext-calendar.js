@@ -20,14 +20,14 @@ class Calendar {
    * @param {DateInput.input} dateInput - The DateInput at which to show the calendar.
    */
   showCalendar (dateInput) {
-    console.log(dateInput);
+    return 'Calendar shown.';
   }
 
   /**
    * Hides the calendar.
    */
   hideCalendar () {
-    console.log('Calendar hidden');
+    return 'Calendar hidden.';
   }
 }
 

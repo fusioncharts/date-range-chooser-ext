@@ -11,7 +11,7 @@ class EndDateInput extends DateInput {
     /**
      * @private
      */
-    this.date = '13/12/2013';
+    this.date = '01/01/1970';
   }
 
   /**

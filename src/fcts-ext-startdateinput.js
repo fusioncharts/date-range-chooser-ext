@@ -11,7 +11,7 @@ class StartDateInput extends DateInput {
     /**
      * @private
      */
-    this.date = '12/12/2012';
+    this.date = '01/01/1970';
   }
 
   /**
