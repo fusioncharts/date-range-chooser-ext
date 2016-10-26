@@ -1,3 +1,4 @@
+'use strict';
 const DateRange = require('./fcts-ext-daterange');
 const StartDateInput = require('./fcts-ext-startdateinput');
 const EndDateInput = require('./fcts-ext-enddateinput');

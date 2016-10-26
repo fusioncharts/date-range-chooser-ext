@@ -1,13 +1,16 @@
+'use strict';
 import gulp from 'gulp';
 // import babel from 'gulp-babel';
 import mocha from 'gulp-mocha';
+// import through from 'through2';
+// import named from 'vinyl-named';
 import eslint from 'gulp-eslint';
-import uglify from 'gulp-uglify';
+// import uglify from 'gulp-uglify';
 import { exec } from 'child_process';
 import istanbul from 'gulp-istanbul';
 import webpack from 'webpack-stream';
-import prettydiff from 'gulp-prettydiff';
-import sourcemaps from 'gulp-sourcemaps';
+// import prettydiff from 'gulp-prettydiff';
+// import sourcemaps from 'gulp-sourcemaps';
 import webpackEs5Config from './webpack-es5.config.babel.js';
 import webpackEs6Config from './webpack-es6.config.babel.js';
 
@@ -58,23 +61,14 @@ gulp.task('docs', ['test'], () => {
 
 gulp.task('build-es5', ['docs'], () =>
   gulp.src(PATH.clientEntryPoint)
-    .pipe(sourcemaps.init())
-      .pipe(webpack(webpackEs5Config))
-      .pipe(uglify())
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('dist'))
+  .pipe(webpack(webpackEs5Config))
+  .pipe(gulp.dest('dist'))
 );
 
 gulp.task('build', ['build-es5'], () =>
   gulp.src(PATH.clientEntryPoint)
-    .pipe(sourcemaps.init())
-      .pipe(webpack(webpackEs6Config))
-      .pipe(prettydiff({
-        lang: 'javascript',
-        mode: 'minify'
-      }))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('dist'))
+  .pipe(webpack(webpackEs6Config))
+  .pipe(gulp.dest('dist'))
 );
 
 gulp.task('watch', () =>

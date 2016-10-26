@@ -1,11 +1,12 @@
+'use strict';
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
-const DateRange = require('../src/fcts-ext-daterange');
-const DateInput = require('../src/fcts-ext-dateinput');
-const StartDateInput = require('../src/fcts-ext-startdateinput');
-const EndDateInput = require('../src/fcts-ext-enddateinput');
-const Calendar = require('../src/fcts-ext-calendar');
+var DateRange = require('../src/fcts-ext-daterange');
+var DateInput = require('../src/fcts-ext-dateinput');
+var StartDateInput = require('../src/fcts-ext-startdateinput');
+var EndDateInput = require('../src/fcts-ext-enddateinput');
+var Calendar = require('../src/fcts-ext-calendar');
 
 describe('DateRange', function () {
   var dr = new DateRange();

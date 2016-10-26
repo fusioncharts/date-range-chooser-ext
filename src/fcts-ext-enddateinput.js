@@ -1,3 +1,4 @@
+'use strict';
 const DateInput = require('./fcts-ext-dateinput');
 
 /**

@@ -1,3 +1,4 @@
+'use strict';
 /**
  * Class representing a calendar.
  */
