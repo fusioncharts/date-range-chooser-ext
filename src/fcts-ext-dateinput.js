@@ -27,6 +27,10 @@ class DateInput {
   set timestamp (ms) {
     this.time = ms;
   }
+
+  displayDate () {
+    ;
+  }
 }
 
 module.exports = DateInput;

@@ -4,6 +4,10 @@
         "standard",
         "promise"
     ],
+    "globals":{
+      "Raphael": true,
+      "FusionCharts": true
+    },
     "rules": {
       "semi": [
         "error",

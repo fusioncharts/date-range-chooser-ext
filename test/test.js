@@ -77,37 +77,11 @@ describe('DateInput', function () {
 describe('StartDateInput', function () {
   var sdi = new StartDateInput();
   sdi.startDate = '12/11/2016';
-  describe('#startDate', function () {
-    it('should be a string', function () {
-      expect(new StartDateInput().startDate).to.be.a('string');
-    });
-    it('should be "01/01/1970" initially', function () {
-      expect(new StartDateInput().startDate).to.equal('01/01/1970');
-    });
-    it('should be able to set the value of startDate', function () {
-      expect(sdi.startDate).to.equal('12/11/2016');
-      sdi.startDate = '11/11/2011';
-      expect(sdi.startDate).to.equal('11/11/2011');
-    });
-  });
 });
 
 describe('EndDateInput', function () {
   var edi = new EndDateInput();
   edi.endDate = '18/11/2016';
-  describe('#endDate', function () {
-    it('should be a string', function () {
-      expect(new EndDateInput().endDate).to.be.a('string');
-    });
-    it('should be "01/01/1970" initially', function () {
-      expect(new EndDateInput().endDate).to.equal('01/01/1970');
-    });
-    it('should be able to set the value of endDate', function () {
-      expect(edi.endDate).to.equal('18/11/2016');
-      edi.endDate = '12/11/2011';
-      expect(edi.endDate).to.equal('12/11/2011');
-    });
-  });
 });
 
 describe('Calendar', function () {

@@ -1,4 +1,6 @@
 'use strict';
+var StartDateInput = require('./fcts-ext-startdateinput');
+var EndDateInput = require('./fcts-ext-enddateinput');
 /**
  * Class representing the DateRange.
  */
@@ -31,6 +33,14 @@ class DateRange {
     if (range.startDate <= range.endDate) {
       this.dateRange.startDate = range.startDate;
       this.dateRange.endDate = range.endDate;
+
+      var sdi = new StartDateInput();
+      sdi.timestamp = this.dateRange.startDate;
+      console.log(sdi.timestamp);
+
+      var edi = new EndDateInput();
+      edi.timestamp = this.dateRange.endDate;
+      console.log(edi.timestamp);
     }
   }
 
