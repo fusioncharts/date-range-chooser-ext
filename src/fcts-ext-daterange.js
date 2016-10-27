@@ -1,6 +1,8 @@
 'use strict';
 var StartDateInput = require('./fcts-ext-startdateinput');
 var EndDateInput = require('./fcts-ext-enddateinput');
+var FusionCharts = require('../lib/fusioncharts');
+
 /**
  * Class representing the DateRange.
  */
@@ -38,15 +40,19 @@ class DateRange {
   set range (range) {
     if (range.startDate <= range.endDate) {
       this.dateRange.startDate = range.startDate;
+      var formattedStartDate = FusionCharts.getFormattedDate(range.startDate);
+      console.log(formattedStartDate);
+      this.startText.attr('text', formattedStartDate);
+
       this.dateRange.endDate = range.endDate;
+      var formattedEndDate = FusionCharts.getFormattedDate(range.endDate);
+      this.endText.attr('text', formattedEndDate);
 
       var sdi = new StartDateInput();
       sdi.timestamp = this.dateRange.startDate;
-      this.startText.attr('text', sdi.timestamp);
 
       var edi = new EndDateInput();
       edi.timestamp = this.dateRange.endDate;
-      this.endText.attr('text', edi.timestamp);
     }
   }
 
@@ -72,18 +78,18 @@ class DateRange {
     var startLabel = paper.text(20, 22, 'From: ');
     startLabel.attr('font-family', 'sans-serif');
     startLabel.attr('fill', '#000');
-    var startRect = paper.rect(50, 10, 60, 25);
+    var startRect = paper.rect(50, 10, 90, 25);
     startRect.attr('stroke', '#000');
-    this.startText = paper.text(63, 22, range.startDate);
+    this.startText = paper.text(95, 22, FusionCharts.getFormattedDate(range.startDate));
     this.startText.attr('font-family', 'sans-serif');
     this.startText.attr('fill', '#000');
 
     var endLabel = paper.text(170, 22, 'To: ');
     endLabel.attr('font-family', 'sans-serif');
     endLabel.attr('fill', '#000');
-    var endRect = paper.rect(190, 10, 60, 25);
+    var endRect = paper.rect(190, 10, 90, 25);
     endRect.attr('stroke', '#000');
-    this.endText = paper.text(203, 22, range.endDate);
+    this.endText = paper.text(235, 22, FusionCharts.getFormattedDate(range.endDate));
     this.endText.attr('font-family', 'sans-serif');
     this.endText.attr('fill', '#000');
   }
