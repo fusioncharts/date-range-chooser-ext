@@ -7,7 +7,13 @@ const DateInput = require('./fcts-ext-dateinput');
  * @private
  */
 class EndDateInput extends DateInput {
-  validateDate () {}
+  /**
+   * Validate the given timestamp
+   * @return {boolean} Whether the given timestamp is valid or not
+   */
+  validateDate (timestamp) {
+    return true;
+  }
 }
 
 module.exports = EndDateInput;

@@ -28,6 +28,10 @@ class DateInput {
     this.timestamp = ms;
   }
 
+  /**
+   * Displays the date on the date input
+   * @private
+   */
   displayDate () {}
 }
 

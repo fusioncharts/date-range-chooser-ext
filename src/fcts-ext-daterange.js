@@ -94,6 +94,7 @@ class DateRange {
 
   /**
    * Swaps the start date and the end date of the date range
+   * @private
    */
   swapDates () {
     let temp = this.dateRange.startDate;
@@ -102,17 +103,44 @@ class DateRange {
   }
 
   /**
+   * Syncs the daterange shown by the FusionCharts time series chart and the Date Range Chooser
    * @private
    */
   syncRange () {}
 
-  getFormattedDate (timestamp) {}
+  /**
+   * Returns a formatted date string from FusionCharts when given a UNIX timestamp
+   * @param  {number} timestamp - A UNIX timestamp to be converted to a date string
+   * @return {string} A date string which is equivalent to the given timestamp
+   */
+  getFormattedDate (timestamp) {
+    return '12/12/2012';
+  }
 
-  getTimestamp (dateString) {}
+  /**
+   * Returns a UNIX timestamp from FusionCharts when given a formatted date string
+   * @param  {string} dateString - A date string to be converted to a UNIX timestamp
+   * @return {number} A UNIX timestamp which is equivalent to the given date string
+   */
+  getTimestamp (dateString) {
+    return 6745123;
+  }
 
+  /**
+   * Sets the configurable options of the extension (e.g. cosmetics)
+   * @param {Object} configObj The configuration object containing various extension options
+   */
   setConfig (configObj) {}
 
-  getConfig () {}
+  /**
+   * Gets the configurable options of the extension (e.g. cosmetics)
+   * @return {object} configObj The configuration object containing various extension options
+   */
+  getConfig () {
+    return {
+      color: '#000000'
+    };
+  }
 }
 
 module.exports = DateRange;
