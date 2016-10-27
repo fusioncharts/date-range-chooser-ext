@@ -19,6 +19,12 @@ class DateRange {
       startDate: 0,
       endDate: 0
     };
+    this.startText = {
+      attr: function () {}
+    };
+    this.endText = {
+      attr: function () {}
+    };
   }
 
   /**
@@ -36,12 +42,54 @@ class DateRange {
 
       var sdi = new StartDateInput();
       sdi.timestamp = this.dateRange.startDate;
-      console.log(sdi.timestamp);
+      this.startText.attr('text', sdi.timestamp);
 
       var edi = new EndDateInput();
       edi.timestamp = this.dateRange.endDate;
-      console.log(edi.timestamp);
+      this.endText.attr('text', edi.timestamp);
     }
+  }
+
+  init (require) {
+    require('X-Axis', 'Y-Axis', 'graphics', function (x, y, graphics) {
+      global.x = x;
+      global.y = y;
+      global.paper = graphics;
+    });
+  }
+
+  placeInCanvas () {
+    this.range = {
+      startDate: 12,
+      endDate: 23
+    };
+  }
+
+  draw () {
+    var paper = global.paper;
+    var range = this.range;
+
+    var startLabel = paper.text(20, 22, 'From: ');
+    startLabel.attr('font-family', 'sans-serif');
+    startLabel.attr('fill', '#000');
+    var startRect = paper.rect(50, 10, 60, 25);
+    startRect.attr('stroke', '#000');
+    this.startText = paper.text(63, 22, range.startDate);
+    this.startText.attr('font-family', 'sans-serif');
+    this.startText.attr('fill', '#000');
+
+    var endLabel = paper.text(170, 22, 'To: ');
+    endLabel.attr('font-family', 'sans-serif');
+    endLabel.attr('fill', '#000');
+    var endRect = paper.rect(190, 10, 60, 25);
+    endRect.attr('stroke', '#000');
+    this.endText = paper.text(203, 22, range.endDate);
+    this.endText.attr('font-family', 'sans-serif');
+    this.endText.attr('fill', '#000');
+  }
+
+  dispose () {
+    // TODO: dispose extension
   }
 
   /**
@@ -52,6 +100,19 @@ class DateRange {
     this.dateRange.startDate = this.dateRange.endDate;
     this.dateRange.endDate = temp;
   }
+
+  /**
+   * @private
+   */
+  syncRange () {}
+
+  getFormattedDate (timestamp) {}
+
+  getTimestamp (dateString) {}
+
+  setConfig (configObj) {}
+
+  getConfig () {}
 }
 
 module.exports = DateRange;

@@ -7,6 +7,7 @@ const DateInput = require('./fcts-ext-dateinput');
  * @private
  */
 class StartDateInput extends DateInput {
+  validateDate () {}
 }
 
 module.exports = StartDateInput;

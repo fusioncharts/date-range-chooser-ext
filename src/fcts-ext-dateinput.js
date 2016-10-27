@@ -13,24 +13,22 @@ class DateInput {
     /**
      * @private
      */
-    this.time = 0;
+    this.timestamp = 0;
   }
 
   /**
    * Represents the numeric value of the date
    * @type number
    */
-  get timestamp () {
-    return this.time;
+  get date () {
+    return this.timestamp;
   }
 
-  set timestamp (ms) {
-    this.time = ms;
+  set date (ms) {
+    this.timestamp = ms;
   }
 
-  displayDate () {
-    ;
-  }
+  displayDate () {}
 }
 
 module.exports = DateInput;
