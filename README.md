@@ -2,4 +2,4 @@
 ## A FusionCharts Time Series Extension
 Date range chooser extension for FusionCharts time-series chart
 
-![extension-image](./docs/images/readme.jpg)
+![extension-image](./images/readme.jpg)
