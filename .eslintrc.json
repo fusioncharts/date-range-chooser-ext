@@ -6,7 +6,8 @@
     ],
     "globals":{
       "Raphael": true,
-      "FusionCharts": true
+      "FusionCharts": true,
+      "define": true
     },
     "rules": {
       "semi": [

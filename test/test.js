@@ -10,6 +10,7 @@ var Calendar = require('../src/fcts-ext-calendar');
 
 describe('DateRange', function () {
   var dr = new DateRange();
+  dr.init();
   dr.range = {
     startDate: 12000,
     endDate: 13000
@@ -54,6 +55,7 @@ describe('DateRange', function () {
       expect(dr.range.endDate).to.equal(tempStartDt);
     });
   });
+  dr.dispose();
 });
 
 describe('DateInput', function () {

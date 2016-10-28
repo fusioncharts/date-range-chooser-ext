@@ -9,9 +9,9 @@ var FusionCharts = require('../lib/fusioncharts');
 class DateRange {
   /**
    * Create a DateRange.
-   * @typedef {object} DateRange.range
+   * @typedef  {object} DateRange.range
    * @property {number} startDate - The start date of the date range.
-   * @property {number} endDate - The end date of the date range.
+   * @property {number} endDate   - The end date of the date range.
    */
   constructor () {
     /**
@@ -40,12 +40,11 @@ class DateRange {
   set range (range) {
     if (range.startDate <= range.endDate) {
       this.dateRange.startDate = range.startDate;
-      var formattedStartDate = FusionCharts.getFormattedDate(range.startDate);
-      console.log(formattedStartDate);
+      var formattedStartDate = this.getFormattedDate(range.startDate);
       this.startText.attr('text', formattedStartDate);
 
       this.dateRange.endDate = range.endDate;
-      var formattedEndDate = FusionCharts.getFormattedDate(range.endDate);
+      var formattedEndDate = this.getFormattedDate(range.endDate);
       this.endText.attr('text', formattedEndDate);
 
       var sdi = new StartDateInput();
@@ -57,11 +56,17 @@ class DateRange {
   }
 
   init (require) {
-    require('X-Axis', 'Y-Axis', 'graphics', function (x, y, graphics) {
-      global.x = x;
-      global.y = y;
-      global.paper = graphics;
-    });
+    var self = this;
+    if (typeof require === 'function') {
+      require('X-Axis', 'Y-Axis', 'graphics', 'chart', function (x, y, graphics, chart) {
+        self.x = x;
+        self.y = y;
+        self.paper = graphics;
+        self.chart = chart;
+      });
+    } else {
+      self.chart = new FusionCharts();
+    }
   }
 
   placeInCanvas () {
@@ -72,7 +77,7 @@ class DateRange {
   }
 
   draw () {
-    var paper = global.paper;
+    var paper = this.paper;
     var range = this.range;
 
     var startLabel = paper.text(20, 22, 'From: ');
@@ -80,7 +85,7 @@ class DateRange {
     startLabel.attr('fill', '#000');
     var startRect = paper.rect(50, 10, 90, 25);
     startRect.attr('stroke', '#000');
-    this.startText = paper.text(95, 22, FusionCharts.getFormattedDate(range.startDate));
+    this.startText = paper.text(95, 22, this.getFormattedDate(range.startDate));
     this.startText.attr('font-family', 'sans-serif');
     this.startText.attr('fill', '#000');
 
@@ -89,7 +94,7 @@ class DateRange {
     endLabel.attr('fill', '#000');
     var endRect = paper.rect(190, 10, 90, 25);
     endRect.attr('stroke', '#000');
-    this.endText = paper.text(235, 22, FusionCharts.getFormattedDate(range.endDate));
+    this.endText = paper.text(235, 22, this.getFormattedDate(range.endDate));
     this.endText.attr('font-family', 'sans-serif');
     this.endText.attr('fill', '#000');
   }
@@ -117,10 +122,10 @@ class DateRange {
   /**
    * Returns a formatted date string from FusionCharts when given a UNIX timestamp
    * @param  {number} timestamp - A UNIX timestamp to be converted to a date string
-   * @return {string} A date string which is equivalent to the given timestamp
+   * @return {string} - A date string which is equivalent to the given timestamp
    */
   getFormattedDate (timestamp) {
-    return '12/12/2012';
+    return this.chart.getFormattedDate(timestamp);
   }
 
   /**
@@ -129,7 +134,7 @@ class DateRange {
    * @return {number} A UNIX timestamp which is equivalent to the given date string
    */
   getTimestamp (dateString) {
-    return 6745123;
+    return this.chart.getTimestamp(dateString);
   }
 
   /**
@@ -144,7 +149,7 @@ class DateRange {
    */
   getConfig () {
     return {
-      color: '#000000'
+      calendarVisible: 'false'
     };
   }
 }
