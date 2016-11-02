@@ -78,7 +78,7 @@ class DateRange {
     startLabel.attr('fill', '#000');
     var startRect = paper.rect(50, 10, 90, 25);
     startRect.attr('stroke', '#000');
-    this.startText = paper.text(95, 22, this.getFormattedDate(this.startDt));
+    this.startText = paper.text(95, 22, this.getFormattedDate(this.startDate));
     this.startText.attr('font-family', 'sans-serif');
     this.startText.attr('fill', '#000');
 
@@ -87,7 +87,7 @@ class DateRange {
     endLabel.attr('fill', '#000');
     var endRect = paper.rect(190, 10, 90, 25);
     endRect.attr('stroke', '#000');
-    this.endText = paper.text(235, 22, this.getFormattedDate(this.endDt));
+    this.endText = paper.text(235, 22, this.getFormattedDate(this.endDate));
     this.endText.attr('font-family', 'sans-serif');
     this.endText.attr('fill', '#000');
   }
