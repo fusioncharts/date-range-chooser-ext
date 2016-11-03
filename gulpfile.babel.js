@@ -1,5 +1,6 @@
 'use strict';
 import gulp from 'gulp';
+import del from 'del';
 // import babel from 'gulp-babel';
 import mocha from 'gulp-mocha';
 import through from 'through2';
@@ -15,12 +16,13 @@ import webpackEs5Config from './webpack-es5.config.babel.js';
 import webpackEs6Config from './webpack-es6.config.babel.js';
 
 const PATH = {
+  allDistJs: 'dist/**/*',
   allSrcJs: 'src/**/*.js',
   allTests: 'test/**/*.js',
-  clientEntryPoint: 'src/index.js',
   gulpFile: 'gulpfile.babel.js',
-  webpackEs5File: 'webpack-es5.config.babel.js',
-  webpackEs6File: 'webpack-es6.config.babel.js'
+  clientEntryPoint: 'src/index.js',
+  webpackEs6File: 'webpack-es6.config.babel.js',
+  webpackEs5File: 'webpack-es5.config.babel.js'
 };
 
 gulp.task('lint', () =>
@@ -48,7 +50,7 @@ gulp.task('test', ['lint'], () =>
     })
 );
 
-gulp.task('docs', ['test'], () => {
+gulp.task('docs', ['lint'], () => {
   exec('node ./node_modules/.bin/jsdoc -c jsdoc.json', (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
@@ -59,7 +61,11 @@ gulp.task('docs', ['test'], () => {
   });
 });
 
-gulp.task('build-es5', ['docs'], () =>
+gulp.task('clean:dist', ['test'], () =>
+del([PATH.allDistJs])
+);
+
+gulp.task('build-es5', ['clean:dist'], () =>
   gulp.src(PATH.clientEntryPoint)
   .pipe(webpack(webpackEs5Config))
   .pipe(gulp.dest('dist'))
