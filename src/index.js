@@ -1,17 +1,23 @@
 'use strict';
 const DateRange = require('./fcts-ext-daterange');
 
-// ;(function (factory) {
-//   factory(FusionCharts);
-// })(function (FC) {
-//   FC.register('extension', ['date-range-chooser', function (id) {
-    // var global = this;
-    // var extAPI = global.extAPI;
-
-    // var otherAPI = FC.getExtComponent(id, 'api', 'legacyextapi');
-    // var toolBoxApi = FC.getComponent('api', 'toolbox');
-
 window.dr = new DateRange();
-    // extAPI(window.dr);
-//   }]);
-// });
+
+;(function (env, factory) {
+  if (typeof module === 'object' && module.exports) {
+    module.exports = env.document
+       ? factory(env) : function (win) {
+         if (!win.document) {
+           throw new Error('Window with document not present');
+         }
+         return factory(win, true);
+       };
+  } else {
+    env.DateRangeChooser = factory(env, true);
+  }
+})(typeof window !== 'undefined' ? window : this, function (_window, windowExists) {
+  var FC = _window.FusionCharts;
+  FC.register('extension', ['private', 'DateRangeChooser', function () {
+    FC.registerComponent('extensions', 'DateRangeChooser', DateRange);
+  }]);
+});
