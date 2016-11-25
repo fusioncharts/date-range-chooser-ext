@@ -1,6 +1,5 @@
 'use strict';
 import gulp from 'gulp';
-import del from 'del';
 // import babel from 'gulp-babel';
 import mocha from 'gulp-mocha';
 import through from 'through2';
@@ -10,19 +9,18 @@ import eslint from 'gulp-eslint';
 import { exec } from 'child_process';
 import istanbul from 'gulp-istanbul';
 import webpack from 'webpack-stream';
-import prettydiff from 'gulp-prettydiff';
+// import prettydiff from 'gulp-prettydiff';
 import sourcemaps from 'gulp-sourcemaps';
 import webpackEs5Config from './webpack-es5.config.babel.js';
 import webpackEs6Config from './webpack-es6.config.babel.js';
 
 const PATH = {
-  allDistJs: 'dist/**/*',
   allSrcJs: 'src/**/*.js',
   allTests: 'test/**/*.js',
-  gulpFile: 'gulpfile.babel.js',
   clientEntryPoint: 'src/index.js',
-  webpackEs6File: 'webpack-es6.config.babel.js',
-  webpackEs5File: 'webpack-es5.config.babel.js'
+  gulpFile: 'gulpfile.babel.js',
+  webpackEs5File: 'webpack-es5.config.babel.js',
+  webpackEs6File: 'webpack-es6.config.babel.js'
 };
 
 gulp.task('lint', () =>
@@ -50,7 +48,7 @@ gulp.task('test', ['lint'], () =>
     })
 );
 
-gulp.task('docs', ['lint'], () => {
+gulp.task('docs', ['test'], () => {
   exec('node ./node_modules/.bin/jsdoc -c jsdoc.json', (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
@@ -61,11 +59,7 @@ gulp.task('docs', ['lint'], () => {
   });
 });
 
-gulp.task('clean:dist', ['test'], () =>
-del([PATH.allDistJs])
-);
-
-gulp.task('build-es5', ['clean:dist'], () =>
+gulp.task('build-es5', ['docs'], () =>
   gulp.src(PATH.clientEntryPoint)
   .pipe(webpack(webpackEs5Config))
   .pipe(gulp.dest('dist'))
@@ -84,10 +78,10 @@ gulp.task('build', ['build-es5'], () =>
     cb();
   }))
   .pipe(sourcemaps.write())
-  .pipe(prettydiff({
-    'lang': 'javascript',
-    'mode': 'minify'
-  }))
+  // .pipe(prettydiff({
+  //   'lang': 'javascript',
+  //   'mode': 'minify'
+  // }))
   .pipe(gulp.dest('dist'))
 );
 

@@ -1,7 +1,4 @@
 'use strict';
-var StartDateInput = require('./fcts-ext-startdateinput');
-var EndDateInput = require('./fcts-ext-enddateinput');
-
 /**
  * Class representing the DateRange.
  */
@@ -29,13 +26,10 @@ class DateRange {
   }
 
   set startDate (startDt) {
-    if (startDt <= this.endDt) {
-      this.startDt = startDt;
-      var formattedStartDate = this.getFormattedDate(this.startDt);
-      this.startText.attr('text', formattedStartDate);
-
-      var sdi = new StartDateInput();
-      sdi.timestamp = this.startDt;
+    let startTimestamp = +new Date(startDt);
+    if (startTimestamp <= this.endDt) {
+      this.startDt = startTimestamp;
+      console.log(this.startDt);
     }
   }
 
@@ -44,13 +38,10 @@ class DateRange {
   }
 
   set endDate (endDt) {
-    if (endDt >= this.startDt) {
-      this.endDt = endDt;
-      var formattedEndDate = this.getFormattedDate(this.endDt);
-      this.endText.attr('text', formattedEndDate);
-
-      var edi = new EndDateInput();
-      edi.timestamp = this.endDt;
+    let endTimestamp = +new Date(endDt);
+    if (endTimestamp >= this.startDt) {
+      this.endDt = endTimestamp;
+      console.log(this.endDt);
     }
   }
 
