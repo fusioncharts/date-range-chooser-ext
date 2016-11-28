@@ -35,9 +35,7 @@ class DateRange {
     let startTimestamp = +new Date(startDt);
     if (startTimestamp <= this.endDt) {
       this.startDt = startTimestamp;
-      // console.log(this.globalReactiveModel.model['x-axis-visible-range-start']);
       this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
-      // console.log(this.globalReactiveModel.model['x-axis-visible-range-start']);
     }
   }
 
@@ -47,12 +45,9 @@ class DateRange {
 
   set endDate (endDt) {
     let endTimestamp = +new Date(endDt);
-    console.log(endDt);
     if (endTimestamp >= this.startDt) {
       this.endDt = endTimestamp;
-      // console.log(this.globalReactiveModel.model['x-axis-visible-range-end']);
       this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
-      // console.log(this.globalReactiveModel.model['x-axis-visible-range-end']);
     }
   }
 
@@ -124,6 +119,7 @@ class DateRange {
       'globalReactiveModel',
       'spaceManagerInstance',
       'smartLabel',
+      'chartInstance',
       function (
             xAxis,
             yAxis,
@@ -160,15 +156,13 @@ class DateRange {
     this.toolbars = [];
     this.measurement = {};
     this.toolbars.push(this.createToolbar());
-    console.log(this.createToolbar());
-    console.log(this.dateStart, this.dateEnd);
+    // console.log(this.createToolbar());
+    // console.log(this.dateStart, this.dateEnd);
     return this;
   };
 
   createToolbar () {
     var toolbar,
-      fromDate,
-      toDate,
       self = this,
       fromDateLabel,
       toDateLabel,
@@ -176,11 +170,12 @@ class DateRange {
       fromFormattedDate,
       toFormattedDate;
 
-    fromFormattedDate = (new Date(this.startDt).getUTCMonth() + 1) + '-' +
-      new Date(this.startDt).getUTCDate() + '-' + new Date(this.startDt).getUTCFullYear();
+    self.fromDate = {};
+    self.toDate = {};
 
-    toFormattedDate = new Date(this.endDt).getUTCMonth() + '-' +
-      (new Date(this.endDt).getUTCDate() + 1) + '-' + new Date(this.endDt).getUTCFullYear();
+    fromFormattedDate = new Date(this.startDt).toLocaleDateString();
+
+    toFormattedDate = new Date(this.endDt).toLocaleDateString();
 
     toolbar = new this.HorizontalToolbar({
       paper: this.graphics.paper,
@@ -218,7 +213,7 @@ class DateRange {
       }
     });
 
-    fromDate = new this.toolbox.InputTextBoxSymbol({
+    self.fromDate = new this.toolbox.InputTextBoxSymbol({
       width: 120,
       height: 25
     }, {
@@ -248,7 +243,7 @@ class DateRange {
       }
     });
 
-    toDate = new this.toolbox.InputTextBoxSymbol({
+    self.toDate = new this.toolbox.InputTextBoxSymbol({
       width: 120,
       height: 25
     }, {
@@ -266,25 +261,25 @@ class DateRange {
       label: toFormattedDate
     });
 
-    fromDate.attachEventHandlers({
+    self.fromDate.attachEventHandlers({
       click: {
-        fn: fromDate.edit
+        fn: self.fromDate.edit
       },
       textOnBlur: function () {
-        fromDate.blur();
-        self.startDate = fromDate.getText();
-        console.log(fromDate.getText());
+        self.fromDate.blur();
+        self.startDate = self.fromDate.getText();
+        console.log(self.fromDate.getText());
       }
     });
 
-    toDate.attachEventHandlers({
+    self.toDate.attachEventHandlers({
       click: {
-        fn: toDate.edit
+        fn: self.toDate.edit
       },
       textOnBlur: function () {
-        toDate.blur();
-        console.log(toDate.getText());
-        self.endDate = toDate.getText();
+        self.toDate.blur();
+        console.log(self.toDate.getText());
+        self.endDate = self.toDate.getText();
       }
     });
 
@@ -298,9 +293,9 @@ class DateRange {
     });
 
     group.addSymbol(fromDateLabel);
-    group.addSymbol(fromDate);
+    group.addSymbol(self.fromDate);
     group.addSymbol(toDateLabel);
-    group.addSymbol(toDate);
+    group.addSymbol(self.toDate);
     toolbar.addComponent(group);
     return toolbar;
   };
@@ -385,8 +380,10 @@ class DateRange {
       toolbars = this.toolbars,
       ln,
       i,
-      toolbar;
-
+      toolbar,
+      model = this.globalReactiveModel,
+      self = this;
+    console.log(model);
     x = x === undefined ? measurement.x : x;
     y = y === undefined ? measurement.y : y;
     width = width === undefined ? measurement.width : width;
@@ -398,6 +395,11 @@ class DateRange {
         toolbar.draw(x, y);
       }
     }
+
+    model.onPropsChange(['x-axis-visible-range-start', 'x-axis-visible-range-end'], function (start, end) {
+      self.fromDate.blur(new Date(start[1]).toLocaleDateString());
+      self.toDate.blur(new Date(end[1]).toLocaleDateString());
+    });
   };
 }
 
