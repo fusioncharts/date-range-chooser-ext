@@ -7,14 +7,17 @@ class DateRange {
     /**
      * @private
      */
+
     this.startDt = 0;
     this.endDt = 0;
     this.startDataset = 0;
     this.endDataset = 0;
-    this.toolbox = FusionCharts.getComponent('api', 'toolbox');
-    this.HorizontalToolbar = this.toolbox.HorizontalToolbar;
-    this.ComponentGroup = this.toolbox.ComponentGroup;
-    this.SymbolStore = this.toolbox.SymbolStore;
+    if (typeof Fusioncharts === 'function') {
+      this.toolbox = FusionCharts.getComponent('api', 'toolbox');
+      this.HorizontalToolbar = this.toolbox.HorizontalToolbar;
+      this.ComponentGroup = this.toolbox.ComponentGroup;
+      this.SymbolStore = this.toolbox.SymbolStore;
+    }
     this.startText = {
       attr: function () {}
     };
