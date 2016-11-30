@@ -159,8 +159,6 @@ module.exports = function (dep) {
       this.toolbars = [];
       this.measurement = {};
       this.toolbars.push(this.createToolbar());
-      // console.log(this.createToolbar());
-      // console.log(this.dateStart, this.dateEnd);
       return this;
     };
 
@@ -283,7 +281,6 @@ module.exports = function (dep) {
         },
         textOnBlur: function () {
           self.toDate.blur();
-          console.log(self.toDate.getText());
           self.endDate = self.toDate.getText();
         }
       });
@@ -388,7 +385,6 @@ module.exports = function (dep) {
         toolbar,
         model = this.globalReactiveModel,
         self = this;
-      console.log(model);
       x = x === undefined ? measurement.x : x;
       y = y === undefined ? measurement.y : y;
       width = width === undefined ? measurement.width : width;
