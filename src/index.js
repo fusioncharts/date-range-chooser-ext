@@ -18,6 +18,6 @@ window.dr = new DateRange();
 })(typeof window !== 'undefined' ? window : this, function (_window, windowExists) {
   var FC = _window.FusionCharts;
   FC.register('extension', ['private', 'DateRangeChooser', function () {
-    FC.registerComponent('extensions', 'DateRangeChooser', DateRange);
+    FC.registerComponent('extensions', 'DateRangeChooser', DateRange({FusionCharts: FC}));
   }]);
 });
