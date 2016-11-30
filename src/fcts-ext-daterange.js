@@ -274,7 +274,6 @@ module.exports = function (dep) {
         textOnBlur: function () {
           self.fromDate.blur();
           self.startDate = self.fromDate.getText();
-          console.log(self.fromDate.getText());
         }
       });
 
