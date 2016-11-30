@@ -14,7 +14,7 @@ module.exports = function (dep) {
       this.endDt = 0;
       this.startDataset = 0;
       this.endDataset = 0;
-      this.toolbox = FusionCharts.getComponent('api', 'toolbox');
+      this.toolbox = dep.FusionCharts.getComponent('api', 'toolbox');
       this.HorizontalToolbar = this.toolbox.HorizontalToolbar;
       this.ComponentGroup = this.toolbox.ComponentGroup;
       this.SymbolStore = this.toolbox.SymbolStore;
@@ -211,14 +211,14 @@ module.exports = function (dep) {
         text: {
           style: {
             'font-size': '15',
-            'fontFamily': 'MyriadPro'
+            'font-family': 'MyriadPro'
           }
         }
       });
 
       self.fromDate = new this.toolbox.InputTextBoxSymbol({
-        width: 120,
-        height: 25
+        width: 80,
+        height: 22
       }, {
         paper: this.graphics.paper,
         chart: this.chart,
@@ -228,6 +228,9 @@ module.exports = function (dep) {
         strokeWidth: 1,
         stroke: 'rgba(102,102,102,0.5)',
         symbolStrokeWidth: 0,
+        margin: {
+          right: 22
+        },
         btnTextStyle: {
           fontSize: 14
         },
@@ -241,14 +244,14 @@ module.exports = function (dep) {
         text: {
           style: {
             'font-size': '15',
-            'fontFamily': 'MyriadPro'
+            'font-family': 'MyriadPro'
           }
         }
       });
 
       self.toDate = new this.toolbox.InputTextBoxSymbol({
-        width: 120,
-        height: 25
+        width: 80,
+        height: 22
       }, {
         paper: this.graphics.paper,
         chart: this.chart,
@@ -354,7 +357,7 @@ module.exports = function (dep) {
             },
             alignment: [{
               type: function (obj) {
-                return obj.left;
+                return obj.right;
               },
               dimensions: [function () {
                 var parent = this.getParentComponentGroup();
