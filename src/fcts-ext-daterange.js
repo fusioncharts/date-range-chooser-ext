@@ -37,8 +37,6 @@ module.exports = function (dep) {
     }
 
     set startDate (startDt) {
-      console.log('Start:', this.globalReactiveModel.model['x-axis-absolute-range-start']);
-      console.log('End:', this.globalReactiveModel.model['x-axis-absolute-range-end']);
       let startTimestamp = parseInt(moment(startDt, 'DD-MM-YYYY').format('x')),
         absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'];
       if (startTimestamp <= this.endDt && startTimestamp >= absoluteStart) {
