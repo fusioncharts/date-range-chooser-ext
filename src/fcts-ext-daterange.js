@@ -224,7 +224,7 @@ module.exports = function (dep) {
         text: {
           style: {
             'font-size': '15',
-            'font-family': 'MyriadPro',
+            'font-family': '"Lucida Grande", sans-serif',
             'fill': '#696969'
           }
         }
@@ -237,7 +237,7 @@ module.exports = function (dep) {
         text: {
           style: {
             'font-size': '15',
-            'font-family': 'MyriadPro',
+            'font-family': '"Lucida Grande", sans-serif',
             'fill': '#696969'
           }
         }
@@ -252,18 +252,35 @@ module.exports = function (dep) {
         smartLabel: this.smartLabel,
         chartContainer: this.graphics.container
       }, {
-        strokeWidth: 0.5,
-        stroke: '#696969',
+        strokeWidth: 1,
+        stroke: '#ced5d4',
         symbolStrokeWidth: 0,
+        radius: 2,
         margin: {
           right: 22
         },
         btnTextStyle: {
-          fontSize: 14
+          'font-family': '"Lucida Grande", sans-serif',
+          fontSize: 13
         },
         label: fromFormattedDate,
         labelFill: '#696969'
       });
+
+      // self.fromDate.setStateConfig({
+      //   pressed: {
+      //     config: {
+      //       pressed: {
+      //         fill: '#ff0000',
+      //         'stroke-width': 1,
+      //         stroke: '#00ff00',
+      //         cursor: 'pointer'
+      //       }
+      //     },
+      //     fill: ['#000000', '#000000', '#000000', '#000000', true],
+      //     'stroke': '#000000'
+      //   }
+      // });
 
       self.toDate = new this.toolbox.InputTextBoxSymbol({
         width: 120,
@@ -274,11 +291,13 @@ module.exports = function (dep) {
         smartLabel: this.smartLabel,
         chartContainer: this.graphics.container
       }, {
-        strokeWidth: 0.5,
-        stroke: '#696969',
+        strokeWidth: 1,
+        stroke: '#ced5d4',
         symbolStrokeWidth: 0,
+        radius: 2,
         btnTextStyle: {
-          fontSize: 14
+          'font-family': '"Lucida Grande", sans-serif',
+          fontSize: 13
         },
         label: toFormattedDate,
         labelFill: '#696969'
