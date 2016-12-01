@@ -3,6 +3,8 @@
  * Class representing the DateRange.
  */
 
+var moment = require('moment');
+
 module.exports = function (dep) {
   class DateRange {
     constructor () {
@@ -35,10 +37,15 @@ module.exports = function (dep) {
     }
 
     set startDate (startDt) {
-      let startTimestamp = +new Date(startDt);
-      if (startTimestamp <= this.endDt) {
+      console.log('Start:', this.globalReactiveModel.model['x-axis-absolute-range-start']);
+      console.log('End:', this.globalReactiveModel.model['x-axis-absolute-range-end']);
+      let startTimestamp = parseInt(moment(startDt, 'DD-MM-YYYY').format('x')),
+        absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'];
+      if (startTimestamp <= this.endDt && startTimestamp >= absoluteStart) {
         this.startDt = startTimestamp;
         this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
+      } else {
+        console.error('From Date error state!');
       }
     }
 
@@ -54,10 +61,13 @@ module.exports = function (dep) {
     }
 
     set endDate (endDt) {
-      let endTimestamp = +new Date(endDt);
-      if (endTimestamp >= this.startDt) {
+      let endTimestamp = parseInt(moment(endDt, 'DD-MM-YYYY').format('x')),
+        absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'];
+      if (endTimestamp >= this.startDt && endTimestamp <= absoluteEnd) {
         this.endDt = endTimestamp;
         this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
+      } else {
+        console.error('To Date error state!');
       }
     }
 
@@ -129,7 +139,6 @@ module.exports = function (dep) {
         'globalReactiveModel',
         'spaceManagerInstance',
         'smartLabel',
-        'chartInstance',
         function (
               xAxis,
               yAxis,
@@ -181,9 +190,9 @@ module.exports = function (dep) {
       self.fromDate = {};
       self.toDate = {};
 
-      fromFormattedDate = self.dateFormatter(new Date(this.startDt), '-');
+      fromFormattedDate = moment(this.startDt, 'x').format('DD-MM-YYYY');
 
-      toFormattedDate = self.dateFormatter(new Date(this.endDt), '-');
+      toFormattedDate = moment(this.endDt, 'x').format('DD-MM-YYYY');
       toolbar = new this.HorizontalToolbar({
         paper: this.graphics.paper,
         chart: this.chart,
@@ -407,20 +416,13 @@ module.exports = function (dep) {
         }
       }
 
-      model.onPropsChange(['x-axis-visible-range-start', 'x-axis-visible-range-end'], function (start, end) {
-        // self.fromDate.blur(new Date(start[1]).toLocaleDateString());
-        // self.toDate.blur(new Date(end[1]).toLocaleDateString());
-        self.fromDate.blur(self.dateFormatter(new Date(start[1]), '-'));
-        self.toDate.blur(self.dateFormatter(new Date(end[1]), '-'));
-      });
-
-      model.onPropsChange(['x-axis-visible-range-start'], function (start) {
-        self.fromDate.blur(self.dateFormatter(new Date(start[1]), '-'));
-      });
-
-      model.onPropsChange(['x-axis-visible-range-end'], function (end) {
-        self.toDate.blur(self.dateFormatter(new Date(end[1]), '-'));
-      });
+      model.onPropsChange(['x-axis-visible-range-start', 'x-axis-visible-range-end'],
+        function (start, end) {
+          // self.fromDate.blur(new Date(start[1]).toLocaleDateString());
+          // self.toDate.blur(new Date(end[1]).toLocaleDateString());
+          self.fromDate.blur(moment(start[1], 'x').format('DD-MM-YYYY'));
+          self.toDate.blur(moment(end[1], 'x').format('DD-MM-YYYY'));
+        });
     };
   }
   return DateRange;
