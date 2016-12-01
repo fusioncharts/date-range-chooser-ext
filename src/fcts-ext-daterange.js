@@ -42,6 +42,13 @@ module.exports = function (dep) {
       }
     }
 
+    dateFormatter (epoch, separator) {
+      epoch = new Date(epoch);
+      var formattedDate = [epoch.getUTCDate(), (epoch.getUTCMonth() + 1), epoch.getUTCFullYear()];
+      formattedDate = formattedDate.join(separator);
+      return formattedDate;
+    }
+
     get endDate () {
       return this.endDt;
     }
@@ -174,10 +181,9 @@ module.exports = function (dep) {
       self.fromDate = {};
       self.toDate = {};
 
-      fromFormattedDate = new Date(this.startDt).toLocaleDateString();
+      fromFormattedDate = self.dateFormatter(new Date(this.startDt), '-');
 
-      toFormattedDate = new Date(this.endDt).toLocaleDateString();
-
+      toFormattedDate = self.dateFormatter(new Date(this.endDt), '-');
       toolbar = new this.HorizontalToolbar({
         paper: this.graphics.paper,
         chart: this.chart,
@@ -209,30 +215,10 @@ module.exports = function (dep) {
         text: {
           style: {
             'font-size': '15',
-            'font-family': 'MyriadPro'
+            'font-family': 'MyriadPro',
+            'fill': '#696969'
           }
         }
-      });
-
-      self.fromDate = new this.toolbox.InputTextBoxSymbol({
-        width: 80,
-        height: 22
-      }, {
-        paper: this.graphics.paper,
-        chart: this.chart,
-        smartLabel: this.smartLabel,
-        chartContainer: this.graphics.container
-      }, {
-        strokeWidth: 1,
-        stroke: 'rgba(102,102,102,0.5)',
-        symbolStrokeWidth: 0,
-        margin: {
-          right: 22
-        },
-        btnTextStyle: {
-          fontSize: 14
-        },
-        label: fromFormattedDate
       });
 
       toDateLabel = new this.toolbox.Label('To:', {
@@ -242,13 +228,14 @@ module.exports = function (dep) {
         text: {
           style: {
             'font-size': '15',
-            'font-family': 'MyriadPro'
+            'font-family': 'MyriadPro',
+            'fill': '#696969'
           }
         }
       });
 
-      self.toDate = new this.toolbox.InputTextBoxSymbol({
-        width: 80,
+      self.fromDate = new this.toolbox.InputTextBoxSymbol({
+        width: 120,
         height: 22
       }, {
         paper: this.graphics.paper,
@@ -256,13 +243,36 @@ module.exports = function (dep) {
         smartLabel: this.smartLabel,
         chartContainer: this.graphics.container
       }, {
-        strokeWidth: 1,
-        stroke: 'rgba(102,102,102,0.5)',
+        strokeWidth: 0.5,
+        stroke: '#696969',
+        symbolStrokeWidth: 0,
+        margin: {
+          right: 22
+        },
+        btnTextStyle: {
+          fontSize: 14
+        },
+        label: fromFormattedDate,
+        labelFill: '#696969'
+      });
+
+      self.toDate = new this.toolbox.InputTextBoxSymbol({
+        width: 120,
+        height: 22
+      }, {
+        paper: this.graphics.paper,
+        chart: this.chart,
+        smartLabel: this.smartLabel,
+        chartContainer: this.graphics.container
+      }, {
+        strokeWidth: 0.5,
+        stroke: '#696969',
         symbolStrokeWidth: 0,
         btnTextStyle: {
           fontSize: 14
         },
-        label: toFormattedDate
+        label: toFormattedDate,
+        labelFill: '#696969'
       });
 
       self.fromDate.attachEventHandlers({
@@ -398,8 +408,18 @@ module.exports = function (dep) {
       }
 
       model.onPropsChange(['x-axis-visible-range-start', 'x-axis-visible-range-end'], function (start, end) {
-        self.fromDate.blur(new Date(start[1]).toLocaleDateString());
-        self.toDate.blur(new Date(end[1]).toLocaleDateString());
+        // self.fromDate.blur(new Date(start[1]).toLocaleDateString());
+        // self.toDate.blur(new Date(end[1]).toLocaleDateString());
+        self.fromDate.blur(self.dateFormatter(new Date(start[1]), '-'));
+        self.toDate.blur(self.dateFormatter(new Date(end[1]), '-'));
+      });
+
+      model.onPropsChange(['x-axis-visible-range-start'], function (start) {
+        self.fromDate.blur(self.dateFormatter(new Date(start[1]), '-'));
+      });
+
+      model.onPropsChange(['x-axis-visible-range-end'], function (end) {
+        self.toDate.blur(self.dateFormatter(new Date(end[1]), '-'));
       });
     };
   }
