@@ -43,7 +43,7 @@
            var arr = [];
 
            for (i = 0; i < len; i++) {
-               arr.push(Math.floor(Math.random() * 10));
+               arr.push(Math.floor(Math.random() * 1000));
            }
            return arr;
        }
@@ -56,10 +56,10 @@
                close;
 
            for (i = 0; i < len; i++) {
-               open = Math.floor(Math.random() * 10);
-               close = Math.floor(Math.random() * 10);
-               high = Math.floor(Math.random() * 10);
-               low = Math.floor(Math.random() * 10);
+               open = Math.floor(Math.random() * 1000);
+               close = Math.floor(Math.random() * 1000);
+               high = Math.floor(Math.random() * 1000);
+               low = Math.floor(Math.random() * 1000);
 
                arr.push([open, high, low, close]);
            }
@@ -76,6 +76,11 @@
                 height: '550',
                 dataFormat: 'json',
                 dataSource: {
+                    extensions: {
+                      'date-range-chooser': {
+                        'hi': 'hello'
+                      }
+                    },
                     chart: {
                         axes: [
                             {

@@ -1,4 +1,5 @@
 'use strict';
+import webpack from 'webpack';
 
 export default {
   output: {
@@ -7,5 +8,8 @@ export default {
   resolve: {
     extensions: ['', '.js']
   },
-  devtool: 'inline-source-map'
+  devtool: 'inline-source-map',
+  plugins: [
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+  ]
 };

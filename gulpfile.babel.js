@@ -77,7 +77,7 @@ gulp.task('build', ['build-es5'], () =>
     }
     cb();
   }))
-  .pipe(sourcemaps.write())
+  // .pipe(sourcemaps.write())
   // .pipe(prettydiff({
   //   'lang': 'javascript',
   //   'mode': 'minify'

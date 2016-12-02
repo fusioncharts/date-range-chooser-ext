@@ -43,6 +43,7 @@ module.exports = function (dep) {
         this.startDt = startTimestamp;
         this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
       } else {
+        // this.fromDate.updateVisual('errored');
         console.error('From Date error state!');
       }
     }
@@ -65,6 +66,7 @@ module.exports = function (dep) {
         this.endDt = endTimestamp;
         this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
       } else {
+        // this.toDate.updateVisual('errored');
         console.error('To Date error state!');
       }
     }
@@ -136,6 +138,7 @@ module.exports = function (dep) {
         'reactiveModel',
         'globalReactiveModel',
         'spaceManagerInstance',
+        'extData',
         'smartLabel',
         function (
               xAxis,
@@ -149,7 +152,9 @@ module.exports = function (dep) {
               reactiveModel,
               globalReactiveModel,
               spaceManagerInstance,
+              extData,
               smartLabel) {
+          console.log(extData);
           instance.xAxis = xAxis;
           instance.yAxis = yAxis;
           instance.graphics = graphics;
@@ -199,8 +204,8 @@ module.exports = function (dep) {
       });
 
       toolbar.setConfig({
-        fill: '#fff',
-        borderThickness: 0
+        'fill': '#FFFFFF',
+        'borderThickness': 0
       });
 
       group = new this.toolbox.ComponentGroup({
@@ -211,35 +216,41 @@ module.exports = function (dep) {
       });
 
       group.setConfig({
-        fill: '#fff',
-        borderThickness: 0
+        'fill': '#FFFFFF',
+        'borderThickness': 0
       });
 
-      fromDateLabel = new this.toolbox.Label('From:', {
-        smartLabel: this.smartLabel,
-        paper: this.graphics.paper
-      }, {
-        text: {
-          style: {
-            'font-size': '15',
-            'font-family': '"Lucida Grande", sans-serif',
-            'fill': '#696969'
+      fromDateLabel = new this.toolbox.Label(
+        'From:', {
+          smartLabel: this.smartLabel,
+          paper: this.graphics.paper
+        }, {
+          text: {
+            style: {
+              'font-size': '13',
+              'font-family': '"Lucida Grande", sans-serif',
+              // 'font-weight': 'bold',
+              'fill': '#4B4B4B'
+            }
           }
         }
-      });
+      );
 
-      toDateLabel = new this.toolbox.Label('To:', {
-        smartLabel: this.smartLabel,
-        paper: this.graphics.paper
-      }, {
-        text: {
-          style: {
-            'font-size': '15',
-            'font-family': '"Lucida Grande", sans-serif',
-            'fill': '#696969'
+      toDateLabel = new this.toolbox.Label(
+        'To:', {
+          smartLabel: this.smartLabel,
+          paper: this.graphics.paper
+        }, {
+          text: {
+            style: {
+              'font-size': '13',
+              'font-family': '"Lucida Grande", sans-serif',
+              // 'font-weight': 'bold',
+              'fill': '#4B4B4B'
+            }
           }
         }
-      });
+      );
 
       self.fromDate = new this.toolbox.InputTextBoxSymbol({
         width: 120,
@@ -250,35 +261,62 @@ module.exports = function (dep) {
         smartLabel: this.smartLabel,
         chartContainer: this.graphics.container
       }, {
-        strokeWidth: 1,
-        stroke: '#ced5d4',
-        symbolStrokeWidth: 0,
-        radius: 2,
-        margin: {
-          right: 22
+        'strokeWidth': 1,
+        'stroke': '#ced5d4',
+        'symbolStrokeWidth': 0,
+        'radius': 2,
+        'margin': {
+          'right': 22
         },
-        btnTextStyle: {
+        'btnTextStyle': {
           'font-family': '"Lucida Grande", sans-serif',
-          fontSize: 13
+          'fontSize': 13
         },
-        label: fromFormattedDate,
-        labelFill: '#696969'
+        'label': fromFormattedDate,
+        // 'customConfig': {
+        //   'errored': {
+        //     'hover': {
+        //       'fill': '#FFEFEF',
+        //       'stroke-width': 1,
+        //       'stroke': '#D25353'
+        //     },
+        //     'normal': {
+        //       'fill': '#FFEFEF',
+        //       'stroke-width': 1,
+        //       'stroke': '#D25353'
+        //     },
+        //     'pressed': {
+        //       'fill': '#FFEFEF',
+        //       'stroke-width': 1,
+        //       'stroke': '#D25353'
+        //     }
+        //   }
+        // },
+        'labelFill': '#696969'
       });
 
-      // self.fromDate.setStateConfig({
-      //   pressed: {
-      //     config: {
-      //       pressed: {
-      //         fill: '#ff0000',
-      //         'stroke-width': 1,
-      //         stroke: '#00ff00',
-      //         cursor: 'pointer'
-      //       }
-      //     },
-      //     fill: ['#000000', '#000000', '#000000', '#000000', true],
-      //     'stroke': '#000000'
-      //   }
-      // });
+      self.fromDate.setStateConfig({
+        pressed: {
+          config: {
+            pressed: {
+              'fill': '#FFFFFF',
+              'stroke-width': 1,
+              'stroke': '#1E1F1F'
+            },
+            normal: {
+              'fill': '#FFFFFF',
+              'stroke-width': 1,
+              'stroke': '#1E1F1F'
+            },
+            hover: {
+              'fill': '#FFFFFF',
+              'stroke-width': 1,
+              // 'stroke': '#1E1F1F'
+              'stroke': '#0000FF'
+            }
+          }
+        }
+      });
 
       self.toDate = new this.toolbox.InputTextBoxSymbol({
         width: 120,
@@ -289,38 +327,88 @@ module.exports = function (dep) {
         smartLabel: this.smartLabel,
         chartContainer: this.graphics.container
       }, {
-        strokeWidth: 1,
-        stroke: '#ced5d4',
-        symbolStrokeWidth: 0,
-        radius: 2,
-        btnTextStyle: {
+        'strokeWidth': 1,
+        'stroke': '#ced5d4',
+        'symbolStrokeWidth': 0,
+        'radius': 2,
+        'btnTextStyle': {
           'font-family': '"Lucida Grande", sans-serif',
-          fontSize: 13
+          'fontSize': 13
         },
-        label: toFormattedDate,
-        labelFill: '#696969'
+        'label': toFormattedDate,
+        // 'customConfig': {
+        //   'errored': {
+        //     'hover': {
+        //       'fill': '#FFEFEF',
+        //       'stroke-width': 1,
+        //       'stroke': '#D25353'
+        //     },
+        //     'normal': {
+        //       'fill': '#FFEFEF',
+        //       'stroke-width': 1,
+        //       'stroke': '#D25353'
+        //     },
+        //     'pressed': {
+        //       'fill': '#FFEFEF',
+        //       'stroke-width': 1,
+        //       'stroke': '#D25353'
+        //     }
+        //   }
+        // },
+        'labelFill': '#696969'
+      });
+
+      self.toDate.setStateConfig({
+        pressed: {
+          config: {
+            pressed: {
+              'fill': '#FFFFFF',
+              'stroke-width': 1,
+              'stroke': '#1E1F1F'
+            },
+            normal: {
+              'fill': '#FFFFFF',
+              'stroke-width': 1,
+              'stroke': '#1E1F1F'
+            },
+            hover: {
+              'fill': '#FFFFFF',
+              'stroke-width': 1,
+              'stroke': '#1E1F1F'
+            }
+          }
+        }
       });
 
       self.fromDate.attachEventHandlers({
         click: {
-          fn: self.fromDate.edit
+          fn: () => {
+            self.fromDate.edit();
+            self.fromDate.updateVisual('pressed');
+          }
         },
         textOnBlur: function () {
           self.fromDate.blur();
           self.startDate = self.fromDate.getText();
+          self.fromDate.updateVisual('enabled');
         }
       });
 
       self.toDate.attachEventHandlers({
         click: {
-          fn: self.toDate.edit
+          fn: () => {
+            self.toDate.edit();
+            self.toDate.updateVisual('pressed');
+          }
         },
         textOnBlur: function () {
           self.toDate.blur();
           self.endDate = self.toDate.getText();
+          self.toDate.updateVisual('enabled');
         }
       });
 
+      // Temporary. Required to render the text box correctly. Commenting this out distorts toolbox.
       this.SymbolStore.register('textBoxIcon', function (x, y, rad, w, h, padX, padY) {
         var x1 = x - w / 2 + padX / 2,
           x2 = x + w / 2 - padX / 2,
@@ -339,12 +427,13 @@ module.exports = function (dep) {
     };
 
     getLogicalSpace (availableWidth, availableHeight) {
-      availableWidth /= 2;
       var logicalSpace,
         width = 0,
         height = 0,
         i,
         ln;
+
+      availableWidth /= 2;
 
       for (i = 0, ln = this.toolbars.length; i < ln; i++) {
         logicalSpace = this.toolbars[i].getLogicalSpace(availableWidth, availableHeight);
@@ -365,7 +454,7 @@ module.exports = function (dep) {
       self.padding = 5;
       self.spaceManagerInstance.add([{
         name: function () {
-          return 'ToolBoxExt';
+          return 'DateRangeChooserToolbox';
         },
         ref: function (obj) {
           return obj['0'];
@@ -421,6 +510,7 @@ module.exports = function (dep) {
         toolbar,
         model = this.globalReactiveModel,
         self = this;
+
       x = x === undefined ? measurement.x : x;
       y = y === undefined ? measurement.y : y;
       width = width === undefined ? measurement.width : width;
@@ -439,7 +529,8 @@ module.exports = function (dep) {
           // self.toDate.blur(new Date(end[1]).toLocaleDateString());
           self.fromDate.blur(moment(start[1], 'x').format('DD-MM-YYYY'));
           self.toDate.blur(moment(end[1], 'x').format('DD-MM-YYYY'));
-        });
+        }
+      );
     };
   }
   return DateRange;
