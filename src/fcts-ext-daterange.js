@@ -13,7 +13,6 @@ module.exports = function (dep) {
       /**
        * @private
        */
-      console.log('dasda');
       this.startDt = 0;
       this.endDt = 0;
       this.startDataset = 0;
