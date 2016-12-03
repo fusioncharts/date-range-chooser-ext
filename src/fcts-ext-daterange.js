@@ -154,7 +154,7 @@ module.exports = function (dep) {
               spaceManagerInstance,
               extData,
               smartLabel) {
-          console.log(extData);
+          instance.extData = extData;
           instance.xAxis = xAxis;
           instance.yAxis = yAxis;
           instance.graphics = graphics;
@@ -470,15 +470,15 @@ module.exports = function (dep) {
         },
         orientation: [{
           type: function (obj) {
-            return obj.horizontal;
+            return obj[self.extData.orientation];
           },
           position: [{
             type: function (obj) {
-              return obj.top;
+              return obj[self.extData.position];
             },
             alignment: [{
               type: function (obj) {
-                return obj.right;
+                return obj[self.extData.alignment];
               },
               dimensions: [function () {
                 var parent = this.getParentComponentGroup();

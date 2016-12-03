@@ -14,30 +14,30 @@
   <script type='text/javascript'>
     var tsChart;
         function getRandomDates (len) {
-        var day = 1, months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct', 'Nov','Dec'],
-               year = 2015,month = 0,arr = [];
+          var day = 1, months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct', 'Nov','Dec'],
+                 year = 2015,month = 0,arr = [];
 
-           for (i = 0; i < len; i++) {
-               if (month === 11 && day === 31) {
-                   year++;
-                   month = 0;
-               }
-               if (day > 30 || (month === 1 && day === 28)) {
-                   day = 1;
-                   month++;
-               }
-               if (month > 11) {
-                   month = 0;
-               }
+             for (i = 0; i < len; i++) {
+                 if (month === 11 && day === 31) {
+                     year++;
+                     month = 0;
+                 }
+                 if (day > 30 || (month === 1 && day === 28)) {
+                     day = 1;
+                     month++;
+                 }
+                 if (month > 11) {
+                     month = 0;
+                 }
 
 
 
-               dateStr = day + '-' + months[month] + '-' + year;
-               arr.push(dateStr);
-               day++;
-           }
-           return arr;
-       }
+                 dateStr = day + '-' + months[month] + '-' + year;
+                 arr.push(dateStr);
+                 day++;
+             }
+             return arr;
+        }
 
        function getRandomSeries (len) {
            var arr = [];
@@ -78,7 +78,9 @@
                 dataSource: {
                     extensions: {
                       'date-range-chooser': {
-                        'hi': 'hello'
+                        'orientation': 'horizontal',
+                        'position': 'top',
+                        'alignment': 'right'
                       }
                     },
                     chart: {
@@ -149,8 +151,6 @@
 
             })
             .render();
-
-        console.log(data1);
         });
   </script>
   </body>
