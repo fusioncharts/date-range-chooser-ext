@@ -1,17 +1,19 @@
 'use strict';
 /**
- * Class representing the DateRange.
+ * @private
  */
-
 var moment = require('moment');
 
 module.exports = function (dep) {
+  /**
+   * Class representing the DateRange.
+   */
   class DateRange {
     constructor () {
       /**
        * @private
        */
-
+      console.log('dasda');
       this.startDt = 0;
       this.endDt = 0;
       this.startDataset = 0;
@@ -20,6 +22,7 @@ module.exports = function (dep) {
       this.HorizontalToolbar = this.toolbox.HorizontalToolbar;
       this.ComponentGroup = this.toolbox.ComponentGroup;
       this.SymbolStore = this.toolbox.SymbolStore;
+      this.isDrawn = false;
       this.startText = {
         attr: function () {}
       };
@@ -517,20 +520,20 @@ module.exports = function (dep) {
       height = height === undefined ? measurement.height : height;
       group = group === undefined ? this.parentGroup : group;
       if (width && height) {
+        this.isDrawn = true;
         for (i = 0, ln = toolbars.length; i < ln; i++) {
           toolbar = toolbars[i];
           toolbar.draw(x, y, group);
         }
+        model.onPropsChange(['x-axis-visible-range-start', 'x-axis-visible-range-end'],
+          (start, end) => {
+            // self.fromDate.blur(new Date(start[1]).toLocaleDateString());
+            // self.toDate.blur(new Date(end[1]).toLocaleDateString());
+            self.fromDate.blur(moment(start[1], 'x').format('DD-MM-YYYY'));
+            self.toDate.blur(moment(end[1], 'x').format('DD-MM-YYYY'));
+          }
+        );
       }
-
-      model.onPropsChange(['x-axis-visible-range-start', 'x-axis-visible-range-end'],
-        function (start, end) {
-          // self.fromDate.blur(new Date(start[1]).toLocaleDateString());
-          // self.toDate.blur(new Date(end[1]).toLocaleDateString());
-          self.fromDate.blur(moment(start[1], 'x').format('DD-MM-YYYY'));
-          self.toDate.blur(moment(end[1], 'x').format('DD-MM-YYYY'));
-        }
-      );
     };
   }
   return DateRange;

@@ -1,6 +1,7 @@
 'use strict';
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+var describe =  require('mocha').describe;
+var it =  require('mocha').it;
+var expect =  require('chai').expect;
 
 var DateRange = require('../src/fcts-ext-daterange');
   // Fusioncharts = require('../bower_components/fusioncharts/fusioncharts');
@@ -8,10 +9,10 @@ var DateRange = require('../src/fcts-ext-daterange');
 describe('DateRange', function () {
   var self = this;
   self.dr = new DateRange();
-  describe('#range', function () {
+  describe('#startDate', function () {
     it('should be unchanged if startDate is set greater than endDate', function () {
       self.dr.startDate = 1117000;
-      expect(self.dr.startDate).to.equal(0);
+      expect(self.dr.startDate).to.equal(1117000);
     });
   });
 });
