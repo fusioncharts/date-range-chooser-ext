@@ -9,7 +9,7 @@
   <body>
     <script src='http://192.168.0.207/xt-edge/out/build/source/fusioncharts.js' charset='utf-8'></script>
     <script src='http://192.168.0.207/xt-edge/out/build/source/fusioncharts.timeseries.js' charset='utf-8'></script>
-    <script src="dist/date-range-chooser.min.js" charset="utf-8"></script>
+    <script src="dist/date-range-chooser.js" charset="utf-8"></script>
     <div id='chart-container'></div>
   <script type='text/javascript'>
     var tsChart;
@@ -75,10 +75,12 @@
         dataSource: {
           extensions: {
             'date-range-chooser': {
+              'disabled': false,
               'layout': 'inline',
               'orientation': 'horizontal',
               'position': 'top',
-              'alignment': 'right'
+              'alignment': 'right',
+              'dateFormat': '%d-%m-%Y'
             }
           },
           chart: {

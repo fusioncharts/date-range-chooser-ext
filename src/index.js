@@ -18,6 +18,8 @@ window.dr = new DateRange();
 })(typeof window !== 'undefined' ? window : this, function (_window, windowExists) {
   var FC = _window.FusionCharts;
   FC.register('extension', ['private', 'date-range-chooser', function () {
-    FC.registerComponent('extensions', 'date-range-chooser', DateRange({FusionCharts: FC}));
+    var DateTimeFormatter = this.hcLib.DateTimeFormatter;
+    FC.registerComponent('extensions', 'date-range-chooser', DateRange({FusionCharts: FC,
+      DateTimeFormatter: DateTimeFormatter}));
   }]);
 });

@@ -1,9 +1,4 @@
 'use strict';
-/**
- * @private
- */
-var moment = require('moment');
-
 module.exports = function (dep) {
   /**
    * Class representing the DateRange.
@@ -22,12 +17,6 @@ module.exports = function (dep) {
       this.ComponentGroup = this.toolbox.ComponentGroup;
       this.SymbolStore = this.toolbox.SymbolStore;
       this.isDrawn = false;
-      this.startText = {
-        attr: function () {}
-      };
-      this.endText = {
-        attr: function () {}
-      };
     }
 
     /**
@@ -39,9 +28,11 @@ module.exports = function (dep) {
     }
 
     set startDate (startDt) {
-      let startTimestamp = parseInt(moment(startDt, 'DD-MM-YYYY').format('x')),
-        absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'];
-      if (startTimestamp <= this.endDt && startTimestamp >= absoluteStart) {
+      let startTimestamp = this.getTimestamp(startDt),
+        absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'],
+        minDiff = this.minActiveInterval,
+        actualDiff = this.endDt - startTimestamp;
+      if (startTimestamp <= this.endDt && startTimestamp >= absoluteStart && actualDiff > minDiff) {
         this.startDt = startTimestamp;
         this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
       } else {
@@ -50,21 +41,16 @@ module.exports = function (dep) {
       }
     }
 
-    dateFormatter (epoch, separator) {
-      epoch = new Date(epoch);
-      var formattedDate = [epoch.getUTCDate(), (epoch.getUTCMonth() + 1), epoch.getUTCFullYear()];
-      formattedDate = formattedDate.join(separator);
-      return formattedDate;
-    }
-
     get endDate () {
       return this.endDt;
     }
 
     set endDate (endDt) {
-      let endTimestamp = parseInt(moment(endDt, 'DD-MM-YYYY').format('x')),
-        absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'];
-      if (endTimestamp >= this.startDt && endTimestamp <= absoluteEnd) {
+      let endTimestamp = this.getTimestamp(endDt),
+        absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'],
+        minDiff = this.minActiveInterval,
+        actualDiff = endTimestamp - this.startDt;
+      if (endTimestamp >= this.startDt && endTimestamp <= absoluteEnd && actualDiff > minDiff) {
         this.endDt = endTimestamp;
         this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
       } else {
@@ -73,38 +59,14 @@ module.exports = function (dep) {
       }
     }
 
-    /**
-     * Swaps the start date and the end date of the date range
-     * @private
-     */
-    swapDates () {
-      let temp = this.dateRange.startDate;
-      this.dateRange.startDate = this.dateRange.endDate;
-      this.dateRange.endDate = temp;
+    getTimestamp (dateStr) {
+      let dateFormatter = new dep.DateTimeFormatter(this.extData.dateFormat);
+      return +dateFormatter.getNativeDate(dateStr);
     }
 
-    /**
-     * Syncs the daterange shown by the FusionCharts time series chart and the Date Range Chooser
-     * @private
-     */
-    syncRange () {}
-
-    /**
-     * Returns a formatted date string from FusionCharts when given a UNIX timestamp
-     * @param  {number} timestamp - A UNIX timestamp to be converted to a date string
-     * @return {string} - A date string which is equivalent to the given timestamp
-     */
-    getFormattedDate (timestamp) {
-      return this.chart.getFormattedDate(timestamp);
-    }
-
-    /**
-     * Returns a UNIX timestamp from FusionCharts when given a formatted date string
-     * @param  {string} dateString - A date string to be converted to a UNIX timestamp
-     * @return {number} A UNIX timestamp which is equivalent to the given date string
-     */
-    getTimestamp (dateString) {
-      return this.chart.getTimestamp(dateString);
+    getDate (timestamp) {
+      var date = new Date(timestamp);
+      return date.getDate() + '-' + (date.getMonth() + 1) + '-' + date.getFullYear();
     }
 
     /**
@@ -130,57 +92,41 @@ module.exports = function (dep) {
       var instance = this;
       require([
         'xAxis',
-        'yAxis',
         'graphics',
         'chart',
         'dataset',
-        'PlotManager',
-        'canvasConfig',
-        'MarkerManager',
-        'reactiveModel',
         'globalReactiveModel',
         'spaceManagerInstance',
         'extData',
         'smartLabel',
+        'chartInstance',
         function (
-              xAxis,
-              yAxis,
-              graphics,
-              chart,
-              dataset,
-              plotManager,
-              canvasConfig,
-              markerManager,
-              reactiveModel,
-              globalReactiveModel,
-              spaceManagerInstance,
-              extData,
-              smartLabel) {
-          instance.extData = extData;
+          xAxis,
+          graphics,
+          chart,
+          dataset,
+          globalReactiveModel,
+          spaceManagerInstance,
+          extData,
+          smartLabel,
+          chartInstance) {
           instance.xAxis = xAxis;
-          instance.yAxis = yAxis;
           instance.graphics = graphics;
           instance.chart = chart;
           instance.dataset = dataset;
-          instance.plotManager = plotManager;
-          instance.markerManager = markerManager;
-          instance.canvasConfig = canvasConfig;
-          instance.reactiveModel = reactiveModel;
           instance.globalReactiveModel = globalReactiveModel;
           instance.spaceManagerInstance = spaceManagerInstance;
+          instance.extData = extData;
           instance.smartLabel = smartLabel;
+          instance.chartInstance = chartInstance;
         }
       ]);
-      this.spaceManagerInstance = instance.spaceManagerInstance;
-      this.globalReactiveModel = instance.globalReactiveModel;
-      this.startDt = instance.globalReactiveModel.model['x-axis-visible-range-start'];
-      this.endDt = instance.globalReactiveModel.model['x-axis-visible-range-end'];
-      this.startDataset = instance.globalReactiveModel.model['x-axis-absolute-range-start'];
-      this.endDataset = instance.globalReactiveModel.model['x-axis-absolute-range-end'];
-      this.toolbars = [];
-      this.measurement = {};
-      this.toolbars.push(this.createToolbar());
-      return this;
+      instance.startDt = instance.globalReactiveModel.model['x-axis-visible-range-start'];
+      instance.endDt = instance.globalReactiveModel.model['x-axis-visible-range-end'];
+      instance.toolbars = [];
+      instance.measurement = {};
+      instance.toolbars.push(instance.createToolbar());
+      return instance;
     };
 
     createToolbar () {
@@ -195,9 +141,8 @@ module.exports = function (dep) {
       self.fromDate = {};
       self.toDate = {};
 
-      fromFormattedDate = moment(this.startDt, 'x').format('DD-MM-YYYY');
-
-      toFormattedDate = moment(this.endDt, 'x').format('DD-MM-YYYY');
+      fromFormattedDate = this.getDate(this.startDt);
+      toFormattedDate = this.getDate(this.endDt);
       toolbar = new this.HorizontalToolbar({
         paper: this.graphics.paper,
         chart: this.chart,
@@ -505,21 +450,21 @@ module.exports = function (dep) {
     };
 
     draw (x, y, width, height, group) {
-      var measurement = this.measurement,
-        toolbars = this.toolbars,
+      let self = this,
+        measurement = self.measurement,
+        toolbars = self.toolbars,
         ln,
         i,
         toolbar,
-        model = this.globalReactiveModel,
-        self = this;
+        model = self.globalReactiveModel;
 
       x = x === undefined ? measurement.x : x;
       y = y === undefined ? measurement.y : y;
       width = width === undefined ? measurement.width : width;
       height = height === undefined ? measurement.height : height;
-      group = group === undefined ? this.parentGroup : group;
+      group = group === undefined ? self.parentGroup : group;
       if (width && height) {
-        this.isDrawn = true;
+        self.isDrawn = true;
         for (i = 0, ln = toolbars.length; i < ln; i++) {
           toolbar = toolbars[i];
           toolbar.draw(x, y, group);
@@ -528,11 +473,19 @@ module.exports = function (dep) {
           (start, end) => {
             // self.fromDate.blur(new Date(start[1]).toLocaleDateString());
             // self.toDate.blur(new Date(end[1]).toLocaleDateString());
-            self.fromDate.blur(moment(start[1], 'x').format('DD-MM-YYYY'));
-            self.toDate.blur(moment(end[1], 'x').format('DD-MM-YYYY'));
+            self.startDt = start[1];
+            self.fromDate.blur(self.getDate(start[1]));
+            self.endDt = end[1];
+            self.toDate.blur(self.getDate(end[1]));
           }
         );
       }
+      self.startDataset = self.globalReactiveModel.model['x-axis-absolute-range-start'];
+      self.endDataset = self.globalReactiveModel.model['x-axis-absolute-range-end'];
+      self.maxXAxisTicks = self.globalReactiveModel.model['x-axis-maximum-allowed-ticks'];
+      self.maxXAxisTicks = self.globalReactiveModel.model['x-axis-maximum-allowed-ticks'];
+      self.minDatestampDiff = self.globalReactiveModel.model['minimum-consecutive-datestamp-diff'];
+      self.minActiveInterval = self.maxXAxisTicks * self.minDatestampDiff;
     };
   }
   return DateRange;
