@@ -137,7 +137,8 @@
 	    }
 
 	    getTimestamp (dateStr) {
-	      let dateFormatter = new dep.DateTimeFormatter(this.extData.dateFormat);
+	      let dateFormat = this.extData.dateFormat || '%d-%m-%Y',
+	        dateFormatter = new dep.DateTimeFormatter(dateFormat);
 	      return +dateFormatter.getNativeDate(dateStr);
 	    }
 

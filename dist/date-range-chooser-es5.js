@@ -130,7 +130,8 @@
 	    _createClass(DateRange, [{
 	      key: 'getTimestamp',
 	      value: function getTimestamp(dateStr) {
-	        var dateFormatter = new dep.DateTimeFormatter(this.extData.dateFormat);
+	        var dateFormat = this.extData.dateFormat || '%d-%m-%Y',
+	            dateFormatter = new dep.DateTimeFormatter(dateFormat);
 	        return +dateFormatter.getNativeDate(dateStr);
 	      }
 	    }, {
