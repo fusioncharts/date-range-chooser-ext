@@ -7,8 +7,8 @@
     <title>FCTS Date Range Extension</title>
   </head>
   <body>
-    <script src='http://192.168.0.121/xt-edge/out/build/source/fusioncharts.js' charset='utf-8'></script>
-    <script src='http://192.168.0.121/xt-edge/out/build/source/fusioncharts.timeseries.js' charset='utf-8'></script>
+    <script src='http://192.168.0.207/xt-edge/out/build/source/fusioncharts.js' charset='utf-8'></script>
+    <script src='http://192.168.0.207/xt-edge/out/build/source/fusioncharts.timeseries.js' charset='utf-8'></script>
     <script src="dist/fcts-ext-daterange-es6.min.js" charset="utf-8"></script>
     <div id='chart-container'></div>
   <script type='text/javascript'>
@@ -78,6 +78,7 @@
                 dataSource: {
                     extensions: {
                       'date-range-chooser': {
+                        'layout': 'inline',
                         'orientation': 'horizontal',
                         'position': 'top',
                         'alignment': 'right'

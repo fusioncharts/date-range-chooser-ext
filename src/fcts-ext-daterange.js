@@ -466,7 +466,7 @@ module.exports = function (dep) {
           return 2;
         },
         layout: function (obj) {
-          return obj.inline;
+          return obj[self.extData.layout];
         },
         orientation: [{
           type: function (obj) {
