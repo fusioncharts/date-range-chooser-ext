@@ -466,19 +466,19 @@ module.exports = function (dep) {
           return 2;
         },
         layout: function (obj) {
-          return obj[self.extData.layout];
+          return obj[self.extData.layout] || obj['inline'];
         },
         orientation: [{
           type: function (obj) {
-            return obj[self.extData.orientation];
+            return obj[self.extData.orientation] || obj['horizontal'];
           },
           position: [{
             type: function (obj) {
-              return obj[self.extData.position];
+              return obj[self.extData.position] || obj['top'];
             },
             alignment: [{
               type: function (obj) {
-                return obj[self.extData.alignment];
+                return obj[self.extData.alignment] || obj['right'];
               },
               dimensions: [function () {
                 var parent = this.getParentComponentGroup();
