@@ -307,7 +307,7 @@
 	          'stroke': this.config.styles['input-border-color'],
 	          'radius': this.config.styles['input-border-radius'],
 	          'btnTextStyle': {
-	            'font-family': this.config.styles['font-family'],
+	            'fontFamily': this.config.styles['font-family'],
 	            'fontSize': this.config.styles['font-size']
 	          },
 	          'shadow': {
@@ -393,7 +393,7 @@
 	          'stroke': this.config.styles['input-border-color'],
 	          'radius': this.config.styles['input-border-radius'],
 	          'btnTextStyle': {
-	            'font-family': this.config.styles['font-family'],
+	            'fontFamily': this.config.styles['font-family'],
 	            'fontSize': this.config.styles['font-size']
 	          },
 	          'shadow': {
@@ -662,14 +662,17 @@
 	      },
 	      set: function set(startDt) {
 	        var startTimestamp = this.getTimestamp(startDt),
+	            newDate = this.getDate(startTimestamp),
 	            absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'],
 	            minDiff = this.minActiveInterval,
 	            actualDiff = this.endDt - startTimestamp;
-	        if (startTimestamp <= this.endDt && startTimestamp >= absoluteStart && actualDiff > minDiff) {
-	          this.startDt = startTimestamp;
-	          this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
-	        } else {
-	          this.fromDate.updateVisual('errored');
+	        if (newDate !== startDt) {
+	          if (startTimestamp <= this.endDt && startTimestamp >= absoluteStart && actualDiff > minDiff) {
+	            this.startDt = startTimestamp;
+	            this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
+	          } else {
+	            this.fromDate.updateVisual('errored');
+	          }
 	        }
 	      }
 	    }, {
@@ -679,14 +682,17 @@
 	      },
 	      set: function set(endDt) {
 	        var endTimestamp = this.getTimestamp(endDt),
+	            newDate = this.getDate(endTimestamp),
 	            absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'],
 	            minDiff = this.minActiveInterval,
 	            actualDiff = endTimestamp - this.startDt;
-	        if (endTimestamp >= this.startDt && endTimestamp <= absoluteEnd && actualDiff > minDiff) {
-	          this.endDt = endTimestamp;
-	          this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
-	        } else {
-	          this.toDate.updateVisual('errored');
+	        if (newDate !== endDt) {
+	          if (endTimestamp >= this.startDt && endTimestamp <= absoluteEnd && actualDiff > minDiff) {
+	            this.endDt = endTimestamp;
+	            this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
+	          } else {
+	            this.toDate.updateVisual('errored');
+	          }
 	        }
 	      }
 	    }]);
