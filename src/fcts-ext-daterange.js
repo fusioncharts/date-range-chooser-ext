@@ -30,7 +30,7 @@ module.exports = function (dep) {
 
     set startDate (startDt) {
       let startTimestamp = this.getTimestamp(startDt),
-        newDate = this.getDate(startTimestamp),
+        newDate = this.getDate(this.startDt),
         absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'],
         minDiff = this.minActiveInterval,
         actualDiff = this.endDt - startTimestamp;
@@ -50,7 +50,7 @@ module.exports = function (dep) {
 
     set endDate (endDt) {
       let endTimestamp = this.getTimestamp(endDt),
-        newDate = this.getDate(endTimestamp),
+        newDate = this.getDate(this.endDt),
         absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'],
         minDiff = this.minActiveInterval,
         actualDiff = endTimestamp - this.startDt;
