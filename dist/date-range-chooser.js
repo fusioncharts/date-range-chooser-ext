@@ -184,6 +184,8 @@
 	        'input-border-thickness': 1,
 	        'input-border-color': '#CED5D4',
 	        'input-border-radius': 1,
+	        'input-shadow-fill': '#000000',
+	        'input-shadow-opacity': 0.35,
 
 	        'input-focus-fill': '#FFFFFF',
 	        'input-focus-border-thickness': 1,
@@ -325,6 +327,10 @@
 	          'font-family': this.config.styles['font-family'],
 	          'fontSize': this.config.styles['font-size']
 	        },
+	        'shadow': {
+	          'fill': this.config.styles['input-shadow-fill'],
+	          'opacity': this.config.styles['input-shadow-opacity']
+	        },
 	        'label': fromFormattedDate,
 	        'labelFill': this.config.styles['font-color']
 	      });
@@ -406,6 +412,10 @@
 	        'btnTextStyle': {
 	          'font-family': this.config.styles['font-family'],
 	          'fontSize': this.config.styles['font-size']
+	        },
+	        'shadow': {
+	          'fill': this.config.styles['input-shadow-fill'],
+	          'opacity': this.config.styles['input-shadow-opacity']
 	        },
 	        'label': toFormattedDate,
 	        'labelFill': this.config.styles['font-color']
