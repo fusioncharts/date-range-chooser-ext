@@ -402,9 +402,15 @@ module.exports = function (dep) {
             self.fromDate.updateVisual('pressed');
           }
         },
-        keypress: {
-          fn: () => {
-            console.log('Whaaaa!');
+        keypress: (e) => {
+          let event = e || window.event,
+            charCode = event.which || event.keyCode;
+          if (charCode === 13) {
+            self.fromDate.blur();
+            self.startDate = self.fromDate.getText();
+            if (self.fromDate.state !== 'errored') {
+              self.fromDate.updateVisual('enabled');
+            }
           }
         },
         textOnBlur: function () {
@@ -421,6 +427,17 @@ module.exports = function (dep) {
           fn: () => {
             self.toDate.edit();
             self.toDate.updateVisual('pressed');
+          }
+        },
+        keypress: (e) => {
+          let event = e || window.event,
+            charCode = event.which || event.keyCode;
+          if (charCode === 13) {
+            self.toDate.blur();
+            self.endDate = self.toDate.getText();
+            if (self.toDate.state !== 'errored') {
+              self.toDate.updateVisual('enabled');
+            }
           }
         },
         textOnBlur: function () {

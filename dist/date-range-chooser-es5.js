@@ -462,9 +462,15 @@
 	              self.fromDate.updateVisual('pressed');
 	            }
 	          },
-	          keypress: {
-	            fn: function fn() {
-	              console.log('Whaaaa!');
+	          keypress: function keypress(e) {
+	            var event = e || window.event,
+	                charCode = event.which || event.keyCode;
+	            if (charCode === 13) {
+	              self.fromDate.blur();
+	              self.startDate = self.fromDate.getText();
+	              if (self.fromDate.state !== 'errored') {
+	                self.fromDate.updateVisual('enabled');
+	              }
 	            }
 	          },
 	          textOnBlur: function textOnBlur() {
@@ -481,6 +487,17 @@
 	            fn: function fn() {
 	              self.toDate.edit();
 	              self.toDate.updateVisual('pressed');
+	            }
+	          },
+	          keypress: function keypress(e) {
+	            var event = e || window.event,
+	                charCode = event.which || event.keyCode;
+	            if (charCode === 13) {
+	              self.toDate.blur();
+	              self.endDate = self.toDate.getText();
+	              if (self.toDate.state !== 'errored') {
+	                self.toDate.updateVisual('enabled');
+	              }
 	            }
 	          },
 	          textOnBlur: function textOnBlur() {
