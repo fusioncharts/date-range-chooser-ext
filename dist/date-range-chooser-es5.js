@@ -120,6 +120,8 @@
 	      this.ComponentGroup = this.toolbox.ComponentGroup;
 	      this.SymbolStore = this.toolbox.SymbolStore;
 	      this.isDrawn = false;
+	      this.startTooltipErrorMsg = '';
+	      this.endTooltipErrorMsg = '';
 	    }
 
 	    /**
@@ -129,6 +131,62 @@
 
 
 	    _createClass(DateRange, [{
+	      key: 'isBeforeOrEqualTo',
+
+
+	      // Time out of bounds
+	      // Invalid date format
+	      // Exceeding zoom limits
+
+	      value: function isBeforeOrEqualTo(startTimestamp, endTimestamp) {
+	        if (startTimestamp <= endTimestamp) {
+	          return true;
+	        } else {
+	          this.startTooltipErrorMsg = '<span style="color: ' + this.config.styles['input-error-tooltip-font-color'] + '">Date must be less than end date!</span>';
+	          return false;
+	        }
+	      }
+	    }, {
+	      key: 'isSameOrAfter',
+	      value: function isSameOrAfter(startTimestamp, absoluteStart) {
+	        if (startTimestamp >= absoluteStart) {
+	          return true;
+	        } else {
+	          this.startTooltipErrorMsg = '<span style="color: ' + this.config.styles['input-error-tooltip-font-color'] + '">Date out of bounds!</span>';
+	          return false;
+	        }
+	      }
+	    }, {
+	      key: 'isGreaterThanOrEqualTo',
+	      value: function isGreaterThanOrEqualTo(endTimestamp, startTimestamp) {
+	        if (endTimestamp >= startTimestamp) {
+	          return true;
+	        } else {
+	          this.endTooltipErrorMsg = '<span style="color: ' + this.config.styles['input-error-tooltip-font-color'] + '">Date must be greater than start date!</span>';
+	          return false;
+	        }
+	      }
+	    }, {
+	      key: 'isSameOrBefore',
+	      value: function isSameOrBefore(endTimestamp, absoluteEnd) {
+	        if (endTimestamp <= absoluteEnd) {
+	          return true;
+	        } else {
+	          this.endTooltipErrorMsg = '<span style="color: ' + this.config.styles['input-error-tooltip-font-color'] + '">Date out of bounds!</span>';
+	          return false;
+	        }
+	      }
+	    }, {
+	      key: 'diffIsGreaterThan',
+	      value: function diffIsGreaterThan(actualDiff, minDiff) {
+	        if (actualDiff > minDiff) {
+	          return true;
+	        } else {
+	          this.startTooltipErrorMsg = this.endTooltipErrorMsg = '<span style="color: ' + this.config.styles['input-error-tooltip-font-color'] + '">Zoom limit exceeded!</span>';
+	          return false;
+	        }
+	      }
+	    }, {
 	      key: 'getTimestamp',
 	      value: function getTimestamp(dateStr) {
 	        var dateFormat = this.config.dateFormat,
@@ -174,7 +232,9 @@
 	        config.alignment = extData.alignment || 'right';
 	        config.dateFormat = extData.dateFormat || '%d-%m-%Y';
 	        config.fromText = extData.fromText || 'From:';
+	        config.fromTooltipText = extData.fromTooltipText || 'From Date';
 	        config.toText = extData.toText || 'To:';
+	        config.toTooltipText = extData.toTooltipText || 'To Date';
 	        config.styles = extData.styles || {
 	          'width': 120,
 	          'height': 22,
@@ -196,7 +256,8 @@
 
 	          'input-error-fill': '#FFEFEF',
 	          'input-error-border-thickness': 1,
-	          'input-error-border-color': '#D25353'
+	          'input-error-border-color': '#D25353',
+	          'input-error-tooltip-font-color': '#FF0000'
 	        };
 	        return config;
 	      }
@@ -237,6 +298,9 @@
 	            group,
 	            fromFormattedDate,
 	            toFormattedDate;
+
+	        var fromDateEventConfig = {},
+	            toDateEventConfig = {};
 
 	        self.fromDate = {};
 	        self.toDate = {};
@@ -465,21 +529,25 @@
 	          }
 	        });
 
-	        self.fromDate.attachEventHandlers({
+	        fromDateEventConfig = {
 	          click: {
 	            fn: function fn() {
 	              self.fromDate.edit();
 	              self.fromDate.updateVisual('pressed');
 	            }
 	          },
+	          tooltext: self.config.fromTooltipText,
 	          keypress: function keypress(e) {
 	            var event = e || window.event,
 	                charCode = event.which || event.keyCode;
 	            if (charCode === 13) {
-	              self.fromDate.blur();
 	              self.startDate = self.fromDate.getText();
 	              if (self.fromDate.state !== 'errored') {
+	                self.fromDate.blur();
+	                self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
 	                self.fromDate.updateVisual('enabled');
+	              } else {
+	                self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
 	              }
 	            }
 	          },
@@ -487,26 +555,36 @@
 	            self.fromDate.blur();
 	            self.startDate = self.fromDate.getText();
 	            if (self.fromDate.state !== 'errored') {
+	              self.fromDate.blur();
+	              self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
 	              self.fromDate.updateVisual('enabled');
+	            } else {
+	              self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
 	            }
 	          }
-	        });
+	        };
 
-	        self.toDate.attachEventHandlers({
+	        self.fromDate.attachEventHandlers(fromDateEventConfig);
+
+	        toDateEventConfig = {
 	          click: {
 	            fn: function fn() {
 	              self.toDate.edit();
 	              self.toDate.updateVisual('pressed');
 	            }
 	          },
+	          tooltext: self.config.toTooltipText,
 	          keypress: function keypress(e) {
 	            var event = e || window.event,
 	                charCode = event.which || event.keyCode;
 	            if (charCode === 13) {
-	              self.toDate.blur();
 	              self.endDate = self.toDate.getText();
 	              if (self.toDate.state !== 'errored') {
+	                self.toDate.blur();
+	                self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
 	                self.toDate.updateVisual('enabled');
+	              } else {
+	                self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
 	              }
 	            }
 	          },
@@ -514,20 +592,16 @@
 	            self.toDate.blur();
 	            self.endDate = self.toDate.getText();
 	            if (self.toDate.state !== 'errored') {
+	              self.toDate.blur();
+	              self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
 	              self.toDate.updateVisual('enabled');
+	            } else {
+	              self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
 	            }
 	          }
-	        });
+	        };
 
-	        // Temporary. Required to render the text box correctly. Commenting this out distorts toolbox.
-	        this.SymbolStore.register('textBoxIcon', function (x, y, rad, w, h, padX, padY) {
-	          var x1 = x - w / 2 + padX / 2,
-	              x2 = x + w / 2 - padX / 2,
-	              y1 = y - h / 2 + padY / 2,
-	              y2 = y + h / 2 - padY / 2;
-
-	          return ['M', x1, y1, 'L', x2, y1, 'L', x2, y2, 'L', x1, y2, 'Z'];
-	        });
+	        self.toDate.attachEventHandlers(toDateEventConfig);
 
 	        group.addSymbol(fromDateLabel);
 	        group.addSymbol(self.fromDate);
@@ -642,9 +716,11 @@
 	            // self.toDate.blur(new Date(end[1]).toLocaleDateString());
 	            self.startDt = start[1];
 	            self.fromDate.blur(self.getDate(start[1]));
+	            self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
 	            self.fromDate.updateVisual('enabled');
 	            self.endDt = end[1];
 	            self.toDate.blur(self.getDate(end[1]));
+	            self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
 	            self.toDate.updateVisual('enabled');
 	          });
 	        }
@@ -667,11 +743,15 @@
 	            minDiff = this.minActiveInterval,
 	            actualDiff = this.endDt - startTimestamp;
 	        if (newDate !== startDt) {
-	          if (startTimestamp <= this.endDt && startTimestamp >= absoluteStart && actualDiff > minDiff) {
+	          if (this.isBeforeOrEqualTo(startTimestamp, this.endDt) && this.isSameOrAfter(startTimestamp, absoluteStart) && this.diffIsGreaterThan(actualDiff, minDiff)) {
 	            this.startDt = startTimestamp;
 	            this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
 	          } else {
 	            this.fromDate.updateVisual('errored');
+	          }
+	        } else {
+	          if (this.fromDate.state === 'errored') {
+	            this.fromDate.updateVisual('enabled');
 	          }
 	        }
 	      }
@@ -687,11 +767,15 @@
 	            minDiff = this.minActiveInterval,
 	            actualDiff = endTimestamp - this.startDt;
 	        if (newDate !== endDt) {
-	          if (endTimestamp >= this.startDt && endTimestamp <= absoluteEnd && actualDiff > minDiff) {
+	          if (this.isGreaterThanOrEqualTo(endTimestamp, this.startDt) && this.isSameOrBefore(endTimestamp, absoluteEnd) && this.diffIsGreaterThan(actualDiff, minDiff)) {
 	            this.endDt = endTimestamp;
 	            this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
 	          } else {
 	            this.toDate.updateVisual('errored');
+	          }
+	        } else {
+	          if (this.toDate.state === 'errored') {
+	            this.toDate.updateVisual('enabled');
 	          }
 	        }
 	      }

@@ -18,6 +18,8 @@ module.exports = function (dep) {
       this.ComponentGroup = this.toolbox.ComponentGroup;
       this.SymbolStore = this.toolbox.SymbolStore;
       this.isDrawn = false;
+      this.startTooltipErrorMsg = '';
+      this.endTooltipErrorMsg = '';
     }
 
     /**
@@ -35,12 +37,46 @@ module.exports = function (dep) {
         minDiff = this.minActiveInterval,
         actualDiff = this.endDt - startTimestamp;
       if (newDate !== startDt) {
-        if (startTimestamp <= this.endDt && startTimestamp >= absoluteStart && actualDiff > minDiff) {
+        if (this.isBeforeOrEqualTo(startTimestamp, this.endDt) &&
+          this.isSameOrAfter(startTimestamp, absoluteStart) &&
+          this.diffIsGreaterThan(actualDiff, minDiff)) {
           this.startDt = startTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
         } else {
           this.fromDate.updateVisual('errored');
         }
+      } else {
+        if (this.fromDate.state === 'errored') {
+          this.fromDate.updateVisual('enabled');
+        }
+      }
+    }
+
+    // Time out of bounds
+    // Invalid date format
+    // Exceeding zoom limits
+
+    isBeforeOrEqualTo (startTimestamp, endTimestamp) {
+      if (startTimestamp <= endTimestamp) {
+        return true;
+      } else {
+        this.startTooltipErrorMsg =
+        '<span style="color: ' +
+        this.config.styles['input-error-tooltip-font-color'] +
+        '">Date must be less than end date!</span>';
+        return false;
+      }
+    }
+
+    isSameOrAfter (startTimestamp, absoluteStart) {
+      if (startTimestamp >= absoluteStart) {
+        return true;
+      } else {
+        this.startTooltipErrorMsg =
+        '<span style="color: ' +
+        this.config.styles['input-error-tooltip-font-color'] +
+        '">Date out of bounds!</span>';
+        return false;
       }
     }
 
@@ -55,12 +91,54 @@ module.exports = function (dep) {
         minDiff = this.minActiveInterval,
         actualDiff = endTimestamp - this.startDt;
       if (newDate !== endDt) {
-        if (endTimestamp >= this.startDt && endTimestamp <= absoluteEnd && actualDiff > minDiff) {
+        if (this.isGreaterThanOrEqualTo(endTimestamp, this.startDt) &&
+          this.isSameOrBefore(endTimestamp, absoluteEnd) &&
+          this.diffIsGreaterThan(actualDiff, minDiff)) {
           this.endDt = endTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
         } else {
           this.toDate.updateVisual('errored');
         }
+      } else {
+        if (this.toDate.state === 'errored') {
+          this.toDate.updateVisual('enabled');
+        }
+      }
+    }
+
+    isGreaterThanOrEqualTo (endTimestamp, startTimestamp) {
+      if (endTimestamp >= startTimestamp) {
+        return true;
+      } else {
+        this.endTooltipErrorMsg =
+        '<span style="color: ' +
+        this.config.styles['input-error-tooltip-font-color'] +
+        '">Date must be greater than start date!</span>';
+        return false;
+      }
+    }
+
+    isSameOrBefore (endTimestamp, absoluteEnd) {
+      if (endTimestamp <= absoluteEnd) {
+        return true;
+      } else {
+        this.endTooltipErrorMsg =
+        '<span style="color: ' +
+        this.config.styles['input-error-tooltip-font-color'] +
+        '">Date out of bounds!</span>';
+        return false;
+      }
+    }
+
+    diffIsGreaterThan (actualDiff, minDiff) {
+      if (actualDiff > minDiff) {
+        return true;
+      } else {
+        this.startTooltipErrorMsg = this.endTooltipErrorMsg =
+        '<span style="color: ' +
+        this.config.styles['input-error-tooltip-font-color'] +
+        '">Zoom limit exceeded!</span>';
+        return false;
       }
     }
 
@@ -100,7 +178,9 @@ module.exports = function (dep) {
       config.alignment = extData.alignment || 'right';
       config.dateFormat = extData.dateFormat || '%d-%m-%Y';
       config.fromText = extData.fromText || 'From:';
+      config.fromTooltipText = extData.fromTooltipText || 'From Date';
       config.toText = extData.toText || 'To:';
+      config.toTooltipText = extData.toTooltipText || 'To Date';
       config.styles = extData.styles || {
         'width': 120,
         'height': 22,
@@ -122,7 +202,8 @@ module.exports = function (dep) {
 
         'input-error-fill': '#FFEFEF',
         'input-error-border-thickness': 1,
-        'input-error-border-color': '#D25353'
+        'input-error-border-color': '#D25353',
+        'input-error-tooltip-font-color': '#FF0000'
       };
       return config;
     }
@@ -179,6 +260,9 @@ module.exports = function (dep) {
         group,
         fromFormattedDate,
         toFormattedDate;
+
+      let fromDateEventConfig = {},
+        toDateEventConfig = {};
 
       self.fromDate = {};
       self.toDate = {};
@@ -411,21 +495,25 @@ module.exports = function (dep) {
         }
       });
 
-      self.fromDate.attachEventHandlers({
+      fromDateEventConfig = {
         click: {
           fn: () => {
             self.fromDate.edit();
             self.fromDate.updateVisual('pressed');
           }
         },
+        tooltext: self.config.fromTooltipText,
         keypress: (e) => {
           let event = e || window.event,
             charCode = event.which || event.keyCode;
           if (charCode === 13) {
-            self.fromDate.blur();
             self.startDate = self.fromDate.getText();
             if (self.fromDate.state !== 'errored') {
+              self.fromDate.blur();
+              self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
               self.fromDate.updateVisual('enabled');
+            } else {
+              self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
             }
           }
         },
@@ -433,26 +521,36 @@ module.exports = function (dep) {
           self.fromDate.blur();
           self.startDate = self.fromDate.getText();
           if (self.fromDate.state !== 'errored') {
+            self.fromDate.blur();
+            self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
             self.fromDate.updateVisual('enabled');
+          } else {
+            self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
           }
         }
-      });
+      };
 
-      self.toDate.attachEventHandlers({
+      self.fromDate.attachEventHandlers(fromDateEventConfig);
+
+      toDateEventConfig = {
         click: {
           fn: () => {
             self.toDate.edit();
             self.toDate.updateVisual('pressed');
           }
         },
+        tooltext: self.config.toTooltipText,
         keypress: (e) => {
           let event = e || window.event,
             charCode = event.which || event.keyCode;
           if (charCode === 13) {
-            self.toDate.blur();
             self.endDate = self.toDate.getText();
             if (self.toDate.state !== 'errored') {
+              self.toDate.blur();
+              self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
               self.toDate.updateVisual('enabled');
+            } else {
+              self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
             }
           }
         },
@@ -460,20 +558,16 @@ module.exports = function (dep) {
           self.toDate.blur();
           self.endDate = self.toDate.getText();
           if (self.toDate.state !== 'errored') {
+            self.toDate.blur();
+            self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
             self.toDate.updateVisual('enabled');
+          } else {
+            self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
           }
         }
-      });
+      };
 
-      // Temporary. Required to render the text box correctly. Commenting this out distorts toolbox.
-      this.SymbolStore.register('textBoxIcon', function (x, y, rad, w, h, padX, padY) {
-        var x1 = x - w / 2 + padX / 2,
-          x2 = x + w / 2 - padX / 2,
-          y1 = y - h / 2 + padY / 2,
-          y2 = y + h / 2 - padY / 2;
-
-        return ['M', x1, y1, 'L', x2, y1, 'L', x2, y2, 'L', x1, y2, 'Z'];
-      });
+      self.toDate.attachEventHandlers(toDateEventConfig);
 
       group.addSymbol(fromDateLabel);
       group.addSymbol(self.fromDate);
@@ -585,9 +679,11 @@ module.exports = function (dep) {
             // self.toDate.blur(new Date(end[1]).toLocaleDateString());
             self.startDt = start[1];
             self.fromDate.blur(self.getDate(start[1]));
+            self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
             self.fromDate.updateVisual('enabled');
             self.endDt = end[1];
             self.toDate.blur(self.getDate(end[1]));
+            self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
             self.toDate.updateVisual('enabled');
           }
         );
