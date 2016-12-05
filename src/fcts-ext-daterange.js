@@ -91,7 +91,7 @@ module.exports = function (dep) {
       };
     }
 
-    createExtData (extData) {
+    createConfig (extData) {
       let config = {};
       config.disabled = extData.disabled || 'false';
       config.layout = extData.layout || 'inline';
@@ -158,7 +158,7 @@ module.exports = function (dep) {
           instance.dataset = dataset;
           instance.globalReactiveModel = globalReactiveModel;
           instance.spaceManagerInstance = spaceManagerInstance;
-          instance.config = instance.createExtData(extData);
+          instance.config = instance.createConfig(extData);
           instance.smartLabel = smartLabel;
           instance.chartInstance = chartInstance;
         }
