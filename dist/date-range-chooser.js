@@ -168,7 +168,7 @@
 	      };
 	    }
 
-	    createExtData (extData) {
+	    createConfig (extData) {
 	      let config = {};
 	      config.disabled = extData.disabled || 'false';
 	      config.layout = extData.layout || 'inline';
@@ -235,7 +235,7 @@
 	          instance.dataset = dataset;
 	          instance.globalReactiveModel = globalReactiveModel;
 	          instance.spaceManagerInstance = spaceManagerInstance;
-	          instance.config = instance.createExtData(extData);
+	          instance.config = instance.createConfig(extData);
 	          instance.smartLabel = smartLabel;
 	          instance.chartInstance = chartInstance;
 	        }
