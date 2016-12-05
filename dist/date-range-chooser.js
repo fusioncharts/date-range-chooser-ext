@@ -665,7 +665,7 @@
 	            self.fromDate.updateVisual('enabled');
 	            self.endDt = end[1];
 	            self.toDate.blur(self.getDate(end[1]));
-	            self.fromDate.updateVisual('enabled');
+	            self.toDate.updateVisual('enabled');
 	          }
 	        );
 	      }
