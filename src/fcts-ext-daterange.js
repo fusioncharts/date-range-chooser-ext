@@ -257,7 +257,8 @@ module.exports = function (dep) {
         self = this,
         fromDateLabel,
         toDateLabel,
-        group,
+        fromGroup,
+        toGroup,
         fromFormattedDate,
         toFormattedDate;
 
@@ -281,14 +282,26 @@ module.exports = function (dep) {
         'borderThickness': 0
       });
 
-      group = new this.toolbox.ComponentGroup({
+      fromGroup = new this.toolbox.ComponentGroup({
         paper: this.graphics.paper,
         chart: this.chart,
         smartLabel: this.smartLabel,
         chartContainer: this.graphics.container
       });
 
-      group.setConfig({
+      toGroup = new this.toolbox.ComponentGroup({
+        paper: this.graphics.paper,
+        chart: this.chart,
+        smartLabel: this.smartLabel,
+        chartContainer: this.graphics.container
+      });
+
+      fromGroup.setConfig({
+        'fill': '#FFFFFF',
+        'borderThickness': 0
+      });
+
+      toGroup.setConfig({
         'fill': '#FFFFFF',
         'borderThickness': 0
       });
@@ -304,6 +317,9 @@ module.exports = function (dep) {
               'font-family': this.config.styles['font-family'],
               'fill': this.config.styles['font-color']
             }
+          },
+          container: {
+            'width': 40
           }
         }
       );
@@ -317,8 +333,12 @@ module.exports = function (dep) {
             style: {
               'font-size': this.config.styles['font-size'],
               'font-family': this.config.styles['font-family'],
-              'fill': this.config.styles['font-color']
+              'fill': this.config.styles['font-color'],
+              'text-anchor': 'start'
             }
+          },
+          container: {
+            'width': 40
           }
         }
       );
@@ -569,11 +589,12 @@ module.exports = function (dep) {
 
       self.toDate.attachEventHandlers(toDateEventConfig);
 
-      group.addSymbol(fromDateLabel);
-      group.addSymbol(self.fromDate);
-      group.addSymbol(toDateLabel);
-      group.addSymbol(self.toDate);
-      toolbar.addComponent(group);
+      fromGroup.addSymbol(fromDateLabel);
+      fromGroup.addSymbol(self.fromDate);
+      toGroup.addSymbol(toDateLabel);
+      toGroup.addSymbol(self.toDate);
+      toolbar.addComponent(fromGroup);
+      toolbar.addComponent(toGroup);
       return toolbar;
     };
 
@@ -677,14 +698,16 @@ module.exports = function (dep) {
           (start, end) => {
             // self.fromDate.blur(new Date(start[1]).toLocaleDateString());
             // self.toDate.blur(new Date(end[1]).toLocaleDateString());
-            self.startDt = start[1];
-            self.fromDate.blur(self.getDate(start[1]));
-            self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
-            self.fromDate.updateVisual('enabled');
-            self.endDt = end[1];
-            self.toDate.blur(self.getDate(end[1]));
-            self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
-            self.toDate.updateVisual('enabled');
+            setTimeout(() => {
+              self.startDt = start[1];
+              self.fromDate.blur(self.getDate(start[1]));
+              self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
+              self.fromDate.updateVisual('enabled');
+              self.endDt = end[1];
+              self.toDate.blur(self.getDate(end[1]));
+              self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
+              self.toDate.updateVisual('enabled');
+            }, 100);
           }
         );
       }
