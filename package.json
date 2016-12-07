@@ -14,7 +14,8 @@
     "watch-es6": "NODE_ENV=development webpack --config webpack-es6.config.js --progress --colors --watch",
     "build-es6-prod": "NODE_ENV=production webpack --config webpack-es6.config.js --progress --colors",
     "build-es6-dev": "NODE_ENV=development webpack --config webpack-es6.config.js --progress --colors",
-    "build-es6": "npm run build-es6-dev && npm run build-es6-prod"
+    "build-es6": "npm run build-es6-dev && npm run build-es6-prod",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -47,6 +48,8 @@
     "eslint-loader": "^1.6.1",
     "eslint-plugin-promise": "^3.3.0",
     "eslint-plugin-standard": "^2.0.1",
+    "fusioncharts": "^3.11.3",
+    "jest": "^17.0.3",
     "jsdoc": "^3.4.2",
     "mocha": "^3.1.2",
     "moment": "^2.17.0",
