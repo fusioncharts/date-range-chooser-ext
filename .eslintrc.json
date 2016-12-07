@@ -1,18 +1,21 @@
 {
-    "extends": "standard",
-    "plugins": [
-        "standard",
-        "promise"
-    ],
-    "globals":{
-      "Raphael": true,
-      "FusionCharts": true,
-      "define": true
-    },
-    "rules": {
-      "one-var": ["error", "always"],
-      "semi": ["error", "always"],
-      "no-unused-vars": ["warn"],
-      "no-debugger": ["warn"]
-    }
+  "extends": "standard",
+  "plugins": [
+      "standard",
+      "promise"
+  ],
+  "env": {
+    "jest": true
+  },
+  "globals":{
+    "Raphael": true,
+    "FusionCharts": true,
+    "define": true
+  },
+  "rules": {
+    "one-var": ["error", "always"],
+    "semi": ["error", "always"],
+    "no-unused-vars": ["warn"],
+    "no-debugger": ["warn"]
+  }
 }
