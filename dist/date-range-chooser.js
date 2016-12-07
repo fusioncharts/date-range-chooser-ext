@@ -89,11 +89,18 @@
 	      this.endDt = 0;
 	      this.startDataset = 0;
 	      this.endDataset = 0;
-	      this.toolbox = dep.FusionCharts.getComponent('api', 'toolbox');
-	      this.DateTimeFormatter = dep.DateTimeFormatter;
+	      if (typeof dep.FusionCharts === 'function') {
+	        this.toolbox = dep.FusionCharts.getComponent('api', 'toolbox');
+	      } else {
+	        throw new Error('Unable to find FusionCharts.');
+	      }
+	      if (typeof dep.FusionCharts === 'function') {
+	        this.DateTimeFormatter = dep.DateTimeFormatter;
+	      } else {
+	        throw new Error('Unable to find DateTimeFormatter.');
+	      }
 	      this.HorizontalToolbar = this.toolbox.HorizontalToolbar;
 	      this.ComponentGroup = this.toolbox.ComponentGroup;
-	      this.SymbolStore = this.toolbox.SymbolStore;
 	      this.isDrawn = false;
 	      this.startTooltipErrorMsg = '';
 	      this.endTooltipErrorMsg = '';
@@ -773,18 +780,16 @@
 	        }
 	        model.onPropsChange(['x-axis-visible-range-start', 'x-axis-visible-range-end'],
 	          (start, end) => {
-	            // self.fromDate.blur(new Date(start[1]).toLocaleDateString());
-	            // self.toDate.blur(new Date(end[1]).toLocaleDateString());
-	            setTimeout(() => {
-	              self.startDt = start[1];
-	              self.fromDate.blur(self.getDate(start[1]));
-	              self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
-	              self.fromDate.updateVisual('enabled');
-	              self.endDt = end[1];
-	              self.toDate.blur(self.getDate(end[1]));
-	              self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
-	              self.toDate.updateVisual('enabled');
-	            }, 100);
+	            // setTimeout(() => {
+	            self.startDt = start[1];
+	            self.fromDate.blur(self.getDate(start[1]));
+	            self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
+	            self.fromDate.updateVisual('enabled');
+	            self.endDt = end[1];
+	            self.toDate.blur(self.getDate(end[1]));
+	            self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
+	            self.toDate.updateVisual('enabled');
+	            // }, 400);
 	          }
 	        );
 	      }
