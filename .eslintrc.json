@@ -5,7 +5,8 @@
       "promise"
   ],
   "env": {
-    "jest": true
+    "jest": true,
+    "mocha": true
   },
   "globals":{
     "Raphael": true,

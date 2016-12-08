@@ -1,18 +1,30 @@
-'use strict';
-var describe =  require('mocha').describe;
-var it =  require('mocha').it;
-var expect =  require('chai').expect;
+var chai = require('chai'),
+  assert = chai.assert,
+  webdriverio = require('webdriverio');
 
-var DateRange = require('../src/fcts-ext-daterange');
-  // Fusioncharts = require('../bower_components/fusioncharts/fusioncharts');
+describe('Webdriverio tests', function () {
+  var client;
 
-describe('DateRange', function () {
-  var self = this;
-  self.dr = new DateRange();
-  describe('#startDate', function () {
-    it('should be unchanged if startDate is set greater than endDate', function () {
-      self.dr.startDate = 1117000;
-      expect(self.dr.startDate).to.equal(1117000);
+  before(function () {
+    client = webdriverio.remote({
+      desiredCapabilities: [{
+        browserName: 'chrome'
+      }, {
+        browserName: 'firefox'
+      }]
     });
+    return client.init();
+  });
+
+  it('DateRangeChooser test', function () {
+    return client
+      .url('http://localhost/date-range-chooser-ext')
+      .getTitle().then(function (title) {
+        assert.strictEqual(title, 'FCTS Date Range Extension');
+      });
+  });
+
+  after(function () {
+    return client.end();
   });
 });

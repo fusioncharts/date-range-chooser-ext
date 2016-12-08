@@ -27,6 +27,7 @@ module.exports = function (dep) {
       this.isDrawn = false;
       this.startTooltipErrorMsg = '';
       this.endTooltipErrorMsg = '';
+      this.createObjectAssign();
     }
 
     /**
@@ -58,10 +59,6 @@ module.exports = function (dep) {
         }
       }
     }
-
-    // Time out of bounds
-    // Invalid date format
-    // Exceeding zoom limits
 
     isBeforeOrEqualTo (startTimestamp, endTimestamp) {
       if (startTimestamp <= endTimestamp) {
@@ -177,8 +174,32 @@ module.exports = function (dep) {
     }
 
     createConfig (extData) {
-      let config = {};
-      config.disabled = extData.disabled || 'false';
+      let config = {},
+        defaultStyles = {
+          'width': 120,
+          'height': 22,
+
+          'font-family': '"Lucida Grande", sans-serif',
+          'font-size': 13,
+          'font-color': '#4B4B4B',
+
+          'input-fill': '#FFFFFF',
+          'input-border-thickness': 1,
+          'input-border-color': '#CED5D4',
+          'input-border-radius': 1,
+          'input-shadow-fill': '#000000',
+          'input-shadow-opacity': 0.35,
+
+          'input-focus-fill': '#FFFFFF',
+          'input-focus-border-thickness': 1,
+          'input-focus-border-color': '#1E1F1F',
+
+          'input-error-fill': '#FFEFEF',
+          'input-error-border-thickness': 1,
+          'input-error-border-color': '#D25353',
+          'input-error-tooltip-font-color': '#FF0000'
+        };
+      config.disabled = extData.disabled || false;
       config.layout = extData.layout || 'inline';
       config.orientation = extData.orientation || 'horizontal';
       config.position = extData.position || 'top';
@@ -188,31 +209,35 @@ module.exports = function (dep) {
       config.fromTooltipText = extData.fromTooltipText || 'From Date';
       config.toText = extData.toText || 'To:';
       config.toTooltipText = extData.toTooltipText || 'To Date';
-      config.styles = extData.styles || {
-        'width': 120,
-        'height': 22,
-
-        'font-family': '"Lucida Grande", sans-serif',
-        'font-size': 13,
-        'font-color': '#4B4B4B',
-
-        'input-fill': '#FFFFFF',
-        'input-border-thickness': 1,
-        'input-border-color': '#CED5D4',
-        'input-border-radius': 1,
-        'input-shadow-fill': '#000000',
-        'input-shadow-opacity': 0.35,
-
-        'input-focus-fill': '#FFFFFF',
-        'input-focus-border-thickness': 1,
-        'input-focus-border-color': '#1E1F1F',
-
-        'input-error-fill': '#FFEFEF',
-        'input-error-border-thickness': 1,
-        'input-error-border-color': '#D25353',
-        'input-error-tooltip-font-color': '#FF0000'
-      };
+      config.styles = Object.assign(defaultStyles, extData.styles);
       return config;
+    }
+
+    createObjectAssign () {
+      if (typeof Object.assign !== 'function') {
+        Object.assign = function (target, varArgs) {
+          'use strict';
+          if (target == null) {
+            throw new TypeError('Cannot convert undefined or null to object');
+          }
+
+          var to = Object(target);
+
+          for (let index = 1; index < arguments.length; index++) {
+            let nextSource = arguments[index];
+
+            if (nextSource != null) {
+              for (let nextKey in nextSource) {
+                // Avoid bugs when hasOwnProperty is shadowed
+                if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                  to[nextKey] = nextSource[nextKey];
+                }
+              }
+            }
+          }
+          return to;
+        };
+      }
     }
 
     /**
