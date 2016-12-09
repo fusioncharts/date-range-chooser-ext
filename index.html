@@ -10,9 +10,11 @@
     <script src='http://192.168.0.207/xt-edge/out/build/source/fusioncharts.js' charset='utf-8'></script>
     <script src='http://192.168.0.207/xt-edge/out/build/source/fusioncharts.timeseries.js' charset='utf-8'></script>
     <script src='dist/date-range-chooser.js' charset='utf-8'></script>
+    <input type="text" name="test" id="test">
+    <input type="button" id="test2" value="test2" onclick="document.getElementById('test').setAttribute('value','qwer')">
     <div id='chart-container'></div>
   <script type='text/javascript'>
-    var tsChart = 'asaas';
+    var tsChart;
     function getRandomDates (len) {
       var day = 1,
         months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],

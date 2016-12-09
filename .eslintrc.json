@@ -6,7 +6,8 @@
   ],
   "env": {
     "jest": true,
-    "mocha": true
+    "mocha": true,
+    "node": true
   },
   "globals":{
     "Raphael": true,
