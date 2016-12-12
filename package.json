@@ -4,8 +4,7 @@
   "description": "A date range chooser for FusionCharts Time Series Charts",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build-es6 && npm run build-es5 && npm run docs && npm run jsunit",
-    "jsunit": "nyc mocha --timeout=99999999",
+    "build": "npm run build-es6 && npm run build-es5 && npm run docs && npm test",
     "docs": "jsdoc -c jsdoc.json",
     "watch-es5": "NODE_ENV=development webpack --config webpack-es5.config.js --progress --colors --watch",
     "build-es5-prod": "NODE_ENV=production webpack --config webpack-es5.config.js --progress --colors",

@@ -1,8 +1,6 @@
 'use strict';
 const DateRange = require('./fcts-ext-daterange');
 
-window.dr = new DateRange();
-
 ;(function (env, factory) {
   if (typeof module === 'object' && module.exports) {
     module.exports = env.document

@@ -66,6 +66,7 @@ module.exports = function (dep) {
       this.isDrawn = false;
       this.startTooltipErrorMsg = '';
       this.endTooltipErrorMsg = '';
+      this.createObjectAssign();
     }
 
     /**
@@ -80,11 +81,12 @@ module.exports = function (dep) {
       let startTimestamp = this.getTimestamp(startDt),
         newDate = this.getDate(this.startDt),
         absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'],
+        absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'],
         minDiff = this.minActiveInterval,
         actualDiff = this.endDt - startTimestamp;
       if (newDate !== startDt) {
-        if (this.isBeforeOrEqualTo(startTimestamp, this.endDt) &amp;&amp;
-          this.isSameOrAfter(startTimestamp, absoluteStart) &amp;&amp;
+        if (this.isBetween(startTimestamp, absoluteStart, absoluteEnd) &amp;&amp;
+          this.isBeforeOrEqualTo(startTimestamp, this.endDt) &amp;&amp;
           this.diffIsGreaterThan(actualDiff, minDiff)) {
           this.startDt = startTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
@@ -98,10 +100,6 @@ module.exports = function (dep) {
       }
     }
 
-    // Time out of bounds
-    // Invalid date format
-    // Exceeding zoom limits
-
     isBeforeOrEqualTo (startTimestamp, endTimestamp) {
       if (startTimestamp &lt;= endTimestamp) {
         return true;
@@ -110,18 +108,8 @@ module.exports = function (dep) {
         '&lt;span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Date must be less than end date!&lt;/span>';
-        return false;
-      }
-    }
-
-    isSameOrAfter (startTimestamp, absoluteStart) {
-      if (startTimestamp >= absoluteStart) {
-        return true;
-      } else {
-        this.startTooltipErrorMsg =
-        '&lt;span style="color: ' +
-        this.config.styles['input-error-tooltip-font-color'] +
-        '">Date out of bounds!&lt;/span>';
+        this.setErrorMsg(this.fromError, 'Date must be less than end date!');
+        // this.fromError.group.show();
         return false;
       }
     }
@@ -133,12 +121,13 @@ module.exports = function (dep) {
     set endDate (endDt) {
       let endTimestamp = this.getTimestamp(endDt),
         newDate = this.getDate(this.endDt),
+        absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'],
         absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'],
         minDiff = this.minActiveInterval,
         actualDiff = endTimestamp - this.startDt;
       if (newDate !== endDt) {
-        if (this.isGreaterThanOrEqualTo(endTimestamp, this.startDt) &amp;&amp;
-          this.isSameOrBefore(endTimestamp, absoluteEnd) &amp;&amp;
+        if (this.isBetween(endTimestamp, absoluteStart, absoluteEnd) &amp;&amp;
+          this.isAfterOrEqualTo(endTimestamp, this.startDt) &amp;&amp;
           this.diffIsGreaterThan(actualDiff, minDiff)) {
           this.endDt = endTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
@@ -152,7 +141,7 @@ module.exports = function (dep) {
       }
     }
 
-    isGreaterThanOrEqualTo (endTimestamp, startTimestamp) {
+    isAfterOrEqualTo (endTimestamp, startTimestamp) {
       if (endTimestamp >= startTimestamp) {
         return true;
       } else {
@@ -160,18 +149,22 @@ module.exports = function (dep) {
         '&lt;span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Date must be greater than start date!&lt;/span>';
+        this.setErrorMsg(this.toError, 'Date must be greater than start date!');
+        // this.toError.group.show();
         return false;
       }
     }
 
-    isSameOrBefore (endTimestamp, absoluteEnd) {
-      if (endTimestamp &lt;= absoluteEnd) {
+    isBetween (timestamp, absoluteStart, absoluteEnd) {
+      if (timestamp >= absoluteStart &amp;&amp; timestamp &lt;= absoluteEnd) {
         return true;
       } else {
-        this.endTooltipErrorMsg =
+        this.startTooltipErrorMsg = this.endTooltipErrorMsg =
         '&lt;span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Date out of bounds!&lt;/span>';
+        this.setErrorMsg(this.fromError, 'Date out of bounds!');
+        this.setErrorMsg(this.toError, 'Date out of bounds!');
         return false;
       }
     }
@@ -184,6 +177,8 @@ module.exports = function (dep) {
         '&lt;span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Zoom limit exceeded!&lt;/span>';
+        this.setErrorMsg(this.fromError, 'Zoom limit exceeded!');
+        this.setErrorMsg(this.toError, 'Zoom limit exceeded!');
         return false;
       }
     }
@@ -216,8 +211,32 @@ module.exports = function (dep) {
     }
 
     createConfig (extData) {
-      let config = {};
-      config.disabled = extData.disabled || 'false';
+      let config = {},
+        defaultStyles = {
+          'width': 120,
+          'height': 22,
+
+          'font-family': '"Lucida Grande", sans-serif',
+          'font-size': 13,
+          'font-color': '#4B4B4B',
+
+          'input-fill': '#FFFFFF',
+          'input-border-thickness': 1,
+          'input-border-color': '#CED5D4',
+          'input-border-radius': 1,
+          'input-shadow-fill': '#000000',
+          'input-shadow-opacity': 0.35,
+
+          'input-focus-fill': '#FFFFFF',
+          'input-focus-border-thickness': 1,
+          'input-focus-border-color': '#1E1F1F',
+
+          'input-error-fill': '#FFEFEF',
+          'input-error-border-thickness': 1,
+          'input-error-border-color': '#D25353',
+          'input-error-tooltip-font-color': '#FF0000'
+        };
+      config.disabled = extData.disabled || false;
       config.layout = extData.layout || 'inline';
       config.orientation = extData.orientation || 'horizontal';
       config.position = extData.position || 'top';
@@ -227,31 +246,111 @@ module.exports = function (dep) {
       config.fromTooltipText = extData.fromTooltipText || 'From Date';
       config.toText = extData.toText || 'To:';
       config.toTooltipText = extData.toTooltipText || 'To Date';
-      config.styles = extData.styles || {
-        'width': 120,
-        'height': 22,
-
-        'font-family': '"Lucida Grande", sans-serif',
-        'font-size': 13,
-        'font-color': '#4B4B4B',
-
-        'input-fill': '#FFFFFF',
-        'input-border-thickness': 1,
-        'input-border-color': '#CED5D4',
-        'input-border-radius': 1,
-        'input-shadow-fill': '#000000',
-        'input-shadow-opacity': 0.35,
-
-        'input-focus-fill': '#FFFFFF',
-        'input-focus-border-thickness': 1,
-        'input-focus-border-color': '#1E1F1F',
-
-        'input-error-fill': '#FFEFEF',
-        'input-error-border-thickness': 1,
-        'input-error-border-color': '#D25353',
-        'input-error-tooltip-font-color': '#FF0000'
-      };
+      config.styles = Object.assign(defaultStyles, extData.styles);
       return config;
+    }
+
+    createErrorGroup (symbol) {
+      let self = this,
+        paper = self.graphics.paper,
+        circle,
+        rect,
+        text,
+        group,
+        textBBox,
+        circleBBox,
+        rectBBox,
+        symbolBBox;
+
+      symbolBBox = symbol.getBoundElement().getBBox();
+      group = paper.group('error-group');
+      rect = paper.rect(symbolBBox.x,
+        symbolBBox.y - symbolBBox.height - 2, 20, 20, group);
+      rectBBox = rect.getBBox();
+      circle = paper.circle(symbolBBox.x + 5 + 4,
+        symbolBBox.y - symbolBBox.height - 2 + 5 + 5, 5, group);
+      circleBBox = circle.getBBox();
+      text = self.graphics.paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 1,
+        '', group);
+      textBBox = text.getBBox();
+      circle.attr({
+        'stroke': '#d71f26',
+        'stroke-width': '1',
+        'fill': 'none'
+      });
+      text.attr({
+        'text-anchor': 'start',
+        'y': textBBox.y + textBBox.height,
+        'fill': '#D80000',
+        'font-family': '"Lucida Grande", sans-serif',
+        'font-size': '14'
+      });
+      rect.attr({
+        'fill': '#000000',
+        'fill-opacity': '0.8',
+        'stroke-width': '0',
+        'width': textBBox.width + circleBBox.width
+      });
+      group.attr({
+        visibility: 'hidden'
+      });
+
+      return {
+        'group': group,
+        'circle': circle,
+        'rect': rect,
+        'text': text
+      };
+    }
+
+    setErrorMsg (errorGroup, errorMsg) {
+      let canvasImpl = this.chartInstance.apiInstance.getCanvasInstances()[0],
+        canvasX = canvasImpl.measurement.x,
+        canvasWidth = canvasImpl.measurement.width,
+        canvasEnd = canvasX + canvasWidth,
+        errorRectX,
+        errorRectWidth,
+        errorRectEnd;
+      errorGroup.text.attr('text', errorMsg);
+      errorGroup.rect.attr('width',
+        errorGroup.text.getBBox().width + (4 * 2) + errorGroup.circle.getBBox().width + 2);
+
+      errorRectX = errorGroup.rect.getBBox().x;
+      errorRectWidth = errorGroup.rect.getBBox().width;
+      errorRectEnd = errorRectX + errorRectWidth;
+      if (errorRectEnd > canvasEnd) {
+        let diff = errorRectEnd - canvasEnd;
+        errorGroup.rect.attr('x', errorRectX - diff);
+        errorGroup.circle.attr('cx', errorGroup.circle.getBBox().x - diff + 5);
+        errorGroup.text.attr('x', errorGroup.text.getBBox().x - diff);
+      }
+    }
+
+    createObjectAssign () {
+      if (typeof Object.assign !== 'function') {
+        Object.assign = function (target, varArgs) {
+          'use strict';
+          if (target == null) {
+            throw new TypeError('Cannot convert undefined or null to object');
+          }
+
+          var to = Object(target);
+
+          for (let index = 1; index &lt; arguments.length; index++) {
+            let nextSource = arguments[index];
+
+            if (nextSource != null) {
+              for (let nextKey in nextSource) {
+                // Avoid bugs when hasOwnProperty is shadowed
+                if (Object.prototype.hasOwnProperty.call(nextSource, nextKey)) {
+                  to[nextKey] = nextSource[nextKey];
+                }
+              }
+            }
+          }
+          return to;
+        };
+      }
     }
 
     /**
@@ -563,12 +662,17 @@ module.exports = function (dep) {
 
       fromDateEventConfig = {
         click: {
-          fn: () => {
+          fn: function () {
+            if (self.fromDate.state === 'errored' &amp;&amp;
+              self.fromError.text.attr('text') !== '') {
+              self.toError.group.hide();
+              self.fromError.group.show();
+            }
             self.fromDate.edit();
             self.fromDate.updateVisual('pressed');
           }
         },
-        tooltext: self.config.fromTooltipText,
+        // tooltext: self.config.fromTooltipText,
         keypress: (e) => {
           let event = e || window.event,
             charCode = event.which || event.keyCode;
@@ -576,10 +680,12 @@ module.exports = function (dep) {
             self.startDate = self.fromDate.getText();
             if (self.fromDate.state !== 'errored') {
               self.fromDate.blur();
-              self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
+              self.fromError.group.hide();
+              // self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
               self.fromDate.updateVisual('enabled');
             } else {
-              self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
+              self.fromError.group.show();
+              // self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
             }
           }
         },
@@ -588,10 +694,12 @@ module.exports = function (dep) {
           self.startDate = self.fromDate.getText();
           if (self.fromDate.state !== 'errored') {
             self.fromDate.blur();
-            self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
+            self.fromError.group.hide();
+            // self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
             self.fromDate.updateVisual('enabled');
           } else {
-            self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
+            self.fromError.group.show();
+            // self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
           }
         }
       };
@@ -601,11 +709,16 @@ module.exports = function (dep) {
       toDateEventConfig = {
         click: {
           fn: () => {
+            if (self.toDate.state === 'errored' &amp;&amp;
+              self.toError.text.attr('text') !== '') {
+              self.fromError.group.hide();
+              self.toError.group.show();
+            }
             self.toDate.edit();
             self.toDate.updateVisual('pressed');
           }
         },
-        tooltext: self.config.toTooltipText,
+        // tooltext: self.config.toTooltipText,
         keypress: (e) => {
           let event = e || window.event,
             charCode = event.which || event.keyCode;
@@ -613,10 +726,12 @@ module.exports = function (dep) {
             self.endDate = self.toDate.getText();
             if (self.toDate.state !== 'errored') {
               self.toDate.blur();
-              self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
+              self.toError.group.hide();
+              // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
               self.toDate.updateVisual('enabled');
             } else {
-              self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
+              self.toError.group.show();
+              // self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
             }
           }
         },
@@ -625,10 +740,12 @@ module.exports = function (dep) {
           self.endDate = self.toDate.getText();
           if (self.toDate.state !== 'errored') {
             self.toDate.blur();
-            self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
+            self.toError.group.hide();
+            // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
             self.toDate.updateVisual('enabled');
           } else {
-            self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
+            self.toError.group.show();
+            // self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
           }
         }
       };
@@ -647,20 +764,13 @@ module.exports = function (dep) {
     getLogicalSpace (availableWidth, availableHeight) {
       var logicalSpace,
         width = 0,
-        height = 0,
-        i,
-        ln;
+        height = 0;
 
-      availableWidth /= 2;
-
-      for (i = 0, ln = this.toolbars.length; i &lt; ln; i++) {
-        logicalSpace = this.toolbars[i].getLogicalSpace(availableWidth, availableHeight);
-        width = Math.max(logicalSpace.width, width);
-        height += logicalSpace.height;
-        this.toolbars[i].width = logicalSpace.width;
-        this.toolbars[i].height = logicalSpace.height;
-      }
-      height += this.padding;
+      logicalSpace = this.toolbars[0].getLogicalSpace(availableWidth, availableHeight);
+      width += logicalSpace.width;
+      height += logicalSpace.height;
+      this.toolbars[0].width = logicalSpace.width;
+      this.toolbars[0].height = logicalSpace.height;
       return {
         width: width,
         height: height
@@ -669,7 +779,6 @@ module.exports = function (dep) {
 
     placeInCanvas () {
       var self = this;
-      self.padding = 5;
       self.spaceManagerInstance.add([{
         name: function () {
           return 'DateRangeChooserToolbox';
@@ -745,16 +854,22 @@ module.exports = function (dep) {
             // setTimeout(() => {
             self.startDt = start[1];
             self.fromDate.blur(self.getDate(start[1]));
-            self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
+            self.fromError.text.attr('text', '');
+            self.fromError.group.hide();
+            // self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
             self.fromDate.updateVisual('enabled');
             self.endDt = end[1];
             self.toDate.blur(self.getDate(end[1]));
-            self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
+            self.toError.text.attr('text', '');
+            self.toError.group.hide();
+            // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
             self.toDate.updateVisual('enabled');
             // }, 400);
           }
         );
       }
+      self.fromError = self.createErrorGroup(self.fromDate);
+      self.toError = self.createErrorGroup(self.toDate);
       self.startDataset = self.globalReactiveModel.model['x-axis-absolute-range-start'];
       self.endDataset = self.globalReactiveModel.model['x-axis-absolute-range-end'];
       self.maxXAxisTicks = self.globalReactiveModel.model['x-axis-maximum-allowed-ticks'];
@@ -777,7 +892,7 @@ module.exports = function (dep) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Dec 07 2016 19:38:14 GMT+0530 (IST) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Mon Dec 12 2016 19:58:16 GMT+0530 (IST) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
