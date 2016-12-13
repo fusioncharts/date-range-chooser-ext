@@ -262,40 +262,97 @@
 	      }
 	    }, {
 	      key: 'createErrorGroup',
-	      value: function createErrorGroup(symbol) {
+	      value: function createErrorGroup(symbol, id) {
 	        var self = this,
 	            paper = self.graphics.paper,
 	            circle = void 0,
+	            crossPath = void 0,
+	            cross = void 0,
 	            rect = void 0,
 	            text = void 0,
 	            group = void 0,
 	            textBBox = void 0,
 	            circleBBox = void 0,
 	            rectBBox = void 0,
-	            symbolBBox = void 0;
+	            symbolBBox = void 0,
+	            orientation = self.config.orientation,
+	            position = self.config.position;
 
-	        symbolBBox = symbol.getBoundElement().getBBox();
-	        group = paper.group('error-group');
-	        rect = paper.rect(symbolBBox.x, symbolBBox.y - symbolBBox.height - 2, 20, 20, group);
-	        rectBBox = rect.getBBox();
-	        circle = paper.circle(symbolBBox.x + 5 + 4, symbolBBox.y - symbolBBox.height - 2 + 5 + 5, 5, group);
-	        circleBBox = circle.getBBox();
-	        text = self.graphics.paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 1, '', group);
-	        textBBox = text.getBBox();
+	        if (orientation === 'horizontal') {
+	          if (position === 'top') {
+	            symbolBBox = symbol.getBoundElement().getBBox();
+	            group = paper.group('error-group');
+
+	            rect = paper.rect(symbolBBox.x, symbolBBox.y - symbolBBox.height - 4, 20, 20, group);
+	            rectBBox = rect.getBBox();
+
+	            circle = paper.circle(symbolBBox.x + 5 + 4, symbolBBox.y - symbolBBox.height - 4 + 5 + 5, 6, group);
+	            circleBBox = circle.getBBox();
+
+	            crossPath = this.getCrossPath(circleBBox, 4);
+	            cross = paper.path(crossPath, group);
+
+	            text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2, '', group);
+	            textBBox = text.getBBox();
+	          } else if (position === 'bottom') {
+	            symbolBBox = symbol.getBoundElement().getBBox();
+	            group = paper.group('error-group');
+
+	            rect = paper.rect(symbolBBox.x, symbolBBox.y + symbolBBox.height + 4, 20, 20, group);
+	            rectBBox = rect.getBBox();
+
+	            circle = paper.circle(symbolBBox.x + 5 + 4, symbolBBox.y + symbolBBox.height + 4 + 5 + 5, 6, group);
+	            circleBBox = circle.getBBox();
+
+	            crossPath = this.getCrossPath(circleBBox, 4);
+	            cross = paper.path(crossPath, group);
+
+	            text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2, '', group);
+	            textBBox = text.getBBox();
+	          }
+	        } else if (orientation === 'vertical') {
+	          symbolBBox = symbol.getBoundElement().getBBox();
+	          group = paper.group('error-group');
+
+	          if (id === 'fromError') {
+	            rect = paper.rect(symbolBBox.x, symbolBBox.y - symbolBBox.height - 4, 20, 20, group);
+	            rectBBox = rect.getBBox();
+
+	            circle = paper.circle(symbolBBox.x + 5 + 4, symbolBBox.y - symbolBBox.height - 4 + 5 + 5, 6, group);
+	            circleBBox = circle.getBBox();
+	          } else if (id === 'toError') {
+	            rect = paper.rect(symbolBBox.x, symbolBBox.y + symbolBBox.height + 4, 20, 20, group);
+	            rectBBox = rect.getBBox();
+
+	            circle = paper.circle(symbolBBox.x + 5 + 4, symbolBBox.y + symbolBBox.height + 4 + 5 + 5, 6, group);
+	            circleBBox = circle.getBBox();
+	          }
+
+	          crossPath = this.getCrossPath(circleBBox, 4);
+	          cross = paper.path(crossPath, group);
+
+	          text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2, '', group);
+	          textBBox = text.getBBox();
+	        }
+
 	        circle.attr({
 	          'stroke': '#d71f26',
 	          'stroke-width': '1',
 	          'fill': 'none'
+	        });
+	        cross.attr({
+	          'stroke': '#000000',
+	          'stroke-width': '1.5'
 	        });
 	        text.attr({
 	          'text-anchor': 'start',
 	          'y': textBBox.y + textBBox.height,
 	          'fill': '#D80000',
 	          'font-family': '"Lucida Grande", sans-serif',
-	          'font-size': '14'
+	          'font-size': '12'
 	        });
 	        rect.attr({
-	          'fill': '#000000',
+	          'fill': '#FFFFFF',
 	          'fill-opacity': '0.8',
 	          'stroke-width': '0',
 	          'width': textBBox.width + circleBBox.width
@@ -306,10 +363,27 @@
 
 	        return {
 	          'group': group,
+	          'cross': cross,
 	          'circle': circle,
 	          'rect': rect,
 	          'text': text
 	        };
+	      }
+	    }, {
+	      key: 'getCrossPath',
+	      value: function getCrossPath(circleBox, padding) {
+	        // M478,77L483,82M478,82L483,77
+	        var circleX1 = Math.round(circleBox.x),
+	            circleY1 = Math.round(circleBox.y),
+	            circleX2 = Math.round(circleBox.x2),
+	            circleY2 = Math.round(circleBox.y2),
+	            crossX1 = circleX1 + 4,
+	            crossY1 = circleY1 + 2,
+	            crossX2 = circleX2 - 4,
+	            crossY2 = circleY2 - 3,
+	            pathStr = 'M' + crossX1 + ',' + crossY1 + 'L' + crossX2 + ',' + crossY2;
+	        pathStr += 'M' + crossX1 + ',' + crossY2 + 'L' + crossX2 + ',' + crossY1;
+	        return pathStr;
 	      }
 	    }, {
 	      key: 'setErrorMsg',
@@ -321,6 +395,10 @@
 	            errorRectX = void 0,
 	            errorRectWidth = void 0,
 	            errorRectEnd = void 0;
+
+	        if (errorGroup.text.attr('text') === errorMsg) {
+	          return;
+	        }
 	        errorGroup.text.attr('text', errorMsg);
 	        errorGroup.rect.attr('width', errorGroup.text.getBBox().width + 4 * 2 + errorGroup.circle.getBBox().width + 2);
 
@@ -331,6 +409,7 @@
 	          var diff = errorRectEnd - canvasEnd;
 	          errorGroup.rect.attr('x', errorRectX - diff);
 	          errorGroup.circle.attr('cx', errorGroup.circle.getBBox().x - diff + 5);
+	          errorGroup.cross.translate(-diff - 1, 0);
 	          errorGroup.text.attr('x', errorGroup.text.getBBox().x - diff);
 	        }
 	      }
@@ -859,8 +938,9 @@
 	            // }, 400);
 	          });
 	        }
-	        self.fromError = self.createErrorGroup(self.fromDate);
-	        self.toError = self.createErrorGroup(self.toDate);
+
+	        self.fromError = self.createErrorGroup(self.fromDate, 'fromError');
+	        self.toError = self.createErrorGroup(self.toDate, 'toError');
 	        self.startDataset = self.globalReactiveModel.model['x-axis-absolute-range-start'];
 	        self.endDataset = self.globalReactiveModel.model['x-axis-absolute-range-end'];
 	        self.maxXAxisTicks = self.globalReactiveModel.model['x-axis-maximum-allowed-ticks'];
@@ -885,6 +965,7 @@
 	            this.startDt = startTimestamp;
 	            this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
 	          } else {
+	            this.toError.group.hide();
 	            this.fromDate.updateVisual('errored');
 	          }
 	        } else {
@@ -910,6 +991,7 @@
 	            this.endDt = endTimestamp;
 	            this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
 	          } else {
+	            this.fromError.group.hide();
 	            this.toDate.updateVisual('errored');
 	          }
 	        } else {
