@@ -291,10 +291,10 @@
 	            symbolBBox = symbol.getBoundElement().getBBox();
 	            group = paper.group('error-group');
 
-	            rect = paper.rect(symbolBBox.x, symbolBBox.y - symbolBBox.height - 4, 20, 20, group);
+	            rect = paper.rect(symbolBBox.x, symbolBBox.y - symbolBBox.height, 20, 20, group);
 	            rectBBox = rect.getBBox();
 
-	            circle = paper.circle(symbolBBox.x + 5 + 4, symbolBBox.y - symbolBBox.height - 4 + 5 + 5, 6, group);
+	            circle = paper.circle(rectBBox.x + 5 + 1, rectBBox.y + 6 + 4, 6, group);
 	            circleBBox = circle.getBBox();
 
 	            crossPath = this.getCrossPath(circleBBox, 4);
@@ -306,10 +306,10 @@
 	            symbolBBox = symbol.getBoundElement().getBBox();
 	            group = paper.group('error-group');
 
-	            rect = paper.rect(symbolBBox.x, symbolBBox.y + symbolBBox.height + 4, 20, 20, group);
+	            rect = paper.rect(symbolBBox.x, symbolBBox.y + symbolBBox.height, 20, 20, group);
 	            rectBBox = rect.getBBox();
 
-	            circle = paper.circle(symbolBBox.x + 5 + 4, symbolBBox.y + symbolBBox.height + 4 + 5 + 5, 6, group);
+	            circle = paper.circle(rectBBox.x + 5 + 1, rectBBox.y + 6 + 4, 6, group);
 	            circleBBox = circle.getBBox();
 
 	            crossPath = this.getCrossPath(circleBBox, 4);
@@ -322,10 +322,10 @@
 	          symbolBBox = symbol.getBoundElement().getBBox();
 	          group = paper.group('error-group');
 
-	          rect = paper.rect(symbolBBox.x, symbolBBox.y + symbolBBox.height + 4, 20, 20, group);
+	          rect = paper.rect(symbolBBox.x, symbolBBox.y + symbolBBox.height, 20, 20, group);
 	          rectBBox = rect.getBBox();
 
-	          circle = paper.circle(symbolBBox.x + 5 + 4, symbolBBox.y + symbolBBox.height + 4 + 5 + 5, 6, group);
+	          circle = paper.circle(rectBBox.x + 5 + 1, rectBBox.y + 6 + 4, 6, group);
 	          circleBBox = circle.getBBox();
 
 	          crossPath = this.getCrossPath(circleBBox, 4);
@@ -388,11 +388,7 @@
 	    }, {
 	      key: 'setErrorMsg',
 	      value: function setErrorMsg(errorGroup, errorMsg) {
-	        var canvasImpl = this.chartInstance.apiInstance.getCanvasInstances()[0],
-	            canvasX = canvasImpl.measurement.x,
-	            canvasWidth = canvasImpl.measurement.width,
-	            canvasEnd = canvasX + canvasWidth,
-	            errorRectX = void 0,
+	        var errorRectX = void 0,
 	            errorRectWidth = void 0,
 	            errorRectEnd = void 0;
 
@@ -405,8 +401,9 @@
 	        errorRectX = errorGroup.rect.getBBox().x;
 	        errorRectWidth = errorGroup.rect.getBBox().width;
 	        errorRectEnd = errorRectX + errorRectWidth;
-	        if (errorRectEnd > canvasEnd) {
-	          var diff = errorRectEnd - canvasEnd;
+	        console.log(errorRectEnd, this.containerRight);
+	        if (errorRectEnd > this.containerRight) {
+	          var diff = errorRectEnd - this.containerRight;
 	          errorGroup.rect.attr('x', errorRectX - diff);
 	          errorGroup.circle.attr('cx', errorGroup.circle.getBBox().x - diff + 5);
 	          errorGroup.cross.translate(-diff - 1, 0);
@@ -831,18 +828,12 @@
 	    }, {
 	      key: 'getLogicalSpace',
 	      value: function getLogicalSpace(availableWidth, availableHeight) {
-	        var logicalSpace,
-	            width = 0,
-	            height = 0;
-
-	        logicalSpace = this.toolbars[0].getLogicalSpace(availableWidth, availableHeight);
-	        width += logicalSpace.width;
-	        height += logicalSpace.height;
+	        var logicalSpace = this.toolbars[0].getLogicalSpace(availableWidth, availableHeight);
 	        this.toolbars[0].width = logicalSpace.width;
 	        this.toolbars[0].height = logicalSpace.height;
 	        return {
-	          width: width,
-	          height: height
+	          width: logicalSpace.width,
+	          height: logicalSpace.height
 	        };
 	      }
 	    }, {
@@ -952,6 +943,8 @@
 	        self.maxXAxisTicks = self.globalReactiveModel.model['x-axis-maximum-allowed-ticks'];
 	        self.minDatestampDiff = self.globalReactiveModel.model['minimum-consecutive-datestamp-diff'];
 	        self.minActiveInterval = self.maxXAxisTicks * self.minDatestampDiff;
+	        self.containerRight = self.graphics.container.clientLeft + self.graphics.container.clientWidth;
+	        self.containerBottom = self.graphics.container.clientTop + self.graphics.container.clientHeight;
 	      }
 	    }, {
 	      key: 'startDate',

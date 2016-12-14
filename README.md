@@ -1,13 +1,21 @@
 # Date Range Chooser
 ## A FusionCharts Time Series Extension
-Date range chooser extension for FusionCharts time-series chart
-
-Browser Inclusion
-
-`<script type="text/javascript" src="js/fusioncharts.min.js"></script>`
-`<script type="text/javascript" src="js/fcts-ext-daterange-es6.min.js"></script>`
-
-Node Inclusion
-
-`var FusionCharts = require('fusioncharts');`
-`var DateRange = require('date-range')(FusionCharts);`
+This extension helps in selecting start and end dates of a FusionTime XT chart precisely. Using the mouse to select a part of the timeline navigator to inspect data is grossly approximate. It is often the case that one is aware of a particular period of date-time and would like to inspect the same period to visualise the corresponding data. This extension is ideal for such cases.
+<script src='http://www.fusioncharts.com/startup-bridge/assets/fusioncharts.js' charset='utf-8'></script>
+<script src='http://www.fusioncharts.com/startup-bridge/assets/fusioncharts.timeseries.js' charset='utf-8'></script>
+<script src='../dist/date-range-chooser.js' charset='utf-8'></script>
+<div id='chart-container'></div>
+<script src='../main.js'></script>
+### Browser Inclusion
+```html
+<script src='fusioncharts.js' charset='utf-8'></script>
+<script src='fusioncharts.timeseries.js' charset='utf-8'></script>
+<script src='date-range-chooser.js' charset='utf-8'></script>
+```
+### Node Inclusion
+To run the extension one Node, one must also provide a custom DOM implementaion (such as [JSDOM](https://github.com/tmpvar/jsdom)).
+```javascript
+var FusionCharts = require('fusioncharts');
+require('fusioncharts/fusioncharts.timeseries')(FusionCharts);
+var DateRangeChooser = require('./fcts-ext-daterange.js');
+```
