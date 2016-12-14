@@ -46,9 +46,9 @@ module.exports = function (dep) {
         minDiff = this.minActiveInterval,
         actualDiff = this.endDt - startTimestamp;
       if (newDate !== startDt) {
-        if (this.isBetween(startTimestamp, absoluteStart, absoluteEnd) &&
-          this.isBeforeOrEqualTo(startTimestamp, this.endDt) &&
-          this.diffIsGreaterThan(actualDiff, minDiff)) {
+        if (this.isBetween(startTimestamp, absoluteStart, absoluteEnd, 'from') &&
+          this.isBeforeOrEqualTo(startTimestamp, this.endDt, 'from') &&
+          this.diffIsGreaterThan(actualDiff, minDiff, 'from')) {
           this.startDt = startTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
         } else {
@@ -62,7 +62,7 @@ module.exports = function (dep) {
       }
     }
 
-    isBeforeOrEqualTo (startTimestamp, endTimestamp) {
+    isBeforeOrEqualTo (startTimestamp, endTimestamp, errorType) {
       if (startTimestamp <= endTimestamp) {
         return true;
       } else {
@@ -70,8 +70,9 @@ module.exports = function (dep) {
         '<span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Date must be less than end date!</span>';
-        this.setErrorMsg(this.fromError, 'Date must be less than end date!');
-        // this.fromError.group.show();
+        if (errorType === 'from') {
+          this.setErrorMsg(this.fromError, 'Date must be less than end date!');
+        }
         return false;
       }
     }
@@ -88,9 +89,9 @@ module.exports = function (dep) {
         minDiff = this.minActiveInterval,
         actualDiff = endTimestamp - this.startDt;
       if (newDate !== endDt) {
-        if (this.isBetween(endTimestamp, absoluteStart, absoluteEnd) &&
-          this.isAfterOrEqualTo(endTimestamp, this.startDt) &&
-          this.diffIsGreaterThan(actualDiff, minDiff)) {
+        if (this.isBetween(endTimestamp, absoluteStart, absoluteEnd, 'to') &&
+          this.isAfterOrEqualTo(endTimestamp, this.startDt, 'to') &&
+          this.diffIsGreaterThan(actualDiff, minDiff, 'to')) {
           this.endDt = endTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
         } else {
@@ -104,7 +105,7 @@ module.exports = function (dep) {
       }
     }
 
-    isAfterOrEqualTo (endTimestamp, startTimestamp) {
+    isAfterOrEqualTo (endTimestamp, startTimestamp, errorType) {
       if (endTimestamp >= startTimestamp) {
         return true;
       } else {
@@ -112,13 +113,14 @@ module.exports = function (dep) {
         '<span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Date must be greater than start date!</span>';
-        this.setErrorMsg(this.toError, 'Date must be greater than start date!');
-        // this.toError.group.show();
+        if (errorType === 'to') {
+          this.setErrorMsg(this.toError, 'Date must be greater than start date!');
+        }
         return false;
       }
     }
 
-    isBetween (timestamp, absoluteStart, absoluteEnd) {
+    isBetween (timestamp, absoluteStart, absoluteEnd, errorType) {
       if (timestamp >= absoluteStart && timestamp <= absoluteEnd) {
         return true;
       } else {
@@ -126,13 +128,16 @@ module.exports = function (dep) {
         '<span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Date out of bounds!</span>';
-        this.setErrorMsg(this.fromError, 'Date out of bounds!');
-        this.setErrorMsg(this.toError, 'Date out of bounds!');
+        if (errorType === 'from') {
+          this.setErrorMsg(this.fromError, 'Date out of bounds!');
+        } else if (errorType === 'to') {
+          this.setErrorMsg(this.toError, 'Date out of bounds!');
+        }
         return false;
       }
     }
 
-    diffIsGreaterThan (actualDiff, minDiff) {
+    diffIsGreaterThan (actualDiff, minDiff, errorType) {
       if (actualDiff > minDiff) {
         return true;
       } else {
@@ -140,8 +145,11 @@ module.exports = function (dep) {
         '<span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Zoom limit exceeded!</span>';
-        this.setErrorMsg(this.fromError, 'Zoom limit exceeded!');
-        this.setErrorMsg(this.toError, 'Zoom limit exceeded!');
+        if (errorType === 'from') {
+          this.setErrorMsg(this.fromError, 'Zoom limit exceeded!');
+        } else if (errorType === 'to') {
+          this.setErrorMsg(this.toError, 'Zoom limit exceeded!');
+        }
         return false;
       }
     }
@@ -213,7 +221,7 @@ module.exports = function (dep) {
       return config;
     }
 
-    createErrorGroup (symbol, id) {
+    createErrorGroup (symbol) {
       let self = this,
         paper = self.graphics.paper,
         circle,
@@ -271,23 +279,13 @@ module.exports = function (dep) {
         symbolBBox = symbol.getBoundElement().getBBox();
         group = paper.group('error-group');
 
-        if (id === 'fromError') {
-          rect = paper.rect(symbolBBox.x,
-            symbolBBox.y - symbolBBox.height - 4, 20, 20, group);
-          rectBBox = rect.getBBox();
+        rect = paper.rect(symbolBBox.x,
+          symbolBBox.y + symbolBBox.height + 4, 20, 20, group);
+        rectBBox = rect.getBBox();
 
-          circle = paper.circle(symbolBBox.x + 5 + 4,
-            symbolBBox.y - symbolBBox.height - 4 + 5 + 5, 6, group);
-          circleBBox = circle.getBBox();
-        } else if (id === 'toError') {
-          rect = paper.rect(symbolBBox.x,
-            symbolBBox.y + symbolBBox.height + 4, 20, 20, group);
-          rectBBox = rect.getBBox();
-
-          circle = paper.circle(symbolBBox.x + 5 + 4,
-            symbolBBox.y + symbolBBox.height + 4 + 5 + 5, 6, group);
-          circleBBox = circle.getBBox();
-        }
+        circle = paper.circle(symbolBBox.x + 5 + 4,
+          symbolBBox.y + symbolBBox.height + 4 + 5 + 5, 6, group);
+        circleBBox = circle.getBBox();
 
         crossPath = this.getCrossPath(circleBBox, 4);
         cross = paper.path(crossPath, group);
@@ -918,8 +916,13 @@ module.exports = function (dep) {
         );
       }
 
-      self.fromError = self.createErrorGroup(self.fromDate, 'fromError');
-      self.toError = self.createErrorGroup(self.toDate, 'toError');
+      if (self.config.orientation === 'vertical') {
+        self.fromError = self.createErrorGroup(self.toDate);
+        self.toError = self.createErrorGroup(self.toDate);
+      } else if (self.config.orientation === 'horizontal') {
+        self.fromError = self.createErrorGroup(self.fromDate);
+        self.toError = self.createErrorGroup(self.toDate);
+      }
       self.startDataset = self.globalReactiveModel.model['x-axis-absolute-range-start'];
       self.endDataset = self.globalReactiveModel.model['x-axis-absolute-range-end'];
       self.maxXAxisTicks = self.globalReactiveModel.model['x-axis-maximum-allowed-ticks'];

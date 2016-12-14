@@ -85,9 +85,9 @@ module.exports = function (dep) {
         minDiff = this.minActiveInterval,
         actualDiff = this.endDt - startTimestamp;
       if (newDate !== startDt) {
-        if (this.isBetween(startTimestamp, absoluteStart, absoluteEnd) &amp;&amp;
-          this.isBeforeOrEqualTo(startTimestamp, this.endDt) &amp;&amp;
-          this.diffIsGreaterThan(actualDiff, minDiff)) {
+        if (this.isBetween(startTimestamp, absoluteStart, absoluteEnd, 'from') &amp;&amp;
+          this.isBeforeOrEqualTo(startTimestamp, this.endDt, 'from') &amp;&amp;
+          this.diffIsGreaterThan(actualDiff, minDiff, 'from')) {
           this.startDt = startTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
         } else {
@@ -101,7 +101,7 @@ module.exports = function (dep) {
       }
     }
 
-    isBeforeOrEqualTo (startTimestamp, endTimestamp) {
+    isBeforeOrEqualTo (startTimestamp, endTimestamp, errorType) {
       if (startTimestamp &lt;= endTimestamp) {
         return true;
       } else {
@@ -109,8 +109,9 @@ module.exports = function (dep) {
         '&lt;span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Date must be less than end date!&lt;/span>';
-        this.setErrorMsg(this.fromError, 'Date must be less than end date!');
-        // this.fromError.group.show();
+        if (errorType === 'from') {
+          this.setErrorMsg(this.fromError, 'Date must be less than end date!');
+        }
         return false;
       }
     }
@@ -127,9 +128,9 @@ module.exports = function (dep) {
         minDiff = this.minActiveInterval,
         actualDiff = endTimestamp - this.startDt;
       if (newDate !== endDt) {
-        if (this.isBetween(endTimestamp, absoluteStart, absoluteEnd) &amp;&amp;
-          this.isAfterOrEqualTo(endTimestamp, this.startDt) &amp;&amp;
-          this.diffIsGreaterThan(actualDiff, minDiff)) {
+        if (this.isBetween(endTimestamp, absoluteStart, absoluteEnd, 'to') &amp;&amp;
+          this.isAfterOrEqualTo(endTimestamp, this.startDt, 'to') &amp;&amp;
+          this.diffIsGreaterThan(actualDiff, minDiff, 'to')) {
           this.endDt = endTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
         } else {
@@ -143,7 +144,7 @@ module.exports = function (dep) {
       }
     }
 
-    isAfterOrEqualTo (endTimestamp, startTimestamp) {
+    isAfterOrEqualTo (endTimestamp, startTimestamp, errorType) {
       if (endTimestamp >= startTimestamp) {
         return true;
       } else {
@@ -151,13 +152,14 @@ module.exports = function (dep) {
         '&lt;span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Date must be greater than start date!&lt;/span>';
-        this.setErrorMsg(this.toError, 'Date must be greater than start date!');
-        // this.toError.group.show();
+        if (errorType === 'to') {
+          this.setErrorMsg(this.toError, 'Date must be greater than start date!');
+        }
         return false;
       }
     }
 
-    isBetween (timestamp, absoluteStart, absoluteEnd) {
+    isBetween (timestamp, absoluteStart, absoluteEnd, errorType) {
       if (timestamp >= absoluteStart &amp;&amp; timestamp &lt;= absoluteEnd) {
         return true;
       } else {
@@ -165,13 +167,16 @@ module.exports = function (dep) {
         '&lt;span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Date out of bounds!&lt;/span>';
-        this.setErrorMsg(this.fromError, 'Date out of bounds!');
-        this.setErrorMsg(this.toError, 'Date out of bounds!');
+        if (errorType === 'from') {
+          this.setErrorMsg(this.fromError, 'Date out of bounds!');
+        } else if (errorType === 'to') {
+          this.setErrorMsg(this.toError, 'Date out of bounds!');
+        }
         return false;
       }
     }
 
-    diffIsGreaterThan (actualDiff, minDiff) {
+    diffIsGreaterThan (actualDiff, minDiff, errorType) {
       if (actualDiff > minDiff) {
         return true;
       } else {
@@ -179,8 +184,11 @@ module.exports = function (dep) {
         '&lt;span style="color: ' +
         this.config.styles['input-error-tooltip-font-color'] +
         '">Zoom limit exceeded!&lt;/span>';
-        this.setErrorMsg(this.fromError, 'Zoom limit exceeded!');
-        this.setErrorMsg(this.toError, 'Zoom limit exceeded!');
+        if (errorType === 'from') {
+          this.setErrorMsg(this.fromError, 'Zoom limit exceeded!');
+        } else if (errorType === 'to') {
+          this.setErrorMsg(this.toError, 'Zoom limit exceeded!');
+        }
         return false;
       }
     }
@@ -252,7 +260,7 @@ module.exports = function (dep) {
       return config;
     }
 
-    createErrorGroup (symbol, id) {
+    createErrorGroup (symbol) {
       let self = this,
         paper = self.graphics.paper,
         circle,
@@ -310,23 +318,13 @@ module.exports = function (dep) {
         symbolBBox = symbol.getBoundElement().getBBox();
         group = paper.group('error-group');
 
-        if (id === 'fromError') {
-          rect = paper.rect(symbolBBox.x,
-            symbolBBox.y - symbolBBox.height - 4, 20, 20, group);
-          rectBBox = rect.getBBox();
+        rect = paper.rect(symbolBBox.x,
+          symbolBBox.y + symbolBBox.height + 4, 20, 20, group);
+        rectBBox = rect.getBBox();
 
-          circle = paper.circle(symbolBBox.x + 5 + 4,
-            symbolBBox.y - symbolBBox.height - 4 + 5 + 5, 6, group);
-          circleBBox = circle.getBBox();
-        } else if (id === 'toError') {
-          rect = paper.rect(symbolBBox.x,
-            symbolBBox.y + symbolBBox.height + 4, 20, 20, group);
-          rectBBox = rect.getBBox();
-
-          circle = paper.circle(symbolBBox.x + 5 + 4,
-            symbolBBox.y + symbolBBox.height + 4 + 5 + 5, 6, group);
-          circleBBox = circle.getBBox();
-        }
+        circle = paper.circle(symbolBBox.x + 5 + 4,
+          symbolBBox.y + symbolBBox.height + 4 + 5 + 5, 6, group);
+        circleBBox = circle.getBBox();
 
         crossPath = this.getCrossPath(circleBBox, 4);
         cross = paper.path(crossPath, group);
@@ -957,8 +955,13 @@ module.exports = function (dep) {
         );
       }
 
-      self.fromError = self.createErrorGroup(self.fromDate, 'fromError');
-      self.toError = self.createErrorGroup(self.toDate, 'toError');
+      if (self.config.orientation === 'vertical') {
+        self.fromError = self.createErrorGroup(self.toDate);
+        self.toError = self.createErrorGroup(self.toDate);
+      } else if (self.config.orientation === 'horizontal') {
+        self.fromError = self.createErrorGroup(self.fromDate);
+        self.toError = self.createErrorGroup(self.toDate);
+      }
       self.startDataset = self.globalReactiveModel.model['x-axis-absolute-range-start'];
       self.endDataset = self.globalReactiveModel.model['x-axis-absolute-range-end'];
       self.maxXAxisTicks = self.globalReactiveModel.model['x-axis-maximum-allowed-ticks'];
@@ -981,7 +984,7 @@ module.exports = function (dep) {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Dec 13 2016 18:47:28 GMT+0530 (IST) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Wed Dec 14 2016 11:00:59 GMT+0530 (IST) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
