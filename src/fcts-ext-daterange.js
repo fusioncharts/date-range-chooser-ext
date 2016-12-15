@@ -296,7 +296,7 @@ module.exports = function (dep) {
       }
 
       circle.attr({
-        'stroke': '#d71f26',
+        'stroke': '#D71F26',
         'stroke-width': '1',
         'fill': 'none'
       });
