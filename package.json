@@ -1,0 +1,57 @@
+{
+  "name": "date-range-chooser-ext",
+  "version": "1.0.0-alpha",
+  "description": "A date range chooser for FusionCharts Time Series Charts",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build-es6 && npm run build-es5 && npm run docs && npm test",
+    "docs": "jsdoc -c jsdoc.json",
+    "watch-es5": "NODE_ENV=development webpack --config webpack-es5.config.js --progress --colors --watch",
+    "build-es5-prod": "NODE_ENV=production webpack --config webpack-es5.config.js --progress --colors",
+    "build-es5-dev": "NODE_ENV=development webpack --config webpack-es5.config.js --progress --colors",
+    "build-es5": "npm run build-es5-dev && npm run build-es5-prod",
+    "watch-es6": "NODE_ENV=development webpack --config webpack-es6.config.js --progress --colors --watch",
+    "build-es6-prod": "NODE_ENV=production webpack --config webpack-es6.config.js --progress --colors",
+    "build-es6-dev": "NODE_ENV=development webpack --config webpack-es6.config.js --progress --colors",
+    "build-es6": "npm run build-es6-dev && npm run build-es6-prod",
+    "test": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fusioncharts/date-range-chooser-ext.git"
+  },
+  "keywords": [
+    "fusioncharts",
+    "fc",
+    "fc-extension",
+    "time-series",
+    "time",
+    "series",
+    "fc-date-range-chooser"
+  ],
+  "author": "Nakshatra Mukhopadhyay",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/fusioncharts/date-range-chooser-ext/issues"
+  },
+  "homepage": "https://github.com/fusioncharts/date-range-chooser-ext#readme",
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.8",
+    "babel-preset-latest": "^6.16.0",
+    "babili-webpack-plugin": "0.0.7",
+    "docdash": "^0.4.0",
+    "eslint": "^3.8.1",
+    "eslint-config-standard": "^6.2.0",
+    "eslint-loader": "^1.6.1",
+    "eslint-plugin-promise": "^3.3.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "fusioncharts": "^3.11.3",
+    "jest": "^17.0.3",
+    "jsdoc": "^3.4.2",
+    "nyc": "^10.0.0",
+    "wdio-dot-reporter": "0.0.6",
+    "webdriverio": "^4.4.0",
+    "webpack": "^1.13.2"
+  }
+}
