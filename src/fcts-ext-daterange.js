@@ -22,6 +22,16 @@ module.exports = function (dep) {
       } else {
         throw new Error('Unable to find DateTimeFormatter.');
       }
+      if (typeof Calendar === 'function') {
+        this.calendar = new Calendar({
+          style: {
+            position: 'absolute'
+          }
+        });
+        this.calendar.hide();
+      } else {
+        throw new Error('Unable to find Calendar.');
+      }
       this.HorizontalToolbar = this.toolbox.HorizontalToolbar;
       this.ComponentGroup = this.toolbox.ComponentGroup;
       this.isDrawn = false;
@@ -707,6 +717,20 @@ module.exports = function (dep) {
       fromDateEventConfig = {
         click: {
           fn: function () {
+            let date = new Date(self.startDt),
+              dateSymbolBBox = self.fromDate.getBoundElement().getBBox();
+            self.calendar.show();
+            self.calendar.configure({
+              selectedDate: {
+                day: date.getDate(),
+                month: date.getMonth() + 1,
+                year: date.getFullYear()
+              },
+              style: {
+                x: dateSymbolBBox.x,
+                y: dateSymbolBBox.y + dateSymbolBBox.height
+              }
+            });
             if (self.fromDate.state === 'errored' &&
               self.fromError.text.attr('text') !== '') {
               self.toError.group.hide();
@@ -753,6 +777,15 @@ module.exports = function (dep) {
       toDateEventConfig = {
         click: {
           fn: () => {
+            let date = new Date(self.endDt);
+            self.calendar.show();
+            self.calendar.configure({
+              selectedDate: {
+                day: date.getDate(),
+                month: date.getMonth() + 1,
+                year: date.getFullYear()
+              }
+            });
             if (self.toDate.state === 'errored' &&
               self.toError.text.attr('text') !== '') {
               self.fromError.group.hide();
@@ -874,6 +907,8 @@ module.exports = function (dep) {
         ln,
         i,
         toolbar,
+        absoluteStartDate,
+        absoluteEndDate,
         model = self.globalReactiveModel;
 
       x = x === undefined ? measurement.x : x;
@@ -922,6 +957,20 @@ module.exports = function (dep) {
       self.minActiveInterval = self.maxXAxisTicks * self.minDatestampDiff;
       self.containerRight = self.graphics.container.clientLeft + self.graphics.container.clientWidth;
       self.containerBottom = self.graphics.container.clientTop + self.graphics.container.clientHeight;
+      absoluteStartDate = new Date(self.startDataset);
+      absoluteEndDate = new Date(self.endDataset);
+      self.calendar.configure({
+        rangeStart: {
+          day: absoluteStartDate.getDate(),
+          month: absoluteStartDate.getMonth() + 1,
+          year: absoluteStartDate.getFullYear()
+        },
+        rangeEnd: {
+          day: absoluteEndDate.getDate(),
+          month: absoluteEndDate.getMonth() + 1,
+          year: absoluteEndDate.getFullYear()
+        }
+      });
     };
   }
   return DateRange;

@@ -12,6 +12,7 @@
   "globals":{
     "Raphael": true,
     "FusionCharts": true,
+    "Calendar": true,
     "define": true
   },
   "rules": {
