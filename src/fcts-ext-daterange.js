@@ -126,7 +126,6 @@ module.exports = function (dep) {
     }
 
     isBetween (timestamp, absoluteStart, absoluteEnd, errorType) {
-      debugger;
       if (timestamp >= absoluteStart && timestamp <= absoluteEnd) {
         return true;
       } else {
@@ -199,7 +198,7 @@ module.exports = function (dep) {
               style: {
                 fill: '#FFFFFF',
                 'stroke-width': 1,
-                stroke: '#CED5D4',
+                stroke: '#CED5D4'
                 // 'input-shadow-fill': '#000000',
                 // 'input-shadow-opacity': 0.35,
               }
@@ -208,7 +207,7 @@ module.exports = function (dep) {
               style: {
                 'font-family': '"Lucida Grande", sans-serif',
                 'font-size': '13px',
-                fill: '#4B4B4B',
+                fill: '#4B4B4B'
               }
             },
             states: {
@@ -218,7 +217,7 @@ module.exports = function (dep) {
                   style: {
                     fill: '#FFFFFF',
                     'stroke-width': 1,
-                    stroke: '#1E1F1F',
+                    stroke: '#1E1F1F'
                   }
                 }
               },
@@ -265,154 +264,154 @@ module.exports = function (dep) {
     }
 
     createErrorGroup (symbol) {
-      return;
-      let self = this,
-        paper = self.graphics.paper,
-        circle,
-        crossPath,
-        cross,
-        rect,
-        text,
-        group,
-        textBBox,
-        circleBBox,
-        rectBBox,
-        symbolBBox,
-        orientation = self.config.orientation,
-        position = self.config.position;
+      // return;
+    //   let self = this,
+    //     paper = self.graphics.paper,
+    //     circle,
+    //     crossPath,
+    //     cross,
+    //     rect,
+    //     text,
+    //     group,
+    //     textBBox,
+    //     circleBBox,
+    //     rectBBox,
+    //     symbolBBox,
+    //     orientation = self.config.orientation,
+    //     position = self.config.position;
 
-      if (orientation === 'horizontal') {
-        if (position === 'top') {
-          symbolBBox = symbol.getBoundElement().getBBox();
-          group = paper.group('error-group');
+    //   if (orientation === 'horizontal') {
+    //     if (position === 'top') {
+    //       symbolBBox = symbol.getBoundElement().getBBox();
+    //       group = paper.group('error-group');
 
-          rect = paper.rect(symbolBBox.x,
-            symbolBBox.y - symbolBBox.height, 20, 20, group);
-          rectBBox = rect.getBBox();
+    //       rect = paper.rect(symbolBBox.x,
+    //         symbolBBox.y - symbolBBox.height, 20, 20, group);
+    //       rectBBox = rect.getBBox();
 
-          circle = paper.circle(rectBBox.x + 5 + 1,
-            rectBBox.y + 6 + 4, 6, group);
-          circleBBox = circle.getBBox();
+    //       circle = paper.circle(rectBBox.x + 5 + 1,
+    //         rectBBox.y + 6 + 4, 6, group);
+    //       circleBBox = circle.getBBox();
 
-          crossPath = this.getCrossPath(circleBBox, 4);
-          cross = paper.path(crossPath, group);
+    //       crossPath = this.getCrossPath(circleBBox, 4);
+    //       cross = paper.path(crossPath, group);
 
-          text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2,
-            '', group);
-          textBBox = text.getBBox();
-        } else if (position === 'bottom') {
-          symbolBBox = symbol.getBoundElement().getBBox();
-          group = paper.group('error-group');
+    //       text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2,
+    //         '', group);
+    //       textBBox = text.getBBox();
+    //     } else if (position === 'bottom') {
+    //       symbolBBox = symbol.getBoundElement().getBBox();
+    //       group = paper.group('error-group');
 
-          rect = paper.rect(symbolBBox.x,
-            symbolBBox.y + symbolBBox.height, 20, 20, group);
-          rectBBox = rect.getBBox();
+    //       rect = paper.rect(symbolBBox.x,
+    //         symbolBBox.y + symbolBBox.height, 20, 20, group);
+    //       rectBBox = rect.getBBox();
 
-          circle = paper.circle(rectBBox.x + 5 + 1,
-            rectBBox.y + 6 + 4, 6, group);
-          circleBBox = circle.getBBox();
+    //       circle = paper.circle(rectBBox.x + 5 + 1,
+    //         rectBBox.y + 6 + 4, 6, group);
+    //       circleBBox = circle.getBBox();
 
-          crossPath = this.getCrossPath(circleBBox, 4);
-          cross = paper.path(crossPath, group);
+    //       crossPath = this.getCrossPath(circleBBox, 4);
+    //       cross = paper.path(crossPath, group);
 
-          text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2,
-            '', group);
-          textBBox = text.getBBox();
-        }
-      } else if (orientation === 'vertical') {
-        symbolBBox = symbol.getBoundElement().getBBox();
-        group = paper.group('error-group');
+    //       text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2,
+    //         '', group);
+    //       textBBox = text.getBBox();
+    //     }
+    //   } else if (orientation === 'vertical') {
+    //     symbolBBox = symbol.getBoundElement().getBBox();
+    //     group = paper.group('error-group');
 
-        rect = paper.rect(symbolBBox.x,
-          symbolBBox.y + symbolBBox.height, 20, 20, group);
-        rectBBox = rect.getBBox();
+    //     rect = paper.rect(symbolBBox.x,
+    //       symbolBBox.y + symbolBBox.height, 20, 20, group);
+    //     rectBBox = rect.getBBox();
 
-        circle = paper.circle(rectBBox.x + 5 + 1,
-          rectBBox.y + 6 + 4, 6, group);
-        circleBBox = circle.getBBox();
+    //     circle = paper.circle(rectBBox.x + 5 + 1,
+    //       rectBBox.y + 6 + 4, 6, group);
+    //     circleBBox = circle.getBBox();
 
-        crossPath = this.getCrossPath(circleBBox, 4);
-        cross = paper.path(crossPath, group);
+    //     crossPath = this.getCrossPath(circleBBox, 4);
+    //     cross = paper.path(crossPath, group);
 
-        text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2,
-          '', group);
-        textBBox = text.getBBox();
-      }
+    //     text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2,
+    //       '', group);
+    //     textBBox = text.getBBox();
+    //   }
 
-      circle.attr({
-        'stroke': '#d71f26',
-        'stroke-width': '1',
-        'fill': 'none'
-      });
-      cross.attr({
-        'stroke': '#000000',
-        'stroke-width': '1.5'
-      });
-      text.attr({
-        'text-anchor': 'start',
-        'y': textBBox.y + textBBox.height,
-        'fill': '#D80000',
-        'font-family': '"Lucida Grande", sans-serif',
-        'font-size': '12'
-      });
-      rect.attr({
-        'fill': '#FFFFFF',
-        'fill-opacity': '0.8',
-        'stroke-width': '0',
-        'width': textBBox.width + circleBBox.width
-      });
-      group.attr({
-        visibility: 'hidden'
-      });
+    //   circle.attr({
+    //     'stroke': '#d71f26',
+    //     'stroke-width': '1',
+    //     'fill': 'none'
+    //   });
+    //   cross.attr({
+    //     'stroke': '#000000',
+    //     'stroke-width': '1.5'
+    //   });
+    //   text.attr({
+    //     'text-anchor': 'start',
+    //     'y': textBBox.y + textBBox.height,
+    //     'fill': '#D80000',
+    //     'font-family': '"Lucida Grande", sans-serif',
+    //     'font-size': '12'
+    //   });
+    //   rect.attr({
+    //     'fill': '#FFFFFF',
+    //     'fill-opacity': '0.8',
+    //     'stroke-width': '0',
+    //     'width': textBBox.width + circleBBox.width
+    //   });
+    //   group.attr({
+    //     visibility: 'hidden'
+    //   });
 
-      return {
-        'group': group,
-        'cross': cross,
-        'circle': circle,
-        'rect': rect,
-        'text': text
-      };
-    }
+    //   return {
+    //     'group': group,
+    //     'cross': cross,
+    //     'circle': circle,
+    //     'rect': rect,
+    //     'text': text
+    //   };
+    // }
 
-    getCrossPath (circleBox, padding) {
-      // M478,77L483,82M478,82L483,77
-      let circleX1 = Math.round(circleBox.x),
-        circleY1 = Math.round(circleBox.y),
-        circleX2 = Math.round(circleBox.x2),
-        circleY2 = Math.round(circleBox.y2),
-        crossX1 = circleX1 + 4,
-        crossY1 = circleY1 + 2,
-        crossX2 = circleX2 - 4,
-        crossY2 = circleY2 - 3,
-        pathStr = 'M' + crossX1 + ',' + crossY1 + 'L' + crossX2 + ',' + crossY2;
-      pathStr += 'M' + crossX1 + ',' + crossY2 + 'L' + crossX2 + ',' + crossY1;
-      return pathStr;
-    }
+    // getCrossPath (circleBox, padding) {
+    //   // M478,77L483,82M478,82L483,77
+    //   let circleX1 = Math.round(circleBox.x),
+    //     circleY1 = Math.round(circleBox.y),
+    //     circleX2 = Math.round(circleBox.x2),
+    //     circleY2 = Math.round(circleBox.y2),
+    //     crossX1 = circleX1 + 4,
+    //     crossY1 = circleY1 + 2,
+    //     crossX2 = circleX2 - 4,
+    //     crossY2 = circleY2 - 3,
+    //     pathStr = 'M' + crossX1 + ',' + crossY1 + 'L' + crossX2 + ',' + crossY2;
+    //   pathStr += 'M' + crossX1 + ',' + crossY2 + 'L' + crossX2 + ',' + crossY1;
+    //   return pathStr;
+    // }
 
-    setErrorMsg (errorGroup, errorMsg) {
-      return;
-      let errorRectX,
-        errorRectWidth,
-        errorRectEnd;
+    // setErrorMsg (errorGroup, errorMsg) {
+    //   return;
+    //   let errorRectX,
+    //     errorRectWidth,
+    //     errorRectEnd;
 
-      if (errorGroup.text.attr('text') === errorMsg) {
-        return;
-      }
-      errorGroup.text.attr('text', errorMsg);
-      errorGroup.rect.attr('width',
-        errorGroup.text.getBBox().width + (4 * 2) + errorGroup.circle.getBBox().width + 2);
+    //   if (errorGroup.text.attr('text') === errorMsg) {
+    //     return;
+    //   }
+    //   errorGroup.text.attr('text', errorMsg);
+    //   errorGroup.rect.attr('width',
+    //     errorGroup.text.getBBox().width + (4 * 2) + errorGroup.circle.getBBox().width + 2);
 
-      errorRectX = errorGroup.rect.getBBox().x;
-      errorRectWidth = errorGroup.rect.getBBox().width;
-      errorRectEnd = errorRectX + errorRectWidth;
-      console.log(errorRectEnd, this.containerRight);
-      if (errorRectEnd > this.containerRight) {
-        let diff = errorRectEnd - this.containerRight;
-        errorGroup.rect.attr('x', errorRectX - diff);
-        errorGroup.circle.attr('cx', errorGroup.circle.getBBox().x - diff + 5);
-        errorGroup.cross.translate(-diff - 1, 0);
-        errorGroup.text.attr('x', errorGroup.text.getBBox().x - diff);
-      }
+    //   errorRectX = errorGroup.rect.getBBox().x;
+    //   errorRectWidth = errorGroup.rect.getBBox().width;
+    //   errorRectEnd = errorRectX + errorRectWidth;
+    //   console.log(errorRectEnd, this.containerRight);
+    //   if (errorRectEnd > this.containerRight) {
+    //     let diff = errorRectEnd - this.containerRight;
+    //     errorGroup.rect.attr('x', errorRectX - diff);
+    //     errorGroup.circle.attr('cx', errorGroup.circle.getBBox().x - diff + 5);
+    //     errorGroup.cross.translate(-diff - 1, 0);
+    //     errorGroup.text.attr('x', errorGroup.text.getBBox().x - diff);
+    //   }
     }
 
     createObjectAssign () {
@@ -495,7 +494,6 @@ module.exports = function (dep) {
         toGroup,
         fromFormattedDate,
         toFormattedDate,
-        PX = 'px',
         styles = this.config.styles,
         inputBtnStyles = styles.inputButton,
         paper = this.graphics.paper,
@@ -622,7 +620,7 @@ module.exports = function (dep) {
             //   self.fromError.group.show();
             // }
             self.fromDate.setState('selected');
-         },
+        },
         // tooltext: self.config.fromTooltipText,
         keypress: (e) => {
           let event = e || window.event,
