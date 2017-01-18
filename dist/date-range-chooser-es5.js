@@ -165,6 +165,7 @@
 	    }, {
 	      key: 'isBetween',
 	      value: function isBetween(timestamp, absoluteStart, absoluteEnd, errorType) {
+	        debugger;
 	        if (timestamp >= absoluteStart && timestamp <= absoluteEnd) {
 	          return true;
 	        } else {
@@ -232,28 +233,63 @@
 	      value: function createConfig(extData) {
 	        var config = {},
 	            defaultStyles = {
-	          'width': 120,
-	          'height': 22,
 
-	          'font-family': '"Lucida Grande", sans-serif',
-	          'font-size': 13,
-	          'font-color': '#4B4B4B',
-
-	          'input-fill': '#FFFFFF',
-	          'input-border-thickness': 1,
-	          'input-border-color': '#CED5D4',
-	          'input-border-radius': 1,
-	          'input-shadow-fill': '#000000',
-	          'input-shadow-opacity': 0.35,
-
-	          'input-focus-fill': '#FFFFFF',
-	          'input-focus-border-thickness': 1,
-	          'input-focus-border-color': '#1E1F1F',
-
-	          'input-error-fill': '#FFEFEF',
-	          'input-error-border-thickness': 1,
-	          'input-error-border-color': '#D25353',
-	          'input-error-tooltip-font-color': '#FF0000'
+	          inputButton: {
+	            'width': 120,
+	            'height': 22,
+	            className: 'date-range-chooser',
+	            container: {
+	              style: {
+	                fill: '#FFFFFF',
+	                'stroke-width': 1,
+	                stroke: '#CED5D4'
+	              }
+	            },
+	            text: {
+	              style: {
+	                'font-family': '"Lucida Grande", sans-serif',
+	                'font-size': '13px',
+	                fill: '#4B4B4B'
+	              }
+	            },
+	            states: {
+	              selected: {
+	                className: 'date-range-chooser-state-selected',
+	                container: {
+	                  style: {
+	                    fill: '#FFFFFF',
+	                    'stroke-width': 1,
+	                    stroke: '#1E1F1F'
+	                  }
+	                }
+	              },
+	              errored: {
+	                className: 'date-range-chooser-state-errored',
+	                container: {
+	                  style: {
+	                    fill: '#FFFFFF',
+	                    'stroke-width': 1,
+	                    stroke: '#D25353'
+	                  }
+	                }
+	                // 'input-error-fill': '#FFEFEF',
+	                // 'input-error-border-thickness': 1,
+	                // 'input-error-border-color': '#D25353',
+	                // 'input-error-tooltip-font-color': '#FF0000'
+	              }
+	            },
+	            radius: 1
+	          },
+	          label: {
+	            className: 'date-range-chooser-label',
+	            text: {
+	              style: {
+	                'font-family': '"Lucida Grande", sans-serif',
+	                'font-size': '13px',
+	                fill: '#4B4B4B'
+	              }
+	            }
+	          }
 	        };
 	        config.disabled = extData.disabled || false;
 	        config.layout = extData.layout || 'inline';
@@ -271,6 +307,7 @@
 	    }, {
 	      key: 'createErrorGroup',
 	      value: function createErrorGroup(symbol) {
+	        return;
 	        var self = this,
 	            paper = self.graphics.paper,
 	            circle = void 0,
@@ -388,6 +425,7 @@
 	    }, {
 	      key: 'setErrorMsg',
 	      value: function setErrorMsg(errorGroup, errorMsg) {
+	        return;
 	        var errorRectX = void 0,
 	            errorRectWidth = void 0,
 	            errorRectEnd = void 0;
@@ -476,7 +514,32 @@
 	            fromGroup,
 	            toGroup,
 	            fromFormattedDate,
-	            toFormattedDate;
+	            toFormattedDate,
+	            PX = 'px',
+	            styles = this.config.styles,
+	            inputBtnStyles = styles.inputButton,
+	            paper = this.graphics.paper,
+	            classNames,
+	            addCssRules = function addCssRules(classNames, styles) {
+	          var key, className;
+	          for (key in classNames) {
+	            className = classNames[key];
+	            switch (key) {
+	              case 'container':
+	                styles.container && paper.cssAddRule('.' + className, styles.container.style);
+	                break;
+	              case 'input':
+	                styles.text && paper.cssAddRule('.' + className, {
+	                  color: styles.text.style.fill,
+	                  'font-family': styles.text.style['font-family'],
+	                  'font-size': styles.text.style['font-size']
+	                });
+	                break;
+	              case 'text':
+	                styles.text && paper.cssAddRule('.' + className, styles.text.style);
+	            }
+	          }
+	        };
 
 	        var fromDateEventConfig = {},
 	            toDateEventConfig = {};
@@ -493,11 +556,6 @@
 	          chartContainer: this.graphics.container
 	        });
 
-	        toolbar.setConfig({
-	          'fill': '#FFFFFF',
-	          'borderThickness': 0
-	        });
-
 	        fromGroup = new this.toolbox.ComponentGroup({
 	          paper: this.graphics.paper,
 	          chart: this.chart,
@@ -512,259 +570,103 @@
 	          chartContainer: this.graphics.container
 	        });
 
-	        fromGroup.setConfig({
-	          'fill': '#FFFFFF',
-	          'borderThickness': 0
-	        });
-
-	        toGroup.setConfig({
-	          'fill': '#FFFFFF',
-	          'borderThickness': 0
-	        });
-
 	        fromDateLabel = new this.toolbox.Label(this.config['fromText'], {
 	          smartLabel: this.smartLabel,
 	          paper: this.graphics.paper
 	        }, {
-	          text: {
-	            style: {
-	              'font-size': this.config.styles['font-size'],
-	              'font-family': this.config.styles['font-family'],
-	              'fill': this.config.styles['font-color']
-	            }
-	          },
+	          className: styles.label.className,
 	          container: {
 	            'width': 40
 	          }
 	        });
 
+	        classNames = fromDateLabel.getIndividualClassNames(fromDateLabel.getClassName());
+	        addCssRules(classNames, styles.label);
 	        toDateLabel = new this.toolbox.Label(this.config['toText'], {
 	          smartLabel: this.smartLabel,
 	          paper: this.graphics.paper
 	        }, {
-	          text: {
-	            style: {
-	              'font-size': this.config.styles['font-size'],
-	              'font-family': this.config.styles['font-family'],
-	              'fill': this.config.styles['font-color'],
-	              'text-anchor': 'start'
-	            }
-	          },
+	          className: styles.label.className,
 	          container: {
 	            'width': 40
 	          }
 	        });
 
-	        self.fromDate = new this.toolbox.InputTextBoxSymbol({
-	          width: this.config.styles['width'],
-	          height: this.config.styles['height']
-	        }, {
-	          paper: this.graphics.paper,
-	          chart: this.chart,
-	          smartLabel: this.smartLabel,
-	          chartContainer: this.graphics.container
-	        }, {
-	          'strokeWidth': this.config.styles['input-border-thickness'],
-	          'fill': this.config.styles['input-fill'],
-	          'stroke': this.config.styles['input-border-color'],
-	          'radius': this.config.styles['input-border-radius'],
-	          'btnTextStyle': {
-	            'fontFamily': this.config.styles['font-family'],
-	            'fontSize': this.config.styles['font-size']
-	          },
-	          'shadow': {
-	            'fill': this.config.styles['input-shadow-fill'],
-	            'opacity': this.config.styles['input-shadow-opacity']
-	          },
-	          'label': fromFormattedDate,
-	          'labelFill': this.config.styles['font-color']
-	        });
-
-	        self.fromDate.addCustomState('errored', {
-	          config: {
-	            hover: {
-	              'fill': this.config.styles['input-error-fill'],
-	              'stroke-width': this.config.styles['input-error-border-thickness'],
-	              'stroke': this.config.styles['input-error-border-color']
-	            },
-	            normal: {
-	              'fill': this.config.styles['input-error-fill'],
-	              'stroke-width': this.config.styles['input-error-border-thickness'],
-	              'stroke': this.config.styles['input-error-border-color']
-	            },
-	            pressed: {
-	              'fill': this.config.styles['input-error-fill'],
-	              'stroke-width': this.config.styles['input-error-border-thickness'],
-	              'stroke': this.config.styles['input-error-border-color']
-	            }
+	        self.fromDate = d3.inputButton(fromFormattedDate);
+	        self.fromDate.setConfig({
+	          width: inputBtnStyles['width'],
+	          height: inputBtnStyles['height'],
+	          states: {
+	            errored: inputBtnStyles.states.errored.className
 	          }
 	        });
 
-	        self.fromDate.setStateConfig({
-	          pressed: {
-	            config: {
-	              pressed: {
-	                'fill': this.config.styles['input-focus-fill'],
-	                'stroke-width': this.config.styles['input-focus-border-thickness'],
-	                'stroke': this.config.styles['input-focus-border-color']
-	              },
-	              normal: {
-	                'fill': this.config.styles['input-focus-fill'],
-	                'stroke-width': this.config.styles['input-focus-border-thickness'],
-	                'stroke': this.config.styles['input-focus-border-color']
-	              },
-	              hover: {
-	                'fill': this.config.styles['input-focus-fill'],
-	                'stroke-width': this.config.styles['input-focus-border-thickness'],
-	                'stroke': this.config.styles['input-focus-border-color']
-	              }
-	            }
-	          },
-	          enabled: {
-	            config: {
-	              pressed: {
-	                'fill': this.config.styles['input-fill'],
-	                'stroke-width': this.config.styles['input-border-thickness'],
-	                'stroke': this.config.styles['input-border-color']
-	              },
-	              normal: {
-	                'fill': this.config.styles['input-fill'],
-	                'stroke-width': this.config.styles['input-border-thickness'],
-	                'stroke': this.config.styles['input-border-color']
-	              },
-	              hover: {
-	                'fill': this.config.styles['input-fill'],
-	                'stroke-width': this.config.styles['input-border-thickness'],
-	                'stroke': this.config.styles['input-border-color']
-	              }
-	            }
+	        self.fromDate.namespace('fusioncharts');
+	        self.fromDate.appendSelector('daterange');
+
+	        classNames = self.fromDate.getIndividualClassNames(self.fromDate.getClassName());
+
+	        addCssRules(classNames, inputBtnStyles);
+
+	        self.toDate = d3.inputButton(toFormattedDate).setConfig({
+	          width: inputBtnStyles['width'],
+	          height: inputBtnStyles['height'],
+	          radius: inputBtnStyles['radius'],
+	          states: {
+	            errored: inputBtnStyles.states.errored.className
 	          }
 	        });
 
-	        self.toDate = new this.toolbox.InputTextBoxSymbol({
-	          width: this.config.styles['width'],
-	          height: this.config.styles['height']
-	        }, {
-	          paper: this.graphics.paper,
-	          chart: this.chart,
-	          smartLabel: this.smartLabel,
-	          chartContainer: this.graphics.container
-	        }, {
-	          'strokeWidth': this.config.styles['input-border-thickness'],
-	          'fill': this.config.styles['input-fill'],
-	          'stroke': this.config.styles['input-border-color'],
-	          'radius': this.config.styles['input-border-radius'],
-	          'btnTextStyle': {
-	            'fontFamily': this.config.styles['font-family'],
-	            'fontSize': this.config.styles['font-size']
-	          },
-	          'shadow': {
-	            'fill': this.config.styles['input-shadow-fill'],
-	            'opacity': this.config.styles['input-shadow-opacity']
-	          },
-	          'label': toFormattedDate,
-	          'labelFill': this.config.styles['font-color']
-	        });
+	        self.toDate.namespace('fusioncharts');
+	        self.toDate.appendSelector('daterange');
 
-	        self.toDate.addCustomState('errored', {
-	          config: {
-	            hover: {
-	              'fill': this.config.styles['input-error-fill'],
-	              'stroke-width': this.config.styles['input-error-border-thickness'],
-	              'stroke': this.config.styles['input-error-border-color']
-	            },
-	            normal: {
-	              'fill': this.config.styles['input-error-fill'],
-	              'stroke-width': this.config.styles['input-error-border-thickness'],
-	              'stroke': this.config.styles['input-error-border-color']
-	            },
-	            pressed: {
-	              'fill': this.config.styles['input-error-fill'],
-	              'stroke-width': this.config.styles['input-error-border-thickness'],
-	              'stroke': this.config.styles['input-error-border-color']
-	            }
-	          }
-	        });
+	        classNames = self.toDate.getIndividualClassNames(self.toDate.getClassName());
 
-	        self.toDate.setStateConfig({
-	          pressed: {
-	            config: {
-	              pressed: {
-	                'fill': this.config.styles['input-focus-fill'],
-	                'stroke-width': this.config.styles['input-focus-border-thickness'],
-	                'stroke': this.config.styles['input-focus-border-color']
-	              },
-	              normal: {
-	                'fill': this.config.styles['input-focus-fill'],
-	                'stroke-width': this.config.styles['input-focus-border-thickness'],
-	                'stroke': this.config.styles['input-focus-border-color']
-	              },
-	              hover: {
-	                'fill': this.config.styles['input-focus-fill'],
-	                'stroke-width': this.config.styles['input-focus-border-thickness'],
-	                'stroke': this.config.styles['input-focus-border-color']
-	              }
-	            },
-	            enabled: {
-	              config: {
-	                pressed: {
-	                  'fill': this.config.styles['input-fill'],
-	                  'stroke-width': this.config.styles['input-border-thickness'],
-	                  'stroke': this.config.styles['input-border-color']
-	                },
-	                normal: {
-	                  'fill': this.config.styles['input-fill'],
-	                  'stroke-width': this.config.styles['input-border-thickness'],
-	                  'stroke': this.config.styles['input-border-color']
-	                },
-	                hover: {
-	                  'fill': this.config.styles['input-fill'],
-	                  'stroke-width': this.config.styles['input-border-thickness'],
-	                  'stroke': this.config.styles['input-border-color']
-	                }
-	              }
-	            }
-	          }
-	        });
+	        classNames = self.fromDate.getIndividualClassNames(self.fromDate.config.states.selected);
+
+	        addCssRules(classNames, inputBtnStyles.states.selected);
+
+	        classNames = self.fromDate.getIndividualClassNames(self.fromDate.config.states.errored);
+
+	        addCssRules(classNames, inputBtnStyles.states.errored);
 
 	        fromDateEventConfig = {
-	          click: {
-	            fn: function fn() {
-	              if (self.fromDate.state === 'errored' && self.fromError.text.attr('text') !== '') {
-	                self.toError.group.hide();
-	                self.fromError.group.show();
-	              }
-	              self.fromDate.edit();
-	              self.fromDate.updateVisual('pressed');
-	            }
+	          click: function click() {
+	            // if (self.fromDate.state === 'errored' &&
+	            //   self.fromError.text.attr('text') !== '') {
+	            //   self.toError.group.hide();
+	            //   self.fromError.group.show();
+	            // }
+	            self.fromDate.setState('selected');
 	          },
 	          // tooltext: self.config.fromTooltipText,
 	          keypress: function keypress(e) {
 	            var event = e || window.event,
 	                charCode = event.which || event.keyCode;
 	            if (charCode === 13) {
-	              self.startDate = self.fromDate.getText();
+	              self.startDate = self.fromDate.text();
 	              if (self.fromDate.state !== 'errored') {
 	                self.fromDate.blur();
-	                self.fromError.group.hide();
+	                // self.fromError.group.hide();
 	                // self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
-	                self.fromDate.updateVisual('enabled');
+	                // self.fromDate.removeState('selected');
+	                // self.fromDate.removeState('errored');
 	              } else {
-	                self.fromError.group.show();
-	                // self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
-	              }
+	                  // self.fromError.group.show();
+	                  // self.fromDate.state = 'errored';
+	                  // self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
+	                }
 	            }
 	          },
-	          textOnBlur: function textOnBlur() {
-	            self.fromDate.blur();
-	            self.startDate = self.fromDate.getText();
+	          blur: function blur() {
+	            self.startDate = self.fromDate.text();
 	            if (self.fromDate.state !== 'errored') {
 	              self.fromDate.blur();
-	              self.fromError.group.hide();
+	              // self.fromError.group.hide();
 	              // self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
-	              self.fromDate.updateVisual('enabled');
+	              self.fromDate.removeState('selected');
 	            } else {
-	              self.fromError.group.show();
+	              // self.fromError.group.show();
 	              // self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
 	            }
 	          }
@@ -773,43 +675,42 @@
 	        self.fromDate.attachEventHandlers(fromDateEventConfig);
 
 	        toDateEventConfig = {
-	          click: {
-	            fn: function fn() {
-	              if (self.toDate.state === 'errored' && self.toError.text.attr('text') !== '') {
-	                self.fromError.group.hide();
-	                self.toError.group.show();
-	              }
-	              self.toDate.edit();
-	              self.toDate.updateVisual('pressed');
-	            }
+	          click: function click() {
+	            // if (self.toDate.state === 'errored' &&
+	            //   self.toError.text.attr('text') !== '') {
+	            //   self.fromError.group.hide();
+	            //   self.toError.group.show();
+	            // }
+	            // self.toDate.edit();
+	            self.toDate.setState('selected');
 	          },
 	          // tooltext: self.config.toTooltipText,
 	          keypress: function keypress(e) {
 	            var event = e || window.event,
 	                charCode = event.which || event.keyCode;
 	            if (charCode === 13) {
-	              self.endDate = self.toDate.getText();
+	              self.endDate = self.toDate.text();
 	              if (self.toDate.state !== 'errored') {
 	                self.toDate.blur();
-	                self.toError.group.hide();
+	                // self.toError.group.hide();
 	                // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
-	                self.toDate.updateVisual('enabled');
+	                self.toDate.removeState('selected');
 	              } else {
-	                self.toError.group.show();
+	                // self.toError.group.show();
 	                // self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
 	              }
 	            }
 	          },
-	          textOnBlur: function textOnBlur() {
-	            self.toDate.blur();
-	            self.endDate = self.toDate.getText();
+	          blur: function blur() {
+	            // self.toDate.blur();
+	            self.endDate = self.toDate.text();
 	            if (self.toDate.state !== 'errored') {
-	              self.toDate.blur();
-	              self.toError.group.hide();
+	              // self.toDate.blur();
+	              // self.toError.group.hide();
 	              // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
-	              self.toDate.updateVisual('enabled');
+	              self.toDate.removeState('selected');
 	            } else {
-	              self.toError.group.show();
+	              // self.toError.group.show();
 	              // self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
 	            }
 	          }
@@ -915,17 +816,21 @@
 	          model.onPropsChange(['x-axis-visible-range-start', 'x-axis-visible-range-end'], function (start, end) {
 	            // setTimeout(() => {
 	            self.startDt = start[1];
-	            self.fromDate.blur(self.getDate(start[1]));
-	            self.fromError.text.attr('text', '');
-	            self.fromError.group.hide();
+	            self.fromDate.text(self.getDate(start[1]));
+	            // self.fromDate.blur(self.getDate(start[1]));
+	            // self.fromError.text.attr('text', '');
+	            // self.fromError.group.hide();
 	            // self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
-	            self.fromDate.updateVisual('enabled');
+	            self.fromDate.removeState('selected');
+	            self.fromDate.removeState('errored');
 	            self.endDt = end[1];
-	            self.toDate.blur(self.getDate(end[1]));
-	            self.toError.text.attr('text', '');
-	            self.toError.group.hide();
+	            self.toDate.text(self.getDate(end[1]));
+	            // self.toDate.blur(self.getDate(end[1]));
+	            // self.toError.text.attr('text', '');
+	            // self.toError.group.hide();
 	            // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
-	            self.toDate.updateVisual('enabled');
+	            self.toDate.removeState('selected');
+	            self.toDate.removeState('errored');
 	            // }, 400);
 	          });
 	        }
@@ -963,12 +868,14 @@
 	            this.startDt = startTimestamp;
 	            this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
 	          } else {
-	            this.toError.group.hide();
-	            this.fromDate.updateVisual('errored');
+	            // this.toError.group.hide();
+	            this.fromDate.setState('errored');
+	            this.fromDate.state = 'errored';
 	          }
 	        } else {
 	          if (this.fromDate.state === 'errored') {
-	            this.fromDate.updateVisual('enabled');
+	            this.fromDate.removeState('errored');
+	            this.fromDate.state = 'enabled';
 	          }
 	        }
 	      }
@@ -984,17 +891,20 @@
 	            absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'],
 	            minDiff = this.minActiveInterval,
 	            actualDiff = endTimestamp - this.startDt;
+
 	        if (newDate !== endDt) {
 	          if (this.isBetween(endTimestamp, absoluteStart, absoluteEnd, 'to') && this.isAfterOrEqualTo(endTimestamp, this.startDt, 'to') && this.diffIsGreaterThan(actualDiff, minDiff, 'to')) {
 	            this.endDt = endTimestamp;
 	            this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
 	          } else {
-	            this.fromError.group.hide();
-	            this.toDate.updateVisual('errored');
+	            // this.fromError.group.hide();
+	            this.toDate.setState('errored');
+	            this.toDate.state = 'errored';
 	          }
 	        } else {
 	          if (this.toDate.state === 'errored') {
-	            this.toDate.updateVisual('enabled');
+	            this.toDate.removeState('errored');
+	            this.toDate.state = 'enabled';
 	          }
 	        }
 	      }
