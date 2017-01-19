@@ -98,9 +98,25 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	module.exports = function (dep) {
+
+	  // Merge two objects recursively
+	  function mergeRecursive(source, sink) {
+	    var prop;
+
+	    for (prop in sink) {
+
+	      if (source[prop] instanceof Object) {
+	        mergeRecursive(source[prop], sink[prop]);
+	      } else {
+	        source[prop] = sink[prop];
+	      }
+	    }
+	  }
+
 	  /**
 	   * Class representing the DateRange.
 	   */
+
 	  var DateRange = function () {
 	    function DateRange() {
 	      _classCallCheck(this, DateRange);
@@ -236,6 +252,11 @@
 	          inputButton: {
 	            'width': 120,
 	            'height': 22,
+	            radius: 1,
+	            padding: {
+	              left: 15,
+	              right: 10
+	            },
 	            className: 'date-range-chooser',
 	            container: {
 	              style: {
@@ -259,7 +280,6 @@
 	                container: {
 	                  style: {
 	                    fill: '#FFFFFF',
-	                    'stroke-width': 1,
 	                    stroke: '#1E1F1F'
 	                  }
 	                }
@@ -269,17 +289,12 @@
 	                container: {
 	                  style: {
 	                    fill: '#FFFFFF',
-	                    'stroke-width': 1,
 	                    stroke: '#D25353'
 	                  }
 	                }
-	                // 'input-error-fill': '#FFEFEF',
-	                // 'input-error-border-thickness': 1,
-	                // 'input-error-border-color': '#D25353',
 	                // 'input-error-tooltip-font-color': '#FF0000'
 	              }
-	            },
-	            radius: 1
+	            }
 	          },
 	          label: {
 	            className: 'date-range-chooser-label',
@@ -430,32 +445,33 @@
 	        //     pathStr = 'M' + crossX1 + ',' + crossY1 + 'L' + crossX2 + ',' + crossY2;
 	        //   pathStr += 'M' + crossX1 + ',' + crossY2 + 'L' + crossX2 + ',' + crossY1;
 	        //   return pathStr;
-	        // }
+	      }
+	    }, {
+	      key: 'setErrorMsg',
+	      value: function setErrorMsg(errorGroup, errorMsg) {
+	        // return;
+	        // let errorRectX,
+	        //   errorRectWidth,
+	        //   errorRectEnd;
 
-	        // setErrorMsg (errorGroup, errorMsg) {
+	        // if (errorGroup.text.attr('text') === errorMsg) {
 	        //   return;
-	        //   let errorRectX,
-	        //     errorRectWidth,
-	        //     errorRectEnd;
+	        // }
+	        // errorGroup.text.attr('text', errorMsg);
+	        // errorGroup.rect.attr('width',
+	        //   errorGroup.text.getBBox().width + (4 * 2) + errorGroup.circle.getBBox().width + 2);
 
-	        //   if (errorGroup.text.attr('text') === errorMsg) {
-	        //     return;
-	        //   }
-	        //   errorGroup.text.attr('text', errorMsg);
-	        //   errorGroup.rect.attr('width',
-	        //     errorGroup.text.getBBox().width + (4 * 2) + errorGroup.circle.getBBox().width + 2);
-
-	        //   errorRectX = errorGroup.rect.getBBox().x;
-	        //   errorRectWidth = errorGroup.rect.getBBox().width;
-	        //   errorRectEnd = errorRectX + errorRectWidth;
-	        //   console.log(errorRectEnd, this.containerRight);
-	        //   if (errorRectEnd > this.containerRight) {
-	        //     let diff = errorRectEnd - this.containerRight;
-	        //     errorGroup.rect.attr('x', errorRectX - diff);
-	        //     errorGroup.circle.attr('cx', errorGroup.circle.getBBox().x - diff + 5);
-	        //     errorGroup.cross.translate(-diff - 1, 0);
-	        //     errorGroup.text.attr('x', errorGroup.text.getBBox().x - diff);
-	        //   }
+	        // errorRectX = errorGroup.rect.getBBox().x;
+	        // errorRectWidth = errorGroup.rect.getBBox().width;
+	        // errorRectEnd = errorRectX + errorRectWidth;
+	        // console.log(errorRectEnd, this.containerRight);
+	        // if (errorRectEnd > this.containerRight) {
+	        //   let diff = errorRectEnd - this.containerRight;
+	        //   errorGroup.rect.attr('x', errorRectX - diff);
+	        //   errorGroup.circle.attr('cx', errorGroup.circle.getBBox().x - diff + 5);
+	        //   errorGroup.cross.translate(-diff - 1, 0);
+	        //   errorGroup.text.attr('x', errorGroup.text.getBBox().x - diff);
+	        // }
 	      }
 	    }, {
 	      key: 'createObjectAssign',
@@ -547,98 +563,48 @@
 	                styles.text && paper.cssAddRule('.' + className, styles.text.style);
 	            }
 	          }
-	        };
+	        },
+	            createInputButtons = function createInputButtons(store) {
+	          var key, inputButton, text, config, states, state;
 
-	        var fromDateEventConfig = {},
-	            toDateEventConfig = {};
+	          for (key in store) {
+	            inputButton = store[key];
+	            text = inputButton.text;
+	            config = inputButton.config;
+	            self[key] = d3.inputButton(text).setConfig(config);
+	            self[key].namespace('fusioncharts');
+	            self[key].appendSelector('daterange');
+	            addCssRules(self[key].getIndividualClassNames(self[key].getClassName()), inputBtnStyles);
+	            states = config.states;
+	            for (state in states) {
+	              addCssRules(self[key].getIndividualClassNames(self[key].config.states[state]), inputBtnStyles.states[state]);
+	            }
 
-	        self.fromDate = {};
-	        self.toDate = {};
+	            self[key].attachEventHandlers(inputButton.eventListeners);
+	            inputButton.group.addSymbol(self[key]);
+	          }
+	        },
+	            createLabels = function createLabels(store) {
+	          var key, label, text, config;
 
-	        fromFormattedDate = this.getDate(this.startDt);
-	        toFormattedDate = this.getDate(this.endDt);
-	        toolbar = new this.HorizontalToolbar({
+	          for (key in store) {
+	            label = store[key];
+	            text = label.text;
+	            config = label.config;
+	            self[key] = new self.toolbox.Label(text, dependencies, config);
+	            // self[key].namespace('fusioncharts');
+	            // self[key].appendSelector('daterange');
+	            addCssRules(self[key].getIndividualClassNames(self[key].getClassName()), label.styles);
+	            label.group.addSymbol(self[key]);
+	          }
+	        },
+	            dependencies = {
 	          paper: this.graphics.paper,
 	          chart: this.chart,
 	          smartLabel: this.smartLabel,
 	          chartContainer: this.graphics.container
-	        });
-
-	        fromGroup = new this.toolbox.ComponentGroup({
-	          paper: this.graphics.paper,
-	          chart: this.chart,
-	          smartLabel: this.smartLabel,
-	          chartContainer: this.graphics.container
-	        });
-
-	        toGroup = new this.toolbox.ComponentGroup({
-	          paper: this.graphics.paper,
-	          chart: this.chart,
-	          smartLabel: this.smartLabel,
-	          chartContainer: this.graphics.container
-	        });
-
-	        fromDateLabel = new this.toolbox.Label(this.config['fromText'], {
-	          smartLabel: this.smartLabel,
-	          paper: this.graphics.paper
-	        }, {
-	          className: styles.label.className,
-	          container: {
-	            'width': 40
-	          }
-	        });
-
-	        classNames = fromDateLabel.getIndividualClassNames(fromDateLabel.getClassName());
-	        addCssRules(classNames, styles.label);
-	        toDateLabel = new this.toolbox.Label(this.config['toText'], {
-	          smartLabel: this.smartLabel,
-	          paper: this.graphics.paper
-	        }, {
-	          className: styles.label.className,
-	          container: {
-	            'width': 40
-	          }
-	        });
-
-	        self.fromDate = d3.inputButton(fromFormattedDate);
-	        self.fromDate.setConfig({
-	          width: inputBtnStyles['width'],
-	          height: inputBtnStyles['height'],
-	          states: {
-	            errored: inputBtnStyles.states.errored.className
-	          }
-	        });
-
-	        self.fromDate.namespace('fusioncharts');
-	        self.fromDate.appendSelector('daterange');
-
-	        classNames = self.fromDate.getIndividualClassNames(self.fromDate.getClassName());
-
-	        addCssRules(classNames, inputBtnStyles);
-
-	        self.toDate = d3.inputButton(toFormattedDate).setConfig({
-	          width: inputBtnStyles['width'],
-	          height: inputBtnStyles['height'],
-	          radius: inputBtnStyles['radius'],
-	          states: {
-	            errored: inputBtnStyles.states.errored.className
-	          }
-	        });
-
-	        self.toDate.namespace('fusioncharts');
-	        self.toDate.appendSelector('daterange');
-
-	        classNames = self.toDate.getIndividualClassNames(self.toDate.getClassName());
-
-	        classNames = self.fromDate.getIndividualClassNames(self.fromDate.config.states.selected);
-
-	        addCssRules(classNames, inputBtnStyles.states.selected);
-
-	        classNames = self.fromDate.getIndividualClassNames(self.fromDate.config.states.errored);
-
-	        addCssRules(classNames, inputBtnStyles.states.errored);
-
-	        fromDateEventConfig = {
+	        },
+	            fromDateEventConfig = {
 	          click: function click() {
 	            // if (self.fromDate.state === 'errored' &&
 	            //   self.fromError.text.attr('text') !== '') {
@@ -678,11 +644,8 @@
 	              // self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
 	            }
 	          }
-	        };
-
-	        self.fromDate.attachEventHandlers(fromDateEventConfig);
-
-	        toDateEventConfig = {
+	        },
+	            toDateEventConfig = {
 	          click: function click() {
 	            // if (self.toDate.state === 'errored' &&
 	            //   self.toError.text.attr('text') !== '') {
@@ -722,14 +685,84 @@
 	              // self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
 	            }
 	          }
+	        },
+	            labelList,
+	            inputButtonlist;
+
+	        self.fromDate = {};
+	        self.toDate = {};
+
+	        fromFormattedDate = this.getDate(this.startDt);
+	        toFormattedDate = this.getDate(this.endDt);
+	        toolbar = new this.HorizontalToolbar(dependencies);
+
+	        fromGroup = new this.toolbox.ComponentGroup(dependencies);
+
+	        toGroup = new this.toolbox.ComponentGroup(dependencies);
+
+	        labelList = {
+	          fromDateLabel: {
+	            text: this.config['fromText'],
+	            config: {
+	              className: styles.label.className,
+	              container: {
+	                'width': 40
+	              }
+	            },
+	            styles: styles.label,
+	            group: fromGroup
+	          },
+	          toDateLabel: {
+	            text: this.config['toText'],
+	            config: {
+	              className: styles.label.className,
+	              container: {
+	                'width': 40
+	              }
+	            },
+	            styles: styles.label,
+	            group: toGroup
+	          }
 	        };
 
-	        self.toDate.attachEventHandlers(toDateEventConfig);
+	        inputButtonlist = {
+	          fromDate: {
+	            text: fromFormattedDate,
+	            config: {
+	              width: inputBtnStyles.width,
+	              height: inputBtnStyles.height,
+	              padding: inputBtnStyles.padding,
+	              radius: inputBtnStyles.radius,
+	              className: inputBtnStyles.className,
+	              states: {
+	                selected: inputBtnStyles.states.selected.className,
+	                errored: inputBtnStyles.states.errored.className
+	              }
+	            },
+	            eventListeners: fromDateEventConfig,
+	            group: fromGroup
+	          },
+	          toDate: {
+	            text: toFormattedDate,
+	            config: {
+	              width: inputBtnStyles.width,
+	              height: inputBtnStyles.height,
+	              padding: inputBtnStyles.padding,
+	              radius: inputBtnStyles.radius,
+	              className: inputBtnStyles.className,
+	              states: {
+	                selected: inputBtnStyles.states.selected.className,
+	                errored: inputBtnStyles.states.errored.className
+	              }
+	            },
+	            eventListeners: toDateEventConfig,
+	            group: toGroup
+	          }
+	        };
 
-	        fromGroup.addSymbol(fromDateLabel);
-	        fromGroup.addSymbol(self.fromDate);
-	        toGroup.addSymbol(toDateLabel);
-	        toGroup.addSymbol(self.toDate);
+	        createLabels(labelList);
+	        createInputButtons(inputButtonlist);
+
 	        toolbar.addComponent(fromGroup);
 	        toolbar.addComponent(toGroup);
 	        return toolbar;
