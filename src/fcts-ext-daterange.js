@@ -1,29 +1,13 @@
 'use strict';
 module.exports = function (dep) {
-
-  // Merge two objects recursively
-  function mergeRecursive (source, sink) {
-      var prop;
-
-      for (prop in sink) {
-
-          if (source[prop] instanceof Object) {
-              mergeRecursive(source[prop], sink[prop]);
-          }
-          else {
-              source[prop] = sink[prop];
-          }
-      }
-  }
-
   /**
    * Class representing the DateRange.
    */
   class DateRange {
     constructor () {
       /**
-       * @private
-       */
+      * @private
+      */
       this.startDt = 0;
       this.endDt = 0;
       this.startDataset = 0;
@@ -503,8 +487,6 @@ module.exports = function (dep) {
     createToolbar () {
       var toolbar,
         self = this,
-        fromDateLabel,
-        toDateLabel,
         fromGroup,
         toGroup,
         fromFormattedDate,
@@ -512,7 +494,7 @@ module.exports = function (dep) {
         styles = this.config.styles,
         inputBtnStyles = styles.inputButton,
         paper = this.graphics.paper,
-        classNames,
+        d3 = paper.getInstances().d3,
         addCssRules = function (classNames, styles) {
           var key, className;
           for (key in classNames) {
@@ -581,7 +563,7 @@ module.exports = function (dep) {
               //   self.toError.group.hide();
               //   self.fromError.group.show();
               // }
-              self.fromDate.setState('selected');
+            self.fromDate.setState('selected');
           },
           // tooltext: self.config.fromTooltipText,
           keypress: (e) => {
@@ -623,7 +605,7 @@ module.exports = function (dep) {
               //   self.toError.group.show();
               // }
               // self.toDate.edit();
-              self.toDate.setState('selected');
+            self.toDate.setState('selected');
           },
           // tooltext: self.config.toTooltipText,
           keypress: (e) => {
@@ -729,7 +711,6 @@ module.exports = function (dep) {
           group: toGroup
         }
       };
-
 
       createLabels(labelList);
       createInputButtons(inputButtonlist);

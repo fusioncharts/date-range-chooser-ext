@@ -98,32 +98,16 @@
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	module.exports = function (dep) {
-
-	  // Merge two objects recursively
-	  function mergeRecursive(source, sink) {
-	    var prop;
-
-	    for (prop in sink) {
-
-	      if (source[prop] instanceof Object) {
-	        mergeRecursive(source[prop], sink[prop]);
-	      } else {
-	        source[prop] = sink[prop];
-	      }
-	    }
-	  }
-
 	  /**
 	   * Class representing the DateRange.
 	   */
-
 	  var DateRange = function () {
 	    function DateRange() {
 	      _classCallCheck(this, DateRange);
 
 	      /**
-	       * @private
-	       */
+	      * @private
+	      */
 	      this.startDt = 0;
 	      this.endDt = 0;
 	      this.startDataset = 0;
@@ -534,8 +518,6 @@
 	      value: function createToolbar() {
 	        var toolbar,
 	            self = this,
-	            fromDateLabel,
-	            toDateLabel,
 	            fromGroup,
 	            toGroup,
 	            fromFormattedDate,
@@ -543,7 +525,7 @@
 	            styles = this.config.styles,
 	            inputBtnStyles = styles.inputButton,
 	            paper = this.graphics.paper,
-	            classNames,
+	            d3 = paper.getInstances().d3,
 	            addCssRules = function addCssRules(classNames, styles) {
 	          var key, className;
 	          for (key in classNames) {
