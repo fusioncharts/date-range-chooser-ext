@@ -814,7 +814,7 @@ module.exports = function (dep) {
         }
       });
 
-      d3.select('html').on('click.custom', function () {
+      d3.select('html').on('click.' + new Date().getTime(), function () {
         var target = d3.event.target,
           buttonGroup = self.activeBtn && self.activeBtn.buttonGroup.node();
 
