@@ -24,6 +24,7 @@ module.exports = function (dep) {
       }
       this.HorizontalToolbar = this.toolbox.HorizontalToolbar;
       this.ComponentGroup = this.toolbox.ComponentGroup;
+      this.FusionCalendar = dep.FusionCalendar;
       this.isDrawn = false;
       this.startTooltipErrorMsg = '';
       this.endTooltipErrorMsg = '';
@@ -195,7 +196,7 @@ module.exports = function (dep) {
             'height': 22,
             radius: 1,
             padding: {
-              left: 15,
+              left: 10,
               right: 10
             },
             className: 'date-range-chooser',
@@ -213,6 +214,11 @@ module.exports = function (dep) {
                 'font-family': '"Lucida Grande", sans-serif',
                 'font-size': '13px',
                 fill: '#4B4B4B'
+              }
+            },
+            icon: {
+              style: {
+                'fill': '#4B4B4B'
               }
             },
             states: {
@@ -259,158 +265,216 @@ module.exports = function (dep) {
       config.toText = extData.toText || 'To:';
       config.toTooltipText = extData.toTooltipText || 'To Date';
       config.styles = Object.assign(defaultStyles, extData.styles);
+      config.calendar = extData.calendar === undefined ? true : extData.calendar;
+      config.editable = extData.editable === undefined ? true : (config.calendar === false ? true : extData.editable);
       return config;
     }
 
     createErrorGroup (symbol) {
       // return;
-    //   let self = this,
-    //     paper = self.graphics.paper,
-    //     circle,
-    //     crossPath,
-    //     cross,
-    //     rect,
-    //     text,
-    //     group,
-    //     textBBox,
-    //     circleBBox,
-    //     rectBBox,
-    //     symbolBBox,
-    //     orientation = self.config.orientation,
-    //     position = self.config.position;
+      let self = this,
+        paper = self.graphics.paper,
+        parentGroup = this.parentGroup,
+        circle,
+        crossPath,
+        cross,
+        rect,
+        text,
+        group,
+        textBBox,
+        circleBBox,
+        rectBBox,
+        symbolBBox,
+        width = 20,
+        height = 20,
+        orientation = self.config.orientation,
+        position = self.config.position;
 
-    //   if (orientation === 'horizontal') {
-    //     if (position === 'top') {
-    //       symbolBBox = symbol.getBoundElement().getBBox();
-    //       group = paper.group('error-group');
+      group = parentGroup.append('g').attr('class', 'error-group');
 
-    //       rect = paper.rect(symbolBBox.x,
-    //         symbolBBox.y - symbolBBox.height, 20, 20, group);
-    //       rectBBox = rect.getBBox();
+      if (orientation === 'horizontal') {
+        if (position === 'top') {
+          symbolBBox = symbol.getBBox();
+          rect = group.append('rect');
+          paper.setAttrs(rect, {
+            x: symbolBBox.x,
+            y: symbolBBox.y - symbolBBox.height,
+            width: 20,
+            height: 20
+          });
 
-    //       circle = paper.circle(rectBBox.x + 5 + 1,
-    //         rectBBox.y + 6 + 4, 6, group);
-    //       circleBBox = circle.getBBox();
+          rectBBox = rect.node().getBBox();
 
-    //       crossPath = this.getCrossPath(circleBBox, 4);
-    //       cross = paper.path(crossPath, group);
+          circle = group.append('circle');
 
-    //       text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2,
-    //         '', group);
-    //       textBBox = text.getBBox();
-    //     } else if (position === 'bottom') {
-    //       symbolBBox = symbol.getBoundElement().getBBox();
-    //       group = paper.group('error-group');
+          paper.setAttrs(circle, {
+            cx: rectBBox.x + 5 + 1,
+            cy: rectBBox.y + 6 + 4,
+            r: 6
+          });
 
-    //       rect = paper.rect(symbolBBox.x,
-    //         symbolBBox.y + symbolBBox.height, 20, 20, group);
-    //       rectBBox = rect.getBBox();
+          circleBBox = circle.node().getBBox();
 
-    //       circle = paper.circle(rectBBox.x + 5 + 1,
-    //         rectBBox.y + 6 + 4, 6, group);
-    //       circleBBox = circle.getBBox();
+          crossPath = this.getCrossPath(circleBBox, 4);
+          cross = group.append('path');
+          paper.setAttrs(cross, {
+            d: crossPath
+          });
 
-    //       crossPath = this.getCrossPath(circleBBox, 4);
-    //       cross = paper.path(crossPath, group);
+          text = group.append('text');
+          paper.setAttrs(text, {
+            x: circleBBox.x + circleBBox.width + 4,
+            y: rectBBox.y + 2
+          });
+        } else if (position === 'bottom') {
+          symbolBBox = symbol.getBBox();
+          rect = group.append('rect');
 
-    //       text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2,
-    //         '', group);
-    //       textBBox = text.getBBox();
-    //     }
-    //   } else if (orientation === 'vertical') {
-    //     symbolBBox = symbol.getBoundElement().getBBox();
-    //     group = paper.group('error-group');
+          paper.setAttrs(rect, {
+            x: symbolBBox.x,
+            y: symbolBBox.y + symbolBBox.height,
+            width: 20,
+            height: 20
+          });
 
-    //     rect = paper.rect(symbolBBox.x,
-    //       symbolBBox.y + symbolBBox.height, 20, 20, group);
-    //     rectBBox = rect.getBBox();
+          rectBBox = rect.getBBox();
 
-    //     circle = paper.circle(rectBBox.x + 5 + 1,
-    //       rectBBox.y + 6 + 4, 6, group);
-    //     circleBBox = circle.getBBox();
+          circle = group.append('circle');
+          paper.setAttrs(circle, {
+            cx: rectBBox.x + 5 + 1,
+            cy: rectBBox.y + 6 + 4,
+            r: 6
+          });
 
-    //     crossPath = this.getCrossPath(circleBBox, 4);
-    //     cross = paper.path(crossPath, group);
+          circleBBox = circle.getBBox();
 
-    //     text = paper.text(circleBBox.x + circleBBox.width + 4, rectBBox.y + 2,
-    //       '', group);
-    //     textBBox = text.getBBox();
-    //   }
+          crossPath = this.getCrossPath(circleBBox, 4);
+          cross = group.append('path');
+          paper.setAttrs(cross, {
+            d: crossPath
+          });
 
-    //   circle.attr({
-    //     'stroke': '#d71f26',
-    //     'stroke-width': '1',
-    //     'fill': 'none'
-    //   });
-    //   cross.attr({
-    //     'stroke': '#000000',
-    //     'stroke-width': '1.5'
-    //   });
-    //   text.attr({
-    //     'text-anchor': 'start',
-    //     'y': textBBox.y + textBBox.height,
-    //     'fill': '#D80000',
-    //     'font-family': '"Lucida Grande", sans-serif',
-    //     'font-size': '12'
-    //   });
-    //   rect.attr({
-    //     'fill': '#FFFFFF',
-    //     'fill-opacity': '0.8',
-    //     'stroke-width': '0',
-    //     'width': textBBox.width + circleBBox.width
-    //   });
-    //   group.attr({
-    //     visibility: 'hidden'
-    //   });
+          text = group.append('text');
+          paper.setAttrs(text, {
+            x: circleBBox.x + circleBBox.width + 4,
+            y: rectBBox.y + 2
+          });
+        }
+      } else if (orientation === 'vertical') {
+        symbolBBox = symbol.getBBox();
+        rect = group.append('rect');
+        paper.setAttrs(rect, {
+          x: symbolBBox.x,
+          y: symbolBBox.y + symbolBBox.height,
+          width: width,
+          height: height
+        });
 
-    //   return {
-    //     'group': group,
-    //     'cross': cross,
-    //     'circle': circle,
-    //     'rect': rect,
-    //     'text': text
-    //   };
-    // }
+        rectBBox = rect.node().getBBox();
 
-    // getCrossPath (circleBox, padding) {
-    //   // M478,77L483,82M478,82L483,77
-    //   let circleX1 = Math.round(circleBox.x),
-    //     circleY1 = Math.round(circleBox.y),
-    //     circleX2 = Math.round(circleBox.x2),
-    //     circleY2 = Math.round(circleBox.y2),
-    //     crossX1 = circleX1 + 4,
-    //     crossY1 = circleY1 + 2,
-    //     crossX2 = circleX2 - 4,
-    //     crossY2 = circleY2 - 3,
-    //     pathStr = 'M' + crossX1 + ',' + crossY1 + 'L' + crossX2 + ',' + crossY2;
-    //   pathStr += 'M' + crossX1 + ',' + crossY2 + 'L' + crossX2 + ',' + crossY1;
-    //   return pathStr;
+        circle = group.append('circle', {
+          cx: rectBBox.x + 5 + 1,
+          cy: rectBBox.y + 6 + 4,
+          r: 6
+        });
+
+        circleBBox = circle.node().getBBox();
+
+        crossPath = this.getCrossPath(circleBBox, 4);
+        cross = group.append('path').attr('d', crossPath);
+
+        text = group.append('text');
+        paper.setAttrs(text, {
+          x: circleBBox.x + circleBBox.width + 4,
+          y: rectBBox.y + 2
+        });
+      }
+
+      text.text('W');
+      textBBox = text.node().getBBox();
+      paper.setStyles(circle, {
+        'stroke': '#d71f26',
+        'stroke-width': '1',
+        'fill': 'none'
+      });
+      paper.setStyles(cross, {
+        'stroke': '#000000',
+        'stroke-width': '1.5'
+      });
+
+      paper.setAttrs(text, {
+        'y': textBBox.y + textBBox.height,
+        dy: '0.75em'
+      });
+
+      paper.setStyles(text, {
+        'fill': '#D80000',
+        'font-family': '"Lucida Grande", sans-serif',
+        'text-anchor': 'start',
+        'font-size': '12'
+      });
+
+      paper.setStyles(rect, {
+        'fill': '#FFFFFF',
+        'fill-opacity': '0.8',
+        'stroke-width': '0'
+      });
+
+      rect.attr('width', textBBox.width + circleBBox.width);
+
+      group.style('display', 'none');
+
+      return {
+        'group': group,
+        'cross': cross,
+        'circle': circle,
+        'rect': rect,
+        'text': text
+      };
+    }
+
+    getCrossPath (circleBox, padding) {
+      // M478,77L483,82M478,82L483,77
+      let circleX1 = Math.round(circleBox.x),
+        circleY1 = Math.round(circleBox.y),
+        circleX2 = Math.round(circleBox.x + circleBox.width),
+        circleY2 = Math.round(circleBox.y + circleBox.height),
+        crossX1 = circleX1 + 4,
+        crossY1 = circleY1 + 2,
+        crossX2 = circleX2 - 4,
+        crossY2 = circleY2 - 3,
+        pathStr = 'M ' + crossX1 + ' ' + crossY1 + ' L ' + crossX2 + ' ' + crossY2;
+      pathStr += ' M ' + crossX1 + ' ' + crossY2 + ' L ' + crossX2 + ' ' + crossY1;
+      return pathStr;
     }
 
     setErrorMsg (errorGroup, errorMsg) {
       // return;
-      // let errorRectX,
-      //   errorRectWidth,
-      //   errorRectEnd;
+      let errorRectX,
+        errorRectWidth,
+        errorRectEnd,
+        group = errorGroup.group,
+        bBox;
 
-      // if (errorGroup.text.attr('text') === errorMsg) {
-      //   return;
-      // }
-      // errorGroup.text.attr('text', errorMsg);
-      // errorGroup.rect.attr('width',
-      //   errorGroup.text.getBBox().width + (4 * 2) + errorGroup.circle.getBBox().width + 2);
+      if (errorGroup.text.attr('text') === errorMsg) {
+        return;
+      }
+      errorGroup.text.text(errorMsg);
 
-      // errorRectX = errorGroup.rect.getBBox().x;
-      // errorRectWidth = errorGroup.rect.getBBox().width;
-      // errorRectEnd = errorRectX + errorRectWidth;
-      // console.log(errorRectEnd, this.containerRight);
-      // if (errorRectEnd > this.containerRight) {
-      //   let diff = errorRectEnd - this.containerRight;
-      //   errorGroup.rect.attr('x', errorRectX - diff);
-      //   errorGroup.circle.attr('cx', errorGroup.circle.getBBox().x - diff + 5);
-      //   errorGroup.cross.translate(-diff - 1, 0);
-      //   errorGroup.text.attr('x', errorGroup.text.getBBox().x - diff);
-      // }
+      bBox = group.node().getBBox();
+      errorRectX = bBox.x;
+      errorRectWidth = bBox.width;
+      errorRectEnd = errorRectX + errorRectWidth;
+      group.attr('transform', '');
+      if (errorRectEnd > this.containerRight) {
+        let diff = errorRectEnd - this.containerRight;
+        // errorGroup.rect.attr('x', errorRectX - diff);
+        // errorGroup.circle.attr('cx', errorGroup.circle.node().getBBox().x - diff + 5);
+        group.attr('transform', 'translate(' + (-diff - 1) + ',' + 0 + ')');
+        // errorGroup.cross.attr('transform', "translate(" + 0 + ',' + 0 + ')');
+        // errorGroup.cross.attr('transform',);
+        // errorGroup.text.attr('x', errorGroup.text.node().getBBox().x - diff);
+      }
     }
 
     createObjectAssign () {
@@ -495,14 +559,15 @@ module.exports = function (dep) {
         inputBtnStyles = styles.inputButton,
         paper = this.graphics.paper,
         d3 = paper.getInstances().d3,
+        absoluteStart,
+        absoluteEnd,
+        startDt,
+        endDt,
         addCssRules = function (classNames, styles) {
           var key, className;
           for (key in classNames) {
             className = classNames[key];
             switch (key) {
-              case 'container':
-                styles.container && paper.cssAddRule('.' + className, styles.container.style);
-                break;
               case 'input':
                 styles.text && paper.cssAddRule('.' + className, {
                   color: styles.text.style.fill,
@@ -510,8 +575,9 @@ module.exports = function (dep) {
                   'font-size': styles.text.style['font-size']
                 });
                 break;
-              case 'text':
-                styles.text && paper.cssAddRule('.' + className, styles.text.style);
+              default:
+                styles[key] && paper.cssAddRule('.' + className, styles[key].style);
+                break;
             }
           }
         },
@@ -556,14 +622,39 @@ module.exports = function (dep) {
           smartLabel: this.smartLabel,
           chartContainer: this.graphics.container
         },
+        showCalendar = function (bBox, date) {
+          var dateObj = new Date(date);
+          // self.toDate.edit();
+          self.calendar.configure({
+            posX: bBox.x + bBox.width,
+            posY: bBox.y + bBox.height + 3,
+            selectedDate: {
+              day: dateObj.getDate(),
+              month: dateObj.getMonth() + 1,
+              year: dateObj.getFullYear()
+            }
+          });
+          // self.calendar.show();
+          self.calendar.show();
+        },
         fromDateEventConfig = {
           click: function () {
-              // if (self.fromDate.state === 'errored' &&
-              //   self.fromError.text.attr('text') !== '') {
-              //   self.toError.group.hide();
-              //   self.fromError.group.show();
-              // }
+            if (self.fromDate.state === 'errored' &&
+              self.fromError.text.attr('text') !== '') {
+              self.toError.group.style('display', 'none');
+              self.fromError.group.style('display', 'block');
+            }
             self.fromDate.setState('selected');
+            if (self.activeBtn !== self.fromDate) {
+              self.activeBtn && self.activeBtn.removeState('selected');
+            }
+
+            self.calendar.hide();
+            self.activeBtn = self.fromDate;
+            self.activeDate = 'startDate';
+            if (self.config.editable === false) {
+              showCalendar(self.fromDate.getBBox(), self.startDt);
+            }
           },
           // tooltext: self.config.fromTooltipText,
           keypress: (e) => {
@@ -573,39 +664,70 @@ module.exports = function (dep) {
               self.startDate = self.fromDate.text();
               if (self.fromDate.state !== 'errored') {
                 self.fromDate.blur();
-                // self.fromError.group.hide();
-                // self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
-                // self.fromDate.removeState('selected');
-                // self.fromDate.removeState('errored');
+                self.fromError.group.style('display', 'none');
+                self.fromDate.removeState('selected');
+                self.fromDate.removeState('errored');
               } else {
-                // self.fromError.group.show();
-                // self.fromDate.state = 'errored';
-                // self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
+                self.fromError.group.style('display', 'block');
+                self.fromDate.state = 'errored';
               }
             }
           },
           blur: function () {
             self.startDate = self.fromDate.text();
+
             if (self.fromDate.state !== 'errored') {
               self.fromDate.blur();
-              // self.fromError.group.hide();
-              // self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
-              self.fromDate.removeState('selected');
+              self.fromError.group.style('display', 'none');
+              !isDescendant(self.toDate.buttonGroup.node(), d3.event.target) && self.fromDate.removeState('selected');
             } else {
-              // self.fromError.group.show();
-              // self.fromDate.svgElems.node.tooltip(self.startTooltipErrorMsg);
+              self.fromError.group.style('display', 'block');
             }
+          },
+          onIconClick: function () {
+            var bBox;
+            bBox = self.fromDate.getBBox();
+            self.fromDate.setState('selected');
+
+            if (self.activeBtn !== self.fromDate) {
+              self.activeBtn && self.activeBtn.removeState('selected');
+            }
+
+            showCalendar(bBox, self.startDt);
+            self.activeBtn = self.fromDate;
+            self.activeDate = 'startDate';
           }
         },
         toDateEventConfig = {
           click: function () {
-              // if (self.toDate.state === 'errored' &&
-              //   self.toError.text.attr('text') !== '') {
-              //   self.fromError.group.hide();
-              //   self.toError.group.show();
-              // }
-              // self.toDate.edit();
+            if (self.toDate.state === 'errored' &&
+              self.toError.text.attr('text') !== '') {
+              self.fromError.group.style('display', 'none');
+              self.toError.group.style('display', 'block');
+            }
+
             self.toDate.setState('selected');
+            if (self.activeBtn !== self.toDate) {
+              self.activeBtn && self.activeBtn.removeState('selected');
+            }
+            // self.activeBtn && self.activeBtn.removeState('selected');
+            self.calendar.hide();
+            self.activeBtn = self.toDate;
+            self.activeDate = 'endDate';
+            if (self.config.editable === false) {
+              showCalendar(self.toDate.getBBox(), self.endDt);
+            }
+          },
+          onIconClick: function () {
+            self.toDate.setState('selected');
+            if (self.activeBtn !== self.toDate) {
+              self.activeBtn && self.activeBtn.removeState('selected');
+            }
+            // self.activeBtn && self.activeBtn.removeState('selected');
+            // dateObj = new Date(self.endDt);
+            showCalendar(self.toDate.getBBox(), self.endDt);
+            self.activeBtn = self.toDate;
+            self.activeDate = 'endDate';
           },
           // tooltext: self.config.toTooltipText,
           keypress: (e) => {
@@ -615,12 +737,10 @@ module.exports = function (dep) {
               self.endDate = self.toDate.text();
               if (self.toDate.state !== 'errored') {
                 self.toDate.blur();
-                // self.toError.group.hide();
-                // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
+                self.toError.group.style('display', 'none');
                 self.toDate.removeState('selected');
               } else {
-                // self.toError.group.show();
-                // self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
+                self.toError.group.style('display', 'block');
               }
             }
           },
@@ -629,21 +749,84 @@ module.exports = function (dep) {
             self.endDate = self.toDate.text();
             if (self.toDate.state !== 'errored') {
               // self.toDate.blur();
-              // self.toError.group.hide();
-              // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
-              self.toDate.removeState('selected');
+              self.toError.group.style('display', 'none');
+              !isDescendant(self.toDate.buttonGroup.node(), d3.event.target) && self.toDate.removeState('selected');
+              // self.calendar.hide();
             } else {
-              // self.toError.group.show();
-              // self.toDate.svgElems.node.tooltip(self.endTooltipErrorMsg);
+              self.toError.group.style('display', 'block');
             }
           }
         },
         labelList,
-        inputButtonlist;
+        inputButtonlist,
+        FusionCalendar = this.FusionCalendar;
 
       self.fromDate = {};
       self.toDate = {};
 
+      function isDescendant (parent, child) {
+        var node = child.parentNode;
+        while (node != null) {
+          if (node === parent) {
+            return true;
+          }
+          node = node.parentNode;
+        }
+        return false;
+      }
+
+      absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'];
+      absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'];
+      startDt = new Date(absoluteStart);
+      endDt = new Date(absoluteEnd);
+
+      self.calendar = new FusionCalendar({
+        container: this.graphics.container.id,
+        posX: 10,
+        posY: 10,
+        hAlignment: 'right',
+        rangeStart: {
+          day: startDt.getDate(),
+          month: startDt.getMonth() + 1,
+          year: startDt.getFullYear()
+        },
+        rangeEnd: {
+          day: endDt.getDate(),
+          month: endDt.getMonth() + 1,
+          year: endDt.getFullYear()
+        },
+        showInactiveMonths: true,
+        events: {
+          onDateChange: function () {
+            var dateObj = self.calendar.getDate(),
+              timestamp = new Date(dateObj.year, dateObj.month - 1, dateObj.day).getTime(),
+              date = self.getDate(timestamp);
+
+            if (self.activeBtn) {
+              self.activeBtn.text(date);
+              self[self.activeDate] = self.activeBtn.text();
+              self.activeBtn.removeState('selected');
+              self.activeBtn = undefined;
+            }
+
+            self.calendar.hide();
+          }
+        }
+      });
+
+      d3.select('html').on('click.custom', function () {
+        var target = d3.event.target,
+          buttonGroup = self.activeBtn && self.activeBtn.buttonGroup.node();
+
+        if (!isDescendant(self.calendar.graphic.container, target) && !isDescendant(buttonGroup, target) &&
+            self.activeBtn && self.activeBtn.elements.inputBox.node() !== target) {
+          self.calendar.hide();
+          self.activeBtn && self.activeBtn.removeState('selected');
+          self.activeBtn = undefined;
+        }
+      });
+
+      self.calendar.hide();
       fromFormattedDate = this.getDate(this.startDt);
       toFormattedDate = this.getDate(this.endDt);
       toolbar = new this.HorizontalToolbar(dependencies);
@@ -657,8 +840,9 @@ module.exports = function (dep) {
           text: this.config['fromText'],
           config: {
             className: styles.label.className,
-            container: {
-              'width': 40
+            margin: {
+              right: 5,
+              left: 0
             }
           },
           styles: styles.label,
@@ -668,8 +852,9 @@ module.exports = function (dep) {
           text: this.config['toText'],
           config: {
             className: styles.label.className,
-            container: {
-              'width': 40
+            margin: {
+              right: 5,
+              left: 0
             }
           },
           styles: styles.label,
@@ -689,7 +874,13 @@ module.exports = function (dep) {
             states: {
               selected: inputBtnStyles.states.selected.className,
               errored: inputBtnStyles.states.errored.className
-            }
+            },
+            margin: {
+              left: 0,
+              right: 0
+            },
+            hasInputField: self.config.editable,
+            icon: self.config.calendar
           },
           eventListeners: fromDateEventConfig,
           group: fromGroup
@@ -702,10 +893,16 @@ module.exports = function (dep) {
             padding: inputBtnStyles.padding,
             radius: inputBtnStyles.radius,
             className: inputBtnStyles.className,
+            margin: {
+              left: 0,
+              right: 0
+            },
             states: {
               selected: inputBtnStyles.states.selected.className,
               errored: inputBtnStyles.states.errored.className
-            }
+            },
+            hasInputField: self.config.editable,
+            icon: self.config.calendar
           },
           eventListeners: toDateEventConfig,
           group: toGroup
@@ -808,16 +1005,16 @@ module.exports = function (dep) {
             self.startDt = start[1];
             self.fromDate.text(self.getDate(start[1]));
             // self.fromDate.blur(self.getDate(start[1]));
-            // self.fromError.text.attr('text', '');
-            // self.fromError.group.hide();
+            self.fromError.text.text('');
+            self.fromError.group.style('display', 'none');
             // self.fromDate.svgElems.node.tooltip(self.config.fromTooltipText);
             self.fromDate.removeState('selected');
             self.fromDate.removeState('errored');
             self.endDt = end[1];
             self.toDate.text(self.getDate(end[1]));
             // self.toDate.blur(self.getDate(end[1]));
-            // self.toError.text.attr('text', '');
-            // self.toError.group.hide();
+            // self.toError.text.text('');
+            self.toError.group.style('display', 'none');
             // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
             self.toDate.removeState('selected');
             self.toDate.removeState('errored');
@@ -840,6 +1037,7 @@ module.exports = function (dep) {
       self.minDatestampDiff = self.globalReactiveModel.model['minimum-consecutive-datestamp-diff'];
       self.minActiveInterval = self.maxXAxisTicks * self.minDatestampDiff;
       self.containerRight = self.graphics.container.clientLeft + self.graphics.container.clientWidth;
+      console.log(self.containerRight);
       self.containerBottom = self.graphics.container.clientTop + self.graphics.container.clientHeight;
     };
   }
