@@ -52,6 +52,7 @@ module.exports = function (dep) {
           this.diffIsGreaterThan(actualDiff, minDiff, 'from')) {
           this.startDt = startTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
+          this.fromDate.state = 'enabled';
         } else {
           // this.toError.group.hide();
           this.fromDate.setState('errored');
@@ -98,6 +99,7 @@ module.exports = function (dep) {
           this.diffIsGreaterThan(actualDiff, minDiff, 'to')) {
           this.endDt = endTimestamp;
           this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
+          this.toDate.state = 'enabled';
         } else {
           // this.fromError.group.hide();
           this.toDate.setState('errored');
@@ -1004,6 +1006,7 @@ module.exports = function (dep) {
             // setTimeout(() => {
             self.startDt = start[1];
             self.fromDate.text(self.getDate(start[1]));
+            self.fromDate.state = 'enabled';
             // self.fromDate.blur(self.getDate(start[1]));
             self.fromError.text.text('');
             self.fromError.group.style('display', 'none');
@@ -1018,6 +1021,7 @@ module.exports = function (dep) {
             // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
             self.toDate.removeState('selected');
             self.toDate.removeState('errored');
+            self.toDate.state = 'enabled';
             // }, 400);
           }
         );
