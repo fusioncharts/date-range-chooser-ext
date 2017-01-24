@@ -1038,6 +1038,7 @@
 	            // setTimeout(() => {
 	            self.startDt = start[1];
 	            self.fromDate.text(self.getDate(start[1]));
+	            self.fromDate.state = 'enabled';
 	            // self.fromDate.blur(self.getDate(start[1]));
 	            self.fromError.text.text('');
 	            self.fromError.group.style('display', 'none');
@@ -1052,6 +1053,7 @@
 	            // self.toDate.svgElems.node.tooltip(self.config.toTooltipText);
 	            self.toDate.removeState('selected');
 	            self.toDate.removeState('errored');
+	            self.toDate.state = 'enabled';
 	            // }, 400);
 	          });
 	        }
@@ -1089,6 +1091,7 @@
 	          if (this.isBetween(startTimestamp, absoluteStart, absoluteEnd, 'from') && this.isBeforeOrEqualTo(startTimestamp, this.endDt, 'from') && this.diffIsGreaterThan(actualDiff, minDiff, 'from')) {
 	            this.startDt = startTimestamp;
 	            this.globalReactiveModel.model['x-axis-visible-range-start'] = this.startDt;
+	            this.fromDate.state = 'enabled';
 	          } else {
 	            // this.toError.group.hide();
 	            this.fromDate.setState('errored');
@@ -1118,6 +1121,7 @@
 	          if (this.isBetween(endTimestamp, absoluteStart, absoluteEnd, 'to') && this.isAfterOrEqualTo(endTimestamp, this.startDt, 'to') && this.diffIsGreaterThan(actualDiff, minDiff, 'to')) {
 	            this.endDt = endTimestamp;
 	            this.globalReactiveModel.model['x-axis-visible-range-end'] = this.endDt;
+	            this.toDate.state = 'enabled';
 	          } else {
 	            // this.fromError.group.hide();
 	            this.toDate.setState('errored');
@@ -1144,7 +1148,11 @@
 
 	'use strict';
 
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	/******/(function (modules) {
 	  // webpackBootstrap
@@ -1573,31 +1581,12 @@
 
 	  "use strict";
 
-	  Object.defineProperty(exports, "__esModule", {
-	    value: true
-	  });
-
-	  var _createClass = function () {
-	    function defineProperties(target, props) {
-	      for (var i = 0; i < props.length; i++) {
-	        var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-	      }
-	    }return function (Constructor, protoProps, staticProps) {
-	      if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-	    };
-	  }();
-
-	  function _classCallCheck(instance, Constructor) {
-	    if (!(instance instanceof Constructor)) {
-	      throw new TypeError("Cannot call a class as a function");
-	    }
-	  }
+	  Object.defineProperty(exports, "__esModule", { value: true });
 
 	  __webpack_require__(0);
 
 	  var idNo = 0;
 	  var UNDEFINED = undefined,
-
 
 	  // basic calendar configaration
 	  daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
@@ -1651,18 +1640,15 @@
 	    right: -1
 	  },
 
-
 	  // get id for container
 	  getuid = function getuid() {
 	    return 'fc_calendar-' + idNo++;
 	  },
 
-
 	  // check if the year is leap year or not
 	  checkLeapYear = function checkLeapYear(year) {
 	    return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
 	  },
-
 
 	  // apply custom style to the container
 	  setStyle = function setStyle(element, style) {
@@ -1698,7 +1684,6 @@
 	    }
 	  },
 
-
 	  // this function will update the calendar
 	  // without re-drawing the elements
 	  displayMonth = function displayMonth(calendar) {
@@ -1731,7 +1716,7 @@
 	        startActive = validateActiveStart({ day: 1, month: month, year: year }, rangeStart),
 	        endActive = validateActiveEnd({ day: totalDays, month: month, year: year }, rangeEnd),
 	        startInactiveLimit = startActive ? 0 : rangeStart.month === month && rangeStart.year === year ? rangeStart.day - 1 : totalDays,
-	        endInactiveLimit = endActive ? totalDays + 1 : rangeStart.month === month && rangeStart.year === year ? rangeEnd.day + 1 : 1;
+	        endInactiveLimit = endActive ? totalDays + 1 : rangeEnd.month === month && rangeEnd.year === year ? rangeEnd.day + 1 : 1;
 
 	    var i = void 0,
 	        j = void 0,
@@ -1887,6 +1872,7 @@
 	      appendTo: calendarBody
 	    });
 
+
 	    var element = void 0,
 	        i = void 0;
 
@@ -2006,14 +1992,17 @@
 	            var info = calendar.info,
 	                events = calendar.events,
 	                selectedDate = info.selectedDate,
+	                active = info.active,
 	                tempDate = {
 	              day: _i - info.startingPos + 1,
-	              month: selectedDate.month,
-	              year: selectedDate.year
+	              month: active.month,
+	              year: active.year
 	            };
 
 	            if (validateActiveStart(tempDate, info.rangeStart) && validateActiveEnd(tempDate, info.rangeEnd)) {
 	              selectedDate.day = tempDate.day;
+	              selectedDate.month = tempDate.month;
+	              selectedDate.year = tempDate.year;
 	              setSelectedDate(calendar);
 	              events.onDateChange && events.onDateChange(selectedDate);
 	            }
@@ -2037,7 +2026,6 @@
 
 	    return !(start && (start.year > year || start.year === year && (start.month > month || start.month === month && start.day > day)));
 	  },
-
 
 	  // validate active date
 	  validateActiveEnd = function validateActiveEnd(date, end) {
@@ -2110,6 +2098,7 @@
 	            info = calendar.info,
 	            style = calendar.style,
 	            userEvents = config && config.events;
+
 
 	        var parentElement = void 0,
 	            temp = void 0,
@@ -2291,7 +2280,7 @@
 	  if (window) {
 	    window.FusionCalendar = Calendar;
 	  }
-	  exports.default = Calendar;
+	  /* harmony default export */exports["default"] = Calendar;
 
 	  /***/
 	}
