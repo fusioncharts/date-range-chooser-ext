@@ -1,6 +1,6 @@
 'use strict';
-const DateRange = require('./fcts-ext-daterange');
-
+const DateRange = require('./fcts-ext-daterange'),
+  Calendar = require('../fc-calendar-es5');
 ;(function (env, factory) {
   if (typeof module === 'object' && module.exports) {
     module.exports = env.document
@@ -14,10 +14,13 @@ const DateRange = require('./fcts-ext-daterange');
     env.DateRangeChooser = factory(env, true);
   }
 })(typeof window !== 'undefined' ? window : this, function (_window, windowExists) {
-  var FC = _window.FusionCharts;
+  var FC = _window.FusionCharts,
+    FusionCalendar = _window.FusionCalendar;
   FC.register('extension', ['private', 'date-range-chooser', function () {
     var DateTimeFormatter = this.hcLib.DateTimeFormatter;
     FC.registerComponent('extensions', 'date-range-chooser', DateRange({FusionCharts: FC,
-      DateTimeFormatter: DateTimeFormatter}));
+      DateTimeFormatter: DateTimeFormatter,
+      FusionCalendar: FusionCalendar
+    }));
   }]);
 });
