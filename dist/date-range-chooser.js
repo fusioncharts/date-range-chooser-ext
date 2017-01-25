@@ -272,7 +272,7 @@
 	        defaultStyles = {
 
 	          inputButton: {
-	            'width': 120,
+	            'width': 115,
 	            'height': 22,
 	            radius: 1,
 	            padding: {
@@ -293,12 +293,20 @@
 	              style: {
 	                'font-family': '"Lucida Grande", sans-serif',
 	                'font-size': '13px',
-	                fill: '#4B4B4B'
+	                fill: '#696969'
+	              }
+	            },
+	            input: {
+	              style: {
+	                'font-family': '"Lucida Grande", sans-serif',
+	                'font-size': '13px',
+	                color: '#696969',
+	                background: '#FFFFFF'
 	              }
 	            },
 	            icon: {
 	              style: {
-	                'fill': '#4B4B4B'
+	                'fill': '#696969'
 	              }
 	            },
 	            states: {
@@ -315,8 +323,13 @@
 	                className: 'date-range-chooser-state-errored',
 	                container: {
 	                  style: {
-	                    fill: '#FFFFFF',
+	                    fill: '#ffefef',
 	                    stroke: '#D25353'
+	                  }
+	                },
+	                input: {
+	                  style: {
+	                    background: '#ffefef'
 	                  }
 	                }
 	                // 'input-error-tooltip-font-color': '#FF0000'
@@ -329,7 +342,8 @@
 	              style: {
 	                'font-family': '"Lucida Grande", sans-serif',
 	                'font-size': '13px',
-	                fill: '#4B4B4B'
+	                fill: '#696969',
+	                'font-weight': 'bold'
 	              }
 	            }
 	          }
@@ -340,10 +354,12 @@
 	      config.position = extData.position || 'top';
 	      config.alignment = extData.alignment || 'right';
 	      config.dateFormat = extData.dateFormat || '%d-%m-%Y';
+	      config.placeholder = extData.placeholder || 'DDMMYYYY';
 	      config.fromText = extData.fromText || 'From:';
 	      config.fromTooltipText = extData.fromTooltipText || 'From Date';
 	      config.toText = extData.toText || 'To:';
 	      config.toTooltipText = extData.toTooltipText || 'To Date';
+	      config.padding = extData.padding || 5;
 	      config.styles = Object.assign(defaultStyles, extData.styles);
 	      config.calendar = extData.calendar === undefined ? true : extData.calendar;
 	      config.editable = extData.editable === undefined ? true : (config.calendar === false ? true : extData.editable);
@@ -645,20 +661,10 @@
 	        endDt,
 	        addCssRules = function (classNames, styles) {
 	          var key, className;
+
 	          for (key in classNames) {
 	            className = classNames[key];
-	            switch (key) {
-	              case 'input':
-	                styles.text && paper.cssAddRule('.' + className, {
-	                  color: styles.text.style.fill,
-	                  'font-family': styles.text.style['font-family'],
-	                  'font-size': styles.text.style['font-size']
-	                });
-	                break;
-	              default:
-	                styles[key] && paper.cssAddRule('.' + className, styles[key].style);
-	                break;
-	            }
+	            styles[key] && paper.cssAddRule('.' + className, styles[key].style);
 	          }
 	        },
 	        createInputButtons = function (store) {
@@ -754,12 +760,13 @@
 	            }
 	          },
 	          blur: function () {
-	            self.startDate = self.fromDate.text();
+	            var event = d3.event || window.event;
 
+	            self.startDate = self.fromDate.text();
 	            if (self.fromDate.state !== 'errored') {
 	              self.fromDate.blur();
 	              self.fromError.group.style('display', 'none');
-	              !isDescendant(self.toDate.buttonGroup.node(), d3.event.target) && self.fromDate.removeState('selected');
+	              !isDescendant(self.toDate.buttonGroup.node(), event.target) && self.fromDate.removeState('selected');
 	            } else {
 	              self.fromError.group.style('display', 'block');
 	            }
@@ -825,12 +832,13 @@
 	            }
 	          },
 	          blur: function () {
+	            var event = d3.event || window.event;
 	            // self.toDate.blur();
 	            self.endDate = self.toDate.text();
 	            if (self.toDate.state !== 'errored') {
 	              // self.toDate.blur();
 	              self.toError.group.style('display', 'none');
-	              !isDescendant(self.toDate.buttonGroup.node(), d3.event.target) && self.toDate.removeState('selected');
+	              !isDescendant(self.toDate.buttonGroup.node(), event.target) && self.toDate.removeState('selected');
 	              // self.calendar.hide();
 	            } else {
 	              self.toError.group.style('display', 'block');
@@ -960,7 +968,8 @@
 	              right: 0
 	            },
 	            hasInputField: self.config.editable,
-	            icon: self.config.calendar
+	            icon: self.config.calendar,
+	            placeholder: self.config.placeholder
 	          },
 	          eventListeners: fromDateEventConfig,
 	          group: fromGroup
@@ -982,7 +991,8 @@
 	              errored: inputBtnStyles.states.errored.className
 	            },
 	            hasInputField: self.config.editable,
-	            icon: self.config.calendar
+	            icon: self.config.calendar,
+	            placeholder: self.config.placeholder
 	          },
 	          eventListeners: toDateEventConfig,
 	          group: toGroup
@@ -1003,7 +1013,7 @@
 	      this.toolbars[0].height = logicalSpace.height;
 	      return {
 	        width: logicalSpace.width,
-	        height: logicalSpace.height
+	        height: logicalSpace.height + this.config.padding
 	      };
 	    };
 
