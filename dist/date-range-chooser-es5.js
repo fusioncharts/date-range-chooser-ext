@@ -262,6 +262,14 @@
 	                fill: '#696969'
 	              }
 	            },
+	            input: {
+	              style: {
+	                'font-family': '"Lucida Grande", sans-serif',
+	                'font-size': '13px',
+	                color: '#696969',
+	                background: '#FFFFFF'
+	              }
+	            },
 	            icon: {
 	              style: {
 	                'fill': '#696969'
@@ -281,8 +289,13 @@
 	                className: 'date-range-chooser-state-errored',
 	                container: {
 	                  style: {
-	                    fill: '#FFFFFF',
+	                    fill: '#ffefef',
 	                    stroke: '#D25353'
+	                  }
+	                },
+	                input: {
+	                  style: {
+	                    background: '#ffefef'
 	                  }
 	                }
 	                // 'input-error-tooltip-font-color': '#FF0000'
@@ -603,20 +616,10 @@
 	            endDt,
 	            addCssRules = function addCssRules(classNames, styles) {
 	          var key, className;
+
 	          for (key in classNames) {
 	            className = classNames[key];
-	            switch (key) {
-	              case 'input':
-	                styles.text && paper.cssAddRule('.' + className, {
-	                  color: styles.text.style.fill,
-	                  'font-family': styles.text.style['font-family'],
-	                  'font-size': styles.text.style['font-size']
-	                });
-	                break;
-	              default:
-	                styles[key] && paper.cssAddRule('.' + className, styles[key].style);
-	                break;
-	            }
+	            styles[key] && paper.cssAddRule('.' + className, styles[key].style);
 	          }
 	        },
 	            createInputButtons = function createInputButtons(store) {
