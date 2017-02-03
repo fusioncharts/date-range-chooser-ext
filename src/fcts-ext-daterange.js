@@ -45,9 +45,15 @@ module.exports = function (dep) {
         absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'],
         absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'],
         minDiff = this.minActiveInterval,
+        actualDiff;
+
+      if (startTimestamp) {
         actualDiff = this.endDt - startTimestamp;
+      }
+
       if (newDate !== startDt) {
-        if (this.isBetween(startTimestamp, absoluteStart, absoluteEnd, 'from') &&
+        if (this.isValid(startTimestamp, 'from') &&
+          this.isBetween(startTimestamp, absoluteStart, absoluteEnd, 'from') &&
           this.isBeforeOrEqualTo(startTimestamp, this.endDt, 'from') &&
           this.diffIsGreaterThan(actualDiff, minDiff, 'from')) {
           this.startDt = startTimestamp;
@@ -91,10 +97,15 @@ module.exports = function (dep) {
         absoluteStart = this.globalReactiveModel.model['x-axis-absolute-range-start'],
         absoluteEnd = this.globalReactiveModel.model['x-axis-absolute-range-end'],
         minDiff = this.minActiveInterval,
+        actualDiff;
+
+      if (endTimestamp) {
         actualDiff = endTimestamp - this.startDt;
+      }
 
       if (newDate !== endDt) {
-        if (this.isBetween(endTimestamp, absoluteStart, absoluteEnd, 'to') &&
+        if (this.isValid(endTimestamp, 'to') &&
+          this.isBetween(endTimestamp, absoluteStart, absoluteEnd, 'to') &&
           this.isAfterOrEqualTo(endTimestamp, this.startDt, 'to') &&
           this.diffIsGreaterThan(actualDiff, minDiff, 'to')) {
           this.endDt = endTimestamp;
@@ -125,6 +136,23 @@ module.exports = function (dep) {
           this.setErrorMsg(this.toError, 'Date must be greater than start date!');
         }
         return false;
+      }
+    }
+
+    isValid (timestamp, errorType) {
+      if (timestamp == null) {
+        this.startTooltipErrorMsg = this.endTooltipErrorMsg =
+        '<span style="color: ' +
+        this.config.styles['input-error-tooltip-font-color'] +
+        '">Invalid / unrecognized date format!</span>';
+        if (errorType === 'from') {
+          this.setErrorMsg(this.fromError, 'Invalid / unrecognized date format!');
+        } else if (errorType === 'to') {
+          this.setErrorMsg(this.toError, 'Invalid / unrecognized date format!');
+        }
+        return false;
+      } else {
+        return true;
       }
     }
 
@@ -165,7 +193,7 @@ module.exports = function (dep) {
     getTimestamp (dateStr) {
       let dateFormat = this.config.dateFormat,
         dateFormatter = new dep.DateTimeFormatter(dateFormat);
-      return +dateFormatter.getNativeDate(dateStr);
+      return dateFormatter.getNativeDate(dateStr) ? +dateFormatter.getNativeDate(dateStr) : null;
     }
 
     getDate (timestamp) {
@@ -276,7 +304,7 @@ module.exports = function (dep) {
       config.position = extData.position || 'top';
       config.alignment = extData.alignment || 'right';
       config.dateFormat = extData.dateFormat || '%d-%m-%Y';
-      config.placeholder = extData.placeholder || 'DDMMYYYY';
+      config.placeholder = extData.placeholder || 'DD-MM-YYYY';
       config.fromText = extData.fromText || 'From:';
       config.fromTooltipText = extData.fromTooltipText || 'From Date';
       config.toText = extData.toText || 'To:';
