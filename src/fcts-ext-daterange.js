@@ -844,6 +844,23 @@ module.exports = function (dep) {
               self.activeBtn.text(date);
               self[self.activeDate] = self.activeBtn.text();
               self.activeBtn.removeState('selected');
+              if (self.activeDate === 'startDate') {
+                if (self.fromDate.state !== 'errored') {
+                  self.fromError.group.style('display', 'none');
+                }
+                else {
+                  self.fromError.group.style('display', 'block');
+                }
+              }
+              else if (self.activeDate === 'endDate') {
+                if (self.toDate.state !== 'errored') {
+                  self.toError.group.style('display', 'none');
+                }
+                else {
+                  self.toError.group.style('display', 'block');
+                }
+              }
+
               self.activeBtn = undefined;
             }
 
@@ -866,13 +883,18 @@ module.exports = function (dep) {
 
       d3.select('html').on('touchend.' + new Date().getTime(), function outsideTouch () {
         var target = d3.event.target,
-          buttonGroup = self.activeBtn && self.activeBtn.buttonGroup.node();
+          buttonGroup = self.activeBtn && self.activeBtn.buttonGroup.node(),
+          activeDate,
+          errorGroup;
 
         if (!isDescendant(self.calendar.graphic.container, target) && !isDescendant(buttonGroup, target) &&
             self.activeBtn && self.activeBtn.elements.inputBox.node() !== target) {
           self.calendar.hide();
-          self.activeBtn && self.activeBtn.removeState('selected');
-          self.activeBtn && self.activeBtn.blur();
+          if (self.activeBtn) {
+            self.activeBtn && self.activeBtn.removeState('selected');
+            // Fix for ipad safari blur event not firing
+            self.activeBtn && self.activeBtn.elements.inputBox.node().blur();
+          }
           self.activeBtn = undefined;
         }
       });
