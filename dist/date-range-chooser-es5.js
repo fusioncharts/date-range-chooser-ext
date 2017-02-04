@@ -869,13 +869,25 @@
 	          }
 	        });
 
-	        d3.select('html').on('click.' + new Date().getTime(), function () {
+	        d3.select('html').on('click.' + new Date().getTime(), function outsideClick() {
 	          var target = d3.event.target,
 	              buttonGroup = self.activeBtn && self.activeBtn.buttonGroup.node();
 
 	          if (!isDescendant(self.calendar.graphic.container, target) && !isDescendant(buttonGroup, target) && self.activeBtn && self.activeBtn.elements.inputBox.node() !== target) {
 	            self.calendar.hide();
 	            self.activeBtn && self.activeBtn.removeState('selected');
+	            self.activeBtn = undefined;
+	          }
+	        });
+
+	        d3.select('html').on('touchend.' + new Date().getTime(), function outsideTouch() {
+	          var target = d3.event.target,
+	              buttonGroup = self.activeBtn && self.activeBtn.buttonGroup.node();
+
+	          if (!isDescendant(self.calendar.graphic.container, target) && !isDescendant(buttonGroup, target) && self.activeBtn && self.activeBtn.elements.inputBox.node() !== target) {
+	            self.calendar.hide();
+	            self.activeBtn && self.activeBtn.removeState('selected');
+	            self.activeBtn && self.activeBtn.blur();
 	            self.activeBtn = undefined;
 	          }
 	        });
