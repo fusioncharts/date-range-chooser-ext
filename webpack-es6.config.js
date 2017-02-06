@@ -20,7 +20,7 @@ if (env === 'production') {
       loaders: [{
         test: /\.js$/,
         loader: 'eslint-loader',
-        exclude: /node_modules|fc-calendar-es5.js/
+        exclude: /node_modules|fc-calendar-es5.js|src/
       }]
     },
     eslint: {
