@@ -311,7 +311,8 @@ module.exports = function (dep) {
       config.toTooltipText = extData.toTooltipText || 'To Date';
       config.padding = extData.padding || 5;
       config.styles = Object.assign(defaultStyles, extData.styles);
-      config.styles.inputButton.width = extData.styles.width || defaultStyles.inputButton.width;
+      config.styles.inputButton.width = (extData.styles && extData.styles.width) ||
+        defaultStyles.inputButton.width;
       config.calendar = extData.calendar === undefined ? true : extData.calendar;
       config.editable = extData.editable === undefined ? true : (config.calendar === false ? true : extData.editable);
       return config;
