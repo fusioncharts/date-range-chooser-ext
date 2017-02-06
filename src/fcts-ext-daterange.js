@@ -311,6 +311,7 @@ module.exports = function (dep) {
       config.toTooltipText = extData.toTooltipText || 'To Date';
       config.padding = extData.padding || 5;
       config.styles = Object.assign(defaultStyles, extData.styles);
+      config.styles.inputButton.width = extData.styles.width || defaultStyles.inputButton.width;
       config.calendar = extData.calendar === undefined ? true : extData.calendar;
       config.editable = extData.editable === undefined ? true : (config.calendar === false ? true : extData.editable);
       return config;
@@ -845,20 +846,12 @@ module.exports = function (dep) {
               self[self.activeDate] = self.activeBtn.text();
               self.activeBtn.removeState('selected');
               if (self.activeDate === 'startDate') {
-                if (self.fromDate.state !== 'errored') {
-                  self.fromError.group.style('display', 'none');
-                }
-                else {
-                  self.fromError.group.style('display', 'block');
-                }
+                if (self.fromDate.state !== 'errored') { self.fromError.group.style('display', 'none'); }
+                else { self.fromError.group.style('display', 'block'); }
               }
               else if (self.activeDate === 'endDate') {
-                if (self.toDate.state !== 'errored') {
-                  self.toError.group.style('display', 'none');
-                }
-                else {
-                  self.toError.group.style('display', 'block');
-                }
+                if (self.toDate.state !== 'errored') { self.toError.group.style('display', 'none'); }
+                else { self.toError.group.style('display', 'block'); }
               }
 
               self.activeBtn = undefined;
