@@ -300,6 +300,7 @@ module.exports = function (dep) {
         };
       config.disabled = extData.disabled || false;
       config.layout = extData.layout || 'inline';
+      config.ref = extData.ref || undefined;
       config.orientation = extData.orientation || 'horizontal';
       config.position = extData.position || 'top';
       config.alignment = extData.alignment || 'right';
@@ -1003,7 +1004,8 @@ module.exports = function (dep) {
           return 'DateRangeChooserToolbox';
         },
         ref: function (obj) {
-          return obj['0'];
+          var userRef = self.config.ref;
+          return userRef === undefined ? obj.chart : userRef;
         },
         self: function () {
           return self;
@@ -1033,7 +1035,7 @@ module.exports = function (dep) {
             }]
           }]
         }]
-      }]);
+      }], Object.keys(self.chartInstance.apiInstance.getComponentStore().getAllCanvas()).length);
     };
 
     setDrawingConfiguration (x, y, width, height, group) {

@@ -331,6 +331,7 @@
 	        };
 	        config.disabled = extData.disabled || false;
 	        config.layout = extData.layout || 'inline';
+	        config.ref = extData.ref || undefined;
 	        config.orientation = extData.orientation || 'horizontal';
 	        config.position = extData.position || 'top';
 	        config.alignment = extData.alignment || 'right';
@@ -1024,7 +1025,8 @@
 	            return 'DateRangeChooserToolbox';
 	          },
 	          ref: function ref(obj) {
-	            return obj['0'];
+	            var userRef = _self.config.ref;
+	            return userRef === undefined ? obj.chart : userRef;
 	          },
 	          self: function self() {
 	            return _self;
@@ -1054,7 +1056,7 @@
 	              }]
 	            }]
 	          }]
-	        }]);
+	        }], Object.keys(_self.chartInstance.apiInstance.getComponentStore().getAllCanvas()).length);
 	      }
 	    }, {
 	      key: 'setDrawingConfiguration',
