@@ -633,8 +633,8 @@ module.exports = function (dep) {
             addCssRules(self[key].getIndividualClassNames(self[key].getClassName()), inputBtnStyles);
             states = config.states;
             for (state in states) {
-              addCssRules(self[key].getIndividualClassNames(self[key].config.states[state]),
-                inputBtnStyles.states[state]);
+              addCssRules(self[key].getIndividualClassNames(self[key].getStateClassName(state)),
+              inputBtnStyles.states[state]);
             }
 
             self[key].attachEventHandlers(inputButton.eventListeners);
@@ -940,8 +940,12 @@ module.exports = function (dep) {
             radius: inputBtnStyles.radius,
             className: inputBtnStyles.className,
             states: {
-              selected: inputBtnStyles.states.selected.className,
-              errored: inputBtnStyles.states.errored.className
+              selected: {
+                className: inputBtnStyles.states.selected.className
+              },
+              errored: {
+                className: inputBtnStyles.states.errored.className
+              }
             },
             margin: {
               left: 0,
@@ -967,8 +971,12 @@ module.exports = function (dep) {
               right: 0
             },
             states: {
-              selected: inputBtnStyles.states.selected.className,
-              errored: inputBtnStyles.states.errored.className
+              selected: {
+                className: inputBtnStyles.states.selected.className
+              },
+              errored: {
+                className: inputBtnStyles.states.errored.className
+              }
             },
             hasInputField: self.config.editable,
             icon: self.config.calendar,
@@ -996,6 +1004,10 @@ module.exports = function (dep) {
         height: logicalSpace.height + this.config.padding
       };
     };
+
+    configure () {
+
+    }
 
     placeInCanvas () {
       var self = this;
